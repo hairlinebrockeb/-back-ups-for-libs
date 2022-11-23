@@ -497,6 +497,27 @@ function library:CreateWindow(name, size, hidebutton)
         tab.RightListPadding.PaddingLeft = UDim.new(0, 6)
         tab.RightListPadding.PaddingRight = UDim.new(0, 12)
 
+
+        tab.Extra = Instance.new("ScrollingFrame", window.Frame) 
+        tab.Extra.Name = "rightside"
+        tab.Extra.ScrollBarThickness = 0
+        tab.Extra.ScrollingDirection = "Y"
+        tab.Extra.Visible = false
+        tab.Extra.BorderSizePixel = 0
+        tab.Extra.Size = UDim2.fromOffset(window.size.X.Offset / 2, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
+        tab.Extra.BackgroundTransparency = 1
+        tab.Extra.Position = tab.Right.Position + UDim2.fromOffset(tab.Right.AbsoluteSize.X, 0)
+
+        tab.ExtraListLayout = Instance.new("UIListLayout", tab.Extra)
+        tab.ExtraListLayout.FillDirection = Enum.FillDirection.Vertical
+        tab.ExtraListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        tab.ExtraListLayout.Padding = UDim.new(0, 12)
+
+        tab.ExtraListPadding = Instance.new("UIPadding", tab.Extra)
+        tab.ExtraListPadding.PaddingTop = UDim.new(0, 12)
+        tab.ExtraListPadding.PaddingLeft = UDim.new(0, 6)
+        tab.ExtraListPadding.PaddingRight = UDim.new(0, 12)
+
         local block = false
         function tab:SelectTab()
             repeat 
@@ -517,6 +538,7 @@ function library:CreateWindow(name, size, hidebutton)
             tab.TabButton.Name = "SelectedTab"
             tab.Right.Visible = true
             tab.Left.Visible = true
+	    tab.Extra.Visible = true
             window.Line:TweenSizeAndPosition(UDim2.fromOffset(size.X + 15, 1), UDim2.new(0, (tab.TabButton.AbsolutePosition.X - window.Frame.AbsolutePosition.X), 0, 0) + (window.BlackLine.Position - UDim2.fromOffset(0, 1)), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.15)
             wait(0.2)
             block = false
@@ -538,7 +560,7 @@ function library:CreateWindow(name, size, hidebutton)
             sector.name = name or ""
             sector.side = side:lower() or "left"
             
-            sector.Main = Instance.new("Frame", sector.side == "left" and tab.Left or tab.Right) 
+            sector.Main = Instance.new("Frame", sector.side == "left" and tab.Left or tab.Right or tab.Extra) 
             sector.Main.Name = sector.name:gsub(" ", "") .. "Sector"
             sector.Main.BorderSizePixel = 0
             sector.Main.ZIndex = 4
