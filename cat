@@ -3529,11 +3529,11 @@ function library:CreateWindow(name, size, hidebutton)
         end
 
 
-        function tab:CreatePlayerlist(name)
+        function tab:CreatePlayerlist(name,toSect)
             local list = { }
             list.name = name or ""
 
-            list.Main = Instance.new("Frame", tab.TabPage) 
+            list.Main = Instance.new("Frame", toSect) 
             list.Main.Name = list.name:gsub(" ", "") .. "Sector"
             list.Main.BorderColor3 = window.theme.outlinecolor
             list.Main.ZIndex = 2
