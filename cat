@@ -499,7 +499,7 @@ function library:CreateWindow(name, size, hidebutton)
 
 
         tab.Extra = Instance.new("ScrollingFrame", window.Frame) 
-        tab.Extra.Name = "rightside"
+        tab.Extra.Name = "extraside"
         tab.Extra.ScrollBarThickness = 0
         tab.Extra.ScrollingDirection = "Y"
         tab.Extra.Visible = false
