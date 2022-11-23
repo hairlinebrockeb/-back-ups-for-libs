@@ -3533,18 +3533,10 @@ function library:CreateWindow(name, size, hidebutton)
             local list = { }
             list.name = name or ""
 
-            list.Main = Instance.new("Frame", toSect.Items) 
-            list.Main.Name = list.name:gsub(" ", "") .. "Sector"
-            list.Main.BorderColor3 = window.theme.outlinecolor
-            list.Main.ZIndex = 2
-            list.Main.Size = UDim2.fromOffset(window.size.X.Offset - 22, 220)
-            list.Main.BackgroundColor3 = window.theme.sectorcolor
-            list.Main.Position = UDim2.new(0, 11, 0, 12)
 
-            tab.SectorsLeft[#tab.SectorsLeft + 1] = 220
             --tab.SectorsRight[#tab.SectorsLeft + 1].space = 220
 
-            list.Line = Instance.new("Frame", list.Main)
+            list.Line = Instance.new("Frame", toSect.Items)
             list.Line.Name = "line"
             list.Line.ZIndex = 2
             list.Line.Size = UDim2.fromOffset(list.Main.Size.X.Offset + 2, 1)
@@ -3552,16 +3544,10 @@ function library:CreateWindow(name, size, hidebutton)
             list.Line.Position = UDim2.fromOffset(-1, -1)
             list.Line.BackgroundColor3 = window.theme.accentcolor
 
-            list.BlackOutline = Instance.new("Frame", list.Main)
-            list.BlackOutline.Name = "blackline"
-            list.BlackOutline.ZIndex = 1
-            list.BlackOutline.Size = list.Main.Size + UDim2.fromOffset(4, 4)
-            list.BlackOutline.BorderSizePixel = 0
-            list.BlackOutline.BackgroundColor3 = window.theme.outlinecolor2
-            list.BlackOutline.Position = UDim2.fromOffset(-2, -2)
+
 
             local size = textservice:GetTextSize(list.name, 13, window.theme.font, Vector2.new(2000, 2000))
-            list.Label = Instance.new("TextLabel", list.Main)
+            list.Label = Instance.new("TextLabel", toSect.Items)
             list.Label.AnchorPoint = Vector2.new(0,0.5)
             list.Label.Position = UDim2.fromOffset(12, -1)
             list.Label.Size = UDim2.fromOffset(math.clamp(textservice:GetTextSize(list.name, 13, window.theme.font, Vector2.new(200,300)).X + 10, 0, list.Main.Size.X.Offset), size.Y)
@@ -3582,7 +3568,7 @@ function library:CreateWindow(name, size, hidebutton)
             list.LabelBackFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
             list.LabelBackFrame.Position = UDim2.fromOffset(0, 6)
 
-            list.Items = Instance.new("ScrollingFrame", list.Main) 
+            list.Items = Instance.new("ScrollingFrame", toSect.Items) 
             list.Items.Name = "items"
             list.Items.ZIndex = 2
             list.Items.ScrollBarThickness = 1
