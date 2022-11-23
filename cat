@@ -506,7 +506,7 @@ function library:CreateWindow(name, size, hidebutton)
         tab.Extra.BorderSizePixel = 0
         tab.Extra.Size = UDim2.fromOffset(window.size.X.Offset / 2, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
         tab.Extra.BackgroundTransparency = 1
-        tab.Extra.Position = tab.Right.Position + UDim2.fromOffset(tab.Right.AbsoluteSize.X, 0)
+        tab.Extra.Position = tab.Left.Position + UDim2.fromOffset(tab.Left.AbsoluteSize.X, 0)
 
         tab.ExtraListLayout = Instance.new("UIListLayout", tab.Extra)
         tab.ExtraListLayout.FillDirection = Enum.FillDirection.Vertical
