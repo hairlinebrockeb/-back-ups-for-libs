@@ -560,7 +560,11 @@ function library:CreateWindow(name, size, hidebutton)
             sector.name = name or ""
             sector.side = side:lower() or "left"
             
-            sector.Main = Instance.new("Frame", sector.side == "left" and tab.Left or tab.Right or tab.Extra) 
+	    print(side:lower())
+	    local selectedSector = tab.Left
+	    if sector.side == 'left' then selectedSector = tab.Left elseif sector.side == 'right' then selectedSector = tab.Right elseif sector.side == 'extra' then selectedSector = tab.Extra end
+	    sector.Main = Instance.new("Frame", selectedSector) 
+            -- sector.Main = Instance.new("Frame", sector.side == "left" and tab.Left or tab.Right or tab.Extra) 
             sector.Main.Name = sector.name:gsub(" ", "") .. "Sector"
             sector.Main.BorderSizePixel = 0
             sector.Main.ZIndex = 4
