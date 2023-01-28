@@ -765,7 +765,7 @@ function library:CreateWindow(name, size, hidebutton)
 
 		button.Main.MouseButton1Down:Connect(function()
 		
-		if getgenv().disablefeatures == true then print('istrue') return end
+		if getgenv().disablefeatures == true then return end
 		if info then 
 		getgenv().disablefeatures = true
 		    local text = info.ask
@@ -867,10 +867,12 @@ function library:CreateWindow(name, size, hidebutton)
                 end)
 
                 button.BlackOutline2.MouseEnter:Connect(function()
+		if getgenv().disablefeatures == true then return end
                     button.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
                 end)
 
                 button.BlackOutline2.MouseLeave:Connect(function()
+		if getgenv().disablefeatures == true then return end
                     button.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
                 end)
 
