@@ -762,11 +762,13 @@ function library:CreateWindow(name, size, hidebutton)
                 button.Label.TextSize = 15
                 button.Label.TextStrokeTransparency = 1
                 button.Label.TextXAlignment = Enum.TextXAlignment.Center
+
+		button.Main.MouseButton1Down:Connect(function()
 		if info then 
 		    local text = info.ask
 		    local yes = info.accept
 		    local no = info.reject
-		    	
+
 			local cover = Instance.new('Frame')	
 			cover.Size = window.Frame.Size	
 			cover.Parent = window.Frame
@@ -848,10 +850,12 @@ function library:CreateWindow(name, size, hidebutton)
 			no.Main.MouseButton1Down:Connect(function()
 				cover:Destroy()
 			end)
-		else
-		    button.Main.MouseButton1Down:Connect(button.callback)
-		end
-
+			else
+			    button.callback()
+		    end
+		end)
+		-- could do mousebutton1down and check if info then do
+		-- or check info and then check for the button pressed and add the cover stuff
                 updateevent.Event:Connect(function(theme)
                     button.Label.Font = theme.font
                     button.Label.TextColor3 = theme.itemscolor
