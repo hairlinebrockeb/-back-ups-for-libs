@@ -17,7 +17,7 @@ local httpservice = game:GetService("HttpService")
 local player = players.LocalPlayer
 local mouse = player:GetMouse()
 local camera = game.Workspace.CurrentCamera
-
+getgenv().disablefeatures =false
 library.theme = {
     fontsize = 15,
     titlesize = 18,
@@ -764,7 +764,10 @@ function library:CreateWindow(name, size, hidebutton)
                 button.Label.TextXAlignment = Enum.TextXAlignment.Center
 
 		button.Main.MouseButton1Down:Connect(function()
+		
+		if getgenv().disablefeatures == true then return end
 		if info then 
+		getgenv().disablefeatures =true
 		    local text = info.ask
 		    local yes = info.accept
 		    local no = info.reject
@@ -844,10 +847,12 @@ function library:CreateWindow(name, size, hidebutton)
 
 
 			yes.Main.MouseButton1Down:Connect(function()
+			getgenv().disablefeatures =false
 			    button.callback()
 			    cover:Destroy()
 			end)
 			no.Main.MouseButton1Down:Connect(function()
+			getgenv().disablefeatures =false
 				cover:Destroy()
 			end)
 			else
