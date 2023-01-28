@@ -765,9 +765,9 @@ function library:CreateWindow(name, size, hidebutton)
 
 		button.Main.MouseButton1Down:Connect(function()
 		
-		if getgenv().disablefeatures == true then return end
+		if getgenv().disablefeatures == true then print('istrue') return end
 		if info then 
-		getgenv().disablefeatures =true
+		getgenv().disablefeatures = true
 		    local text = info.ask
 		    local yes = info.accept
 		    local no = info.reject
