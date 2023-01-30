@@ -802,9 +802,13 @@ function library:CreateWindow(name, size, hidebutton)
 			local function perTextaddSpace()
 			end
 			
-			--for _,v in next, sector do 
-				
-			--end
+			for _,v in next, tab.SectorsLeft do 
+			   for itemI,item in next, v['Items'] do 
+			       if item.BackgroundTransparency == 0 then 
+			       item.BackgroundTransparency = .4
+			       end
+			   end
+			end
 			
 			local label = {}
 			label.Main = Instance.new("TextLabel", cover)
@@ -855,10 +859,24 @@ function library:CreateWindow(name, size, hidebutton)
 			getgenv().disablefeatures =false
 			    button.callback()
 			    cover:Destroy()
+				for _,v in next, tab.SectorsLeft do 
+				   for itemI,item in next, v['Items'] do 
+				       if item.BackgroundTransparency == 0 then 
+				       item.BackgroundTransparency = .4
+				       end
+				   end
+				end
 			end)
 			no.Main.MouseButton1Down:Connect(function()
 			getgenv().disablefeatures =false
 				cover:Destroy()
+				for _,v in next, tab.SectorsLeft do 
+				   for itemI,item in next, v['Items'] do 
+				       if item.BackgroundTransparency == 0 then 
+				       item.BackgroundTransparency = .4
+				       end
+				   end
+				end
 			end)
 			else
 			    button.callback()
