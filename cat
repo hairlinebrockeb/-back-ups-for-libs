@@ -801,11 +801,16 @@ function library:CreateWindow(name, size, hidebutton)
 			end
 			local function perTextaddSpace()
 			end
+			
+			--for _,v in next, sector do 
+				
+			--end
+			
 			local label = {}
 			label.Main = Instance.new("TextLabel", cover)
 			label.Main.Name = "AskingLabel"
 			label.Main.BackgroundTransparency = 1
-			label.Main.Position = UDim2.new(0,cover.Position.X.Offset/2+250,0,cover.Size.Y.Offset/2-50)         -- 185   
+			label.Main.Position = UDim2.new(0,cover.Size.X.Offset/2+250,0,cover.Size.Y.Offset/2-50)         -- 185   
 			label.Main.ZIndex = 4
 			label.Main.Font = window.theme.font
 			label.Main.Text = info.ask
@@ -825,7 +830,7 @@ function library:CreateWindow(name, size, hidebutton)
 			yes.Main.TextColor3 = Color3.fromRGB(255,255,255)
 			yes.Main.ZIndex = 50
 			yes.Main.Size = UDim2.new(0,75,0,25)                
-			yes.Main.Position = UDim2.new(0,cover.Position.X.Offset/2+160,0,cover.Size.Y.Offset/2)             
+			yes.Main.Position = UDim2.new(0,cover.Size.X.Offset/2+160,0,cover.Size.Y.Offset/2)             
 			yes.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 			yes.Gradient = Instance.new("UIGradient", yes.Main)
 			yes.Gradient.Rotation = 90
@@ -839,7 +844,7 @@ function library:CreateWindow(name, size, hidebutton)
 			no.Main.TextColor3 = Color3.fromRGB(255,255,255)
 			no.Main.ZIndex = 50
 			no.Main.Size = UDim2.new(0,75,0,25)                
-			no.Main.Position = UDim2.new(0,cover.Position.X.Offset/2+250,0,cover.Size.Y.Offset/2)             
+			no.Main.Position = UDim2.new(0,cover.Size.X.Offset/2+250,0,cover.Size.Y.Offset/2)             
 			no.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 			no.Gradient = Instance.new("UIGradient", no.Main)
 			no.Gradient.Rotation = 90
