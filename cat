@@ -1,3 +1,4 @@
+		    
 -- insert troll face, memcorruptv2
 local library = { 
 	flags = { }, 
@@ -645,8 +646,8 @@ function library:CreateWindow(name, size, hidebutton)
             sector.Label.TextSize = 15
             updateevent.Event:Connect(function(theme)
                 local size = textservice:GetTextSize(sector.name, 15, theme.font, Vector2.new(2000, 2000))
-		print(sector.Main.Size.X.Offset or nil)
-		print(textservice:GetTextSize(sector.name, 15, theme.font, Vector2.new(200,300)).X + 13)
+		-- print(sector.Main.Size.X.Offset or nil)
+		-- print(textservice:GetTextSize(sector.name, 15, theme.font, Vector2.new(200,300)).X + 13)
                 sector.Label.Size = UDim2.fromOffset(math.clamp(textservice:GetTextSize(sector.name, 15, theme.font, Vector2.new(200,300)).X + 13, 0, sector.Main.Size.X.Offset), size.Y)
                 sector.Label.Font = theme.font
             end)
@@ -801,21 +802,75 @@ function library:CreateWindow(name, size, hidebutton)
 			end
 			local function perTextaddSpace()
 			end
-			print(v['Items'])
-			print(typeof(tab.SectorsLeft))
-			for _,v in next, tab.SectorsLeft do 
-			   for itemI,item in next, v['Items'] do 
-			       if item.BackgroundTransparency == 0 then 
-			       item.BackgroundTransparency = .4
-			       end
-			   end
-			end
+
+			-- print(typeof(tab.SectorsLeft))
+            local changedstuff = {}
+
+            local function changeTransparencies(info)
+                if info.s == 'change' then 
+                    print('change')
+                    for _,v in next, tab.SectorsLeft do 
+                        for itemI,item in next, v['Items']:GetChildren() do 
+                            local hasBackgroundTransparency = false
+                            hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
+                            if hasBackgroundTransparency then 
+                                print(item.Name)
+                                table.insert(changedstuff,{
+                                    r = item;
+                                    previous = item.BackgroundTransparency
+                                })
+                                item.BackgroundTransparency = .4
+                                if item:FindFirstChild('UIGradient') then 
+                                    local grey = Color3.new(	0.1, 0.1, 0.1) -- Color3.new(	1, 0, 1)
+                                    local white = Color3.new(1, 1, 1)
+                                    local lightBlue = Color3.new(0, 2/3, 1)
+                                    local yellow = Color3.new(1, 1, 0)
+                                    -- item:FindFirstChild('UIGradient').Color = ColorSequence.new{
+                                    --     ColorSequenceKeypoint.new(0, grey),
+                                    --     ColorSequenceKeypoint.new(1, grey)
+                                    -- }
+                                end
+                            end
+
+                                -- if  item.BackgroundTransparency == 0 then 
+                                --     item.BackgroundTransparency = .4
+            
+                                -- end
+                             
+                        end
+                    end
+                    for _,v in next, tab.SectorsRight do 
+                        for itemI,item in next, v['Items']:GetChildren() do 
+                            local hasBackgroundTransparency = false
+                            hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
+                            if hasBackgroundTransparency then 
+                                print(item.Name)
+                                table.insert(changedstuff,{
+                                    r = item;
+                                    previous = item.BackgroundTransparency
+                                })
+                                item.BackgroundTransparency = .4
+                            end
+                             
+                        end
+                    end
+                elseif info.s == 'revert' then 
+                    for _Index,itemTable in next, changedstuff do 
+
+                        itemTable['r'].BackgroundTransparency = itemTable['previous']
+
+                        table.remove(changedstuff,_Index)
+                    end
+                end 
+            end
+
+            changeTransparencies{s = 'change'}
 			
 			local label = {}
 			label.Main = Instance.new("TextLabel", cover)
 			label.Main.Name = "AskingLabel"
 			label.Main.BackgroundTransparency = 1
-			label.Main.Position = UDim2.new(0,cover.Size.X.Offset/2+250,0,cover.Size.Y.Offset/2-50)         -- 185   
+			label.Main.Position = UDim2.new(0,cover.Size.X.Offset/2,0,cover.Size.Y.Offset/2-50)         -- 185   
 			label.Main.ZIndex = 4
 			label.Main.Font = window.theme.font
 			label.Main.Text = info.ask
@@ -835,7 +890,7 @@ function library:CreateWindow(name, size, hidebutton)
 			yes.Main.TextColor3 = Color3.fromRGB(255,255,255)
 			yes.Main.ZIndex = 50
 			yes.Main.Size = UDim2.new(0,75,0,25)                
-			yes.Main.Position = UDim2.new(0,cover.Size.X.Offset/2+160,0,cover.Size.Y.Offset/2)             
+			yes.Main.Position = UDim2.new(0,cover.Size.X.Offset/3.1,0,cover.Size.Y.Offset/2) -- cover.Position.X.Offset to 160            
 			yes.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 			yes.Gradient = Instance.new("UIGradient", yes.Main)
 			yes.Gradient.Rotation = 90
@@ -845,11 +900,11 @@ function library:CreateWindow(name, size, hidebutton)
 			no.Main.BorderSizePixel = 0
 			no.Main.Text = info.reject
 			no.Main.AutoButtonColor = false
-			no.Main.Name = 'yes'
+			no.Main.Name = 'no'
 			no.Main.TextColor3 = Color3.fromRGB(255,255,255)
 			no.Main.ZIndex = 50
 			no.Main.Size = UDim2.new(0,75,0,25)                
-			no.Main.Position = UDim2.new(0,cover.Size.X.Offset/2+250,0,cover.Size.Y.Offset/2)             
+			no.Main.Position = UDim2.new(0,yes.Main.Position.X.Offset+100,0,cover.Size.Y.Offset/2)             
 			no.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 			no.Gradient = Instance.new("UIGradient", no.Main)
 			no.Gradient.Rotation = 90
@@ -860,24 +915,12 @@ function library:CreateWindow(name, size, hidebutton)
 			getgenv().disablefeatures =false
 			    button.callback()
 			    cover:Destroy()
-				for _,v in next, tab.SectorsLeft do 
-				   for itemI,item in next, v['Items'] do 
-				       if item.BackgroundTransparency == 0 then 
-				       item.BackgroundTransparency = .4
-				       end
-				   end
-				end
+                changeTransparencies{s = 'revert'}
 			end)
 			no.Main.MouseButton1Down:Connect(function()
 			getgenv().disablefeatures =false
 				cover:Destroy()
-				for _,v in next, tab.SectorsLeft do 
-				   for itemI,item in next, v['Items'] do 
-				       if item.BackgroundTransparency == 0 then 
-				       item.BackgroundTransparency = .4
-				       end
-				   end
-				end
+                changeTransparencies{s = 'revert'}
 			end)
 			else
 			    button.callback()
@@ -896,7 +939,7 @@ function library:CreateWindow(name, size, hidebutton)
                 end)
 
                 button.BlackOutline2.MouseLeave:Connect(function()
-		if getgenv().disablefeatures == true then return end
+		-- if getgenv().disablefeatures == true then return end
                     button.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
                 end)
 
