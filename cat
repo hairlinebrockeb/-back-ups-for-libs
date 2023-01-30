@@ -803,7 +803,7 @@ function library:CreateWindow(name, size, hidebutton)
 			end
 			
 			for _,v in next, tab.SectorsLeft do 
-			   for itemI,item in next, v['Items'] do 
+			   for itemI,item in next, v do 
 			       if item.BackgroundTransparency == 0 then 
 			       item.BackgroundTransparency = .4
 			       end
