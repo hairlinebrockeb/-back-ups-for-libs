@@ -801,9 +801,10 @@ function library:CreateWindow(name, size, hidebutton)
 			end
 			local function perTextaddSpace()
 			end
-			
+			print(v['Items'])
+			print(typeof(tab.SectorsLeft))
 			for _,v in next, tab.SectorsLeft do 
-			   for itemI,item in next, v do 
+			   for itemI,item in next, v['Items'] do 
 			       if item.BackgroundTransparency == 0 then 
 			       item.BackgroundTransparency = .4
 			       end
