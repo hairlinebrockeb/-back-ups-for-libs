@@ -762,7 +762,7 @@ function library:CreateWindow(name, size, hidebutton)
                 button.Label.TextColor3 = window.theme.itemscolor2
                 button.Label.TextSize = 15
                 button.Label.TextStrokeTransparency = 1
-                button.Label.TextXAlignment = Enum.TextXAlignment.Center
+                button.Label.TextXAlignment = Enum.TextXAlignment.Center -- 765
 
 		button.Main.MouseButton1Down:Connect(function()
 		
@@ -813,23 +813,23 @@ function library:CreateWindow(name, size, hidebutton)
                         for itemI,item in next, v['Items']:GetChildren() do 
                             local hasBackgroundTransparency = false
                             hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
-                            if hasBackgroundTransparency then 
+                            if hasBackgroundTransparency and item.BackgroundTransparency == 0 then 
                                 print(item.Name)
                                 table.insert(changedstuff,{
                                     r = item;
                                     previous = item.BackgroundTransparency
                                 })
                                 item.BackgroundTransparency = .4
-                                if item:FindFirstChild('UIGradient') then 
-                                    local grey = Color3.new(	0.1, 0.1, 0.1) -- Color3.new(	1, 0, 1)
-                                    local white = Color3.new(1, 1, 1)
-                                    local lightBlue = Color3.new(0, 2/3, 1)
-                                    local yellow = Color3.new(1, 1, 0)
-                                    -- item:FindFirstChild('UIGradient').Color = ColorSequence.new{
-                                    --     ColorSequenceKeypoint.new(0, grey),
-                                    --     ColorSequenceKeypoint.new(1, grey)
-                                    -- }
-                                end
+                                -- if item:FindFirstChild('UIGradient') then 
+                                --     local grey = Color3.new(	0.1, 0.1, 0.1) -- Color3.new(	1, 0, 1)
+                                --     local white = Color3.new(1, 1, 1)
+                                --     local lightBlue = Color3.new(0, 2/3, 1)
+                                --     local yellow = Color3.new(1, 1, 0)
+                                --     -- item:FindFirstChild('UIGradient').Color = ColorSequence.new{
+                                --     --     ColorSequenceKeypoint.new(0, grey),
+                                --     --     ColorSequenceKeypoint.new(1, grey)
+                                --     -- }
+                                -- end
                             end
 
                                 -- if  item.BackgroundTransparency == 0 then 
@@ -843,7 +843,7 @@ function library:CreateWindow(name, size, hidebutton)
                         for itemI,item in next, v['Items']:GetChildren() do 
                             local hasBackgroundTransparency = false
                             hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
-                            if hasBackgroundTransparency then 
+                            if hasBackgroundTransparency and item.BackgroundTransparency == 0 then 
                                 print(item.Name)
                                 table.insert(changedstuff,{
                                     r = item;
@@ -3836,5 +3836,6 @@ function library:CreateWindow(name, size, hidebutton)
 
     return window
 end
+
 
 return library
