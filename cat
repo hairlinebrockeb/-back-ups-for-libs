@@ -809,58 +809,55 @@ function library:CreateWindow(name, size, hidebutton)
             local function changeTransparencies(info)
                 if info.s == 'change' then 
                     print('change')
-                    for _,v in next, tab.SectorsLeft do 
-                        for itemI,item in next, v['Items']:GetChildren() do 
-                            local hasBackgroundTransparency = false
-                            hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
-                            if hasBackgroundTransparency and item.BackgroundTransparency == 0 then 
-                                print(item.Name)
-                                table.insert(changedstuff,{
-                                    r = item;
-                                    previous = item.BackgroundTransparency
-                                })
-                                item.BackgroundTransparency = .4
-                                -- if item:FindFirstChild('UIGradient') then 
-                                --     local grey = Color3.new(	0.1, 0.1, 0.1) -- Color3.new(	1, 0, 1)
-                                --     local white = Color3.new(1, 1, 1)
-                                --     local lightBlue = Color3.new(0, 2/3, 1)
-                                --     local yellow = Color3.new(1, 1, 0)
-                                --     -- item:FindFirstChild('UIGradient').Color = ColorSequence.new{
-                                --     --     ColorSequenceKeypoint.new(0, grey),
-                                --     --     ColorSequenceKeypoint.new(1, grey)
-                                --     -- }
-                                -- end
-                            end
-
-                                -- if  item.BackgroundTransparency == 0 then 
+                    local function dosamefor(ul)
+                        for _,v in next, ul do 
+                            for itemI,item in next, v['Main']:GetChildren() do 
+                                -- local hasBackgroundTransparency = false
+                                -- hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
+                                -- if hasBackgroundTransparency and item.BackgroundTransparency == 0 then 
+                                --     print(item.Name)
+                                --     table.insert(changedstuff,{
+                                --         r = item;
+                                --         previous = item.BackgroundTransparency
+                                --     })
+                                --     task.wait(.01)
                                 --     item.BackgroundTransparency = .4
-            
                                 -- end
-                             
-                        end
-                    end
-                    for _,v in next, tab.SectorsRight do 
-                        for itemI,item in next, v['Items']:GetChildren() do 
-                            local hasBackgroundTransparency = false
-                            hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
-                            if hasBackgroundTransparency and item.BackgroundTransparency == 0 then 
-                                print(item.Name)
-                                table.insert(changedstuff,{
-                                    r = item;
-                                    previous = item.BackgroundTransparency
-                                })
-                                item.BackgroundTransparency = .4
+                                item.Visible = false
                             end
-                             
                         end
                     end
+
+                    dosamefor(tab.SectorsLeft)
+                    dosamefor(tab.SectorsRight)
                 elseif info.s == 'revert' then 
-                    for _Index,itemTable in next, changedstuff do 
-
-                        itemTable['r'].BackgroundTransparency = itemTable['previous']
-
-                        table.remove(changedstuff,_Index)
+                    local function dosamefor(ul)
+                        for _,v in next, ul do 
+                            for itemI,item in next, v['Main']:GetChildren() do 
+                                -- local hasBackgroundTransparency = false
+                                -- hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
+                                -- if hasBackgroundTransparency and item.BackgroundTransparency == 0 then 
+                                --     print(item.Name)
+                                --     table.insert(changedstuff,{
+                                --         r = item;
+                                --         previous = item.BackgroundTransparency
+                                --     })
+                                --     task.wait(.01)
+                                --     item.BackgroundTransparency = .4
+                                -- end
+                                item.Visible = true
+                            end
+                        end
                     end
+                    
+                    dosamefor(tab.SectorsLeft)
+                    dosamefor(tab.SectorsRight)
+                    -- for _Index,itemTable in next, changedstuff do 
+
+                    --     itemTable['r'].BackgroundTransparency = itemTable['previous']
+
+                    --     table.remove(changedstuff,_Index)
+                    -- end
                 end 
             end
 
@@ -874,7 +871,7 @@ function library:CreateWindow(name, size, hidebutton)
 			label.Main.ZIndex = 4
 			label.Main.Font = window.theme.font
 			label.Main.Text = info.ask
-			label.Main.TextColor3 = window.theme.itemscolor
+			label.Main.TextColor3 = Color3.new(255, 255, 255)-- window.theme.itemscolor
 			label.Main.TextSize = 15
 			label.Main.TextStrokeTransparency = 1
 			label.Main.TextXAlignment = Enum.TextXAlignment.Center
@@ -891,11 +888,15 @@ function library:CreateWindow(name, size, hidebutton)
 			yes.Main.ZIndex = 50
 			yes.Main.Size = UDim2.new(0,75,0,25)                
 			yes.Main.Position = UDim2.new(0,cover.Size.X.Offset/3.1,0,cover.Size.Y.Offset/2) -- cover.Position.X.Offset to 160            
-			yes.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-			yes.Gradient = Instance.new("UIGradient", yes.Main)
-			yes.Gradient.Rotation = 90
-			yes.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.buttoncolor), ColorSequenceKeypoint.new(1.00, window.theme.buttoncolor2) })
-			local no ={}
+			-- yes.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+			-- yes.Gradient = Instance.new("UIGradient", yes.Main)
+			-- yes.Gradient.Rotation = 90
+			-- yes.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.buttoncolor), ColorSequenceKeypoint.new(1.00, window.theme.buttoncolor2) })
+			
+            yes.Main.BackgroundTransparency = 0.6
+            yes.Main.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+
+            local no ={}
 			no.Main = Instance.new("TextButton", cover)
 			no.Main.BorderSizePixel = 0
 			no.Main.Text = info.reject
@@ -905,11 +906,12 @@ function library:CreateWindow(name, size, hidebutton)
 			no.Main.ZIndex = 50
 			no.Main.Size = UDim2.new(0,75,0,25)                
 			no.Main.Position = UDim2.new(0,yes.Main.Position.X.Offset+100,0,cover.Size.Y.Offset/2)             
-			no.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-			no.Gradient = Instance.new("UIGradient", no.Main)
-			no.Gradient.Rotation = 90
-			no.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.buttoncolor), ColorSequenceKeypoint.new(1.00, window.theme.buttoncolor2) })
-
+			-- no.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+			-- no.Gradient = Instance.new("UIGradient", no.Main)
+			-- no.Gradient.Rotation = 90
+			-- no.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.buttoncolor), ColorSequenceKeypoint.new(1.00, window.theme.buttoncolor2) })
+            no.Main.BackgroundTransparency = 0.6
+            no.Main.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 
 			yes.Main.MouseButton1Down:Connect(function()
 			getgenv().disablefeatures =false
@@ -3836,6 +3838,5 @@ function library:CreateWindow(name, size, hidebutton)
 
     return window
 end
-
 
 return library
