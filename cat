@@ -2099,7 +2099,7 @@ function library:CreateWindow(name, size, hidebutton)
                 table.insert(library.items, toggle)
                 return toggle
             end
-            function sector:AddKeybindAttachment(text,canreturnkeybind)
+            function sector:AddKeybindAttachment(text)
                 local keybindattachment = { }
                 -- 
                     keybindattachment.text = text or ""
@@ -4076,4 +4076,3 @@ function library:CreateWindow(name, size, hidebutton)
 
     return window
 end
-
