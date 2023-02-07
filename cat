@@ -2099,7 +2099,245 @@ function library:CreateWindow(name, size, hidebutton)
                 table.insert(library.items, toggle)
                 return toggle
             end
+            function sector:AddKeybindAttachment(text,canreturnkeybind)
+                local keybindattachment = { }
+                -- 
+                    keybindattachment.text = text or ""
+                    keybindattachment.default = default or false
+                    keybindattachment.callback = callback or function(value) end
+                    keybindattachment.flag = flag or text or ""
+                    
+                    keybindattachment.value = keybindattachment.default
 
+                    keybindattachment.Main = Instance.new("TextButton", sector.Items)
+                    keybindattachment.Main.Name = "keybindattachment"
+                    keybindattachment.Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    keybindattachment.Main.BorderColor3 = window.theme.outlinecolor
+                    keybindattachment.Main.BorderSizePixel = 0
+                    keybindattachment.Main.Size = UDim2.fromOffset(8, 8)
+                    keybindattachment.Main.AutoButtonColor = false
+                    keybindattachment.Main.ZIndex = 5
+                    keybindattachment.Main.Font = Enum.Font.SourceSans
+                    keybindattachment.Main.Text = ""
+                    keybindattachment.Main.TextColor3 = Color3.fromRGB(0, 0, 0)
+                    keybindattachment.Main.TextSize = 15
+                    updateevent.Event:Connect(function(theme)
+                        keybindattachment.Main.BorderColor3 = theme.outlinecolor
+                    end)
+
+                    keybindattachment.BlackOutline2 = Instance.new("Frame", keybindattachment.Main)
+                    keybindattachment.BlackOutline2.Name = "blackline"
+                    keybindattachment.BlackOutline2.ZIndex = 4
+                    keybindattachment.BlackOutline2.Size = keybindattachment.Main.Size + UDim2.fromOffset(6, 6)
+                    keybindattachment.BlackOutline2.BorderSizePixel = 0
+                    keybindattachment.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
+                    keybindattachment.BlackOutline2.Position = UDim2.fromOffset(-3, -3)
+                    updateevent.Event:Connect(function(theme)
+                        keybindattachment.BlackOutline2.BackgroundColor3 = theme.outlinecolor2
+                    end)
+                    keybindattachment.BlackOutline2.BackgroundTransparency = 1
+                    
+                    keybindattachment.Outline = Instance.new("Frame", keybindattachment.Main)
+                    keybindattachment.Outline.Name = "blackline"
+                    keybindattachment.Outline.ZIndex = 4
+                    keybindattachment.Outline.Size = keybindattachment.Main.Size + UDim2.fromOffset(4, 4)
+                    keybindattachment.Outline.BorderSizePixel = 0
+                    keybindattachment.Outline.BackgroundColor3 = window.theme.outlinecolor
+                    keybindattachment.Outline.Position = UDim2.fromOffset(-2, -2)
+                    updateevent.Event:Connect(function(theme)
+                        keybindattachment.Outline.BackgroundColor3 = theme.outlinecolor
+                    end)
+                    keybindattachment.Outline.BackgroundTransparency = 1
+
+                    keybindattachment.BlackOutline = Instance.new("Frame", keybindattachment.Main)
+                    keybindattachment.BlackOutline.Name = "blackline"
+                    keybindattachment.BlackOutline.ZIndex = 4
+                    keybindattachment.BlackOutline.Size = keybindattachment.Main.Size + UDim2.fromOffset(2, 2)
+                    keybindattachment.BlackOutline.BorderSizePixel = 0
+                    keybindattachment.BlackOutline.BackgroundColor3 = window.theme.outlinecolor2
+                    keybindattachment.BlackOutline.Position = UDim2.fromOffset(-1, -1)
+                    updateevent.Event:Connect(function(theme)
+                        keybindattachment.BlackOutline.BackgroundColor3 = theme.outlinecolor2
+                    end)
+                    keybindattachment.BlackOutline.BackgroundTransparency = 1
+
+
+                    keybindattachment.Gradient = Instance.new("UIGradient", keybindattachment.Main)
+                    keybindattachment.Gradient.Rotation = (22.5 * 13)
+                    keybindattachment.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 255, 255)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255)) })
+
+                    keybindattachment.Label = Instance.new("TextLabel", keybindattachment.Main)
+                    keybindattachment.Label.Name = "Label"
+                    -- keybindattachment.Label.AutoButtonColor = false
+                    keybindattachment.Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    keybindattachment.Label.BackgroundTransparency = 1
+                    keybindattachment.Label.Position = UDim2.fromOffset(keybindattachment.Main.AbsoluteSize.X + 10, -2)
+                    keybindattachment.Label.Size = UDim2.fromOffset(sector.Main.Size.X.Offset - 71, keybindattachment.BlackOutline.Size.Y.Offset)
+                    keybindattachment.Label.Font = window.theme.font
+                    keybindattachment.Label.ZIndex = 5
+                    keybindattachment.Label.Text = keybindattachment.text
+                    keybindattachment.Label.TextColor3 = window.theme.itemscolor
+                    keybindattachment.Label.TextSize = 15
+                    keybindattachment.Label.TextStrokeTransparency = 1
+                    keybindattachment.Label.TextXAlignment = Enum.TextXAlignment.Left
+                    updateevent.Event:Connect(function(theme)
+                        keybindattachment.Label.Font = theme.font
+                        keybindattachment.Label.TextColor3 = keybindattachment.value and window.theme.itemscolor2 or theme.itemscolor
+                    end)
+
+                    keybindattachment.CheckedFrame = Instance.new("Frame", keybindattachment.Main)
+                    keybindattachment.CheckedFrame.ZIndex = 5
+                    keybindattachment.CheckedFrame.BorderSizePixel = 0
+                    keybindattachment.CheckedFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- Color3.fromRGB(204, 0, 102)
+                    keybindattachment.CheckedFrame.Size = keybindattachment.Main.Size
+                    keybindattachment.BackgroundTransparency = 1
+
+
+                    keybindattachment.Gradient2 = Instance.new("UIGradient", keybindattachment.CheckedFrame)
+                    keybindattachment.Gradient2.Rotation = (22.5 * 13)
+                    keybindattachment.Gradient2.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.accentcolor2), ColorSequenceKeypoint.new(1.00, window.theme.accentcolor) })
+                    updateevent.Event:Connect(function(theme)
+                        keybindattachment.Gradient2.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, theme.accentcolor2), ColorSequenceKeypoint.new(1.00, theme.accentcolor) })
+                    end)
+
+                    keybindattachment.Items = Instance.new("Frame", keybindattachment.Main)
+                    keybindattachment.Items.Name = "\n"
+                    keybindattachment.Items.ZIndex = 4
+                    keybindattachment.Items.Size = UDim2.fromOffset(60, keybindattachment.BlackOutline.AbsoluteSize.Y)
+                    keybindattachment.Items.BorderSizePixel = 0
+                    keybindattachment.Items.BackgroundTransparency = 1
+                    keybindattachment.Items.BackgroundColor3 = Color3.new(0, 0, 0)
+                    keybindattachment.Items.Position = UDim2.fromOffset(sector.Main.Size.X.Offset - 71, 0)
+
+                    keybindattachment.ListLayout = Instance.new("UIListLayout", keybindattachment.Items)
+                    keybindattachment.ListLayout.FillDirection = Enum.FillDirection.Horizontal
+                    keybindattachment.ListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+                    keybindattachment.ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                    keybindattachment.ListLayout.Padding = UDim.new(0.04, 6)
+
+
+
+
+
+                    function keybindattachment:AddKeybind(default, flag)
+                        local keybind = { }
+
+                        keybind.default = default or "None"
+                        keybind.value = keybind.default
+                        keybind.flag = flag or ( (keybindattachment.text or "") .. tostring(#keybindattachment.Items:GetChildren()))
+
+                        local shorter_keycodes = {
+                            ["LeftShift"] = "LSHIFT",
+                            ["RightShift"] = "RSHIFT",
+                            ["LeftControl"] = "LCTRL",
+                            ["RightControl"] = "RCTRL",
+                            ["LeftAlt"] = "LALT",
+                            ["RightAlt"] = "RALT"
+                        }
+
+                        local text = keybind.default == "None" and "[None]" or "[" .. (shorter_keycodes[keybind.default.Name] or keybind.default.Name) .. "]"
+                        local size = textservice:GetTextSize(text, 15, window.theme.font, Vector2.new(2000, 2000))
+
+                        keybind.Main = Instance.new("TextButton", keybindattachment.Items)
+                        keybind.Main.Name = "keybind"
+                        keybind.Main.BackgroundTransparency = 1
+                        keybind.Main.BorderSizePixel = 0
+                        keybind.Main.ZIndex = 5
+                        keybind.Main.Size = UDim2.fromOffset(size.X + 2, size.Y - 7)
+                        keybind.Main.Text = text
+                        keybind.Main.Font = window.theme.font
+                        keybind.Main.TextColor3 = Color3.fromRGB(136, 136, 136)
+                        keybind.Main.TextSize = 15
+                        keybind.Main.TextXAlignment = Enum.TextXAlignment.Right
+                        keybind.Main.MouseButton1Down:Connect(function()
+                            keybind.Main.Text = "[...]"
+                            keybind.Main.TextColor3 = window.theme.accentcolor
+                        end)
+                        updateevent.Event:Connect(function(theme)
+                            keybind.Main.Font = theme.font
+                            if keybind.Main.Text == "[...]" then
+                                keybind.Main.TextColor3 = theme.accentcolor
+                            else
+                                keybind.Main.TextColor3 = Color3.fromRGB(136, 136, 136)
+                            end
+                        end)
+
+                        if keybind.flag and keybind.flag ~= "" then
+                            library.flags[keybind.flag] = keybind.default
+                        end
+                        function keybind:Set(key)
+                            if key == "None" then
+                                keybind.Main.Text = "[" .. key .. "]"
+                                keybind.value = key
+                                if keybind.flag and keybind.flag ~= "" then
+                                    library.flags[keybind.flag] = key
+                                end
+                            end
+                            keybind.Main.Text = "[" .. (shorter_keycodes[key.Name] or key.Name) .. "]"
+                            keybind.value = key
+                            if keybind.flag and keybind.flag ~= "" then
+                                library.flags[keybind.flag] = keybind.value
+                            end
+                        end
+
+                        function keybind:Get()
+                            return keybind.value
+                        end
+                        function keybind:IsPressed()
+                            return keybind.ispressed
+                        end
+                        function keybind:SetPressed(set)
+                            keybind.ispressed = set
+                        end
+                        uis.InputBegan:Connect(function(input, gameProcessed)
+                            
+                            if not gameProcessed then
+                                if keybind.Main.Text == "[...]" then
+                                    keybind.Main.TextColor3 = Color3.fromRGB(136, 136, 136)
+                                    if input.UserInputType == Enum.UserInputType.Keyboard then
+                                        keybind:Set(input.KeyCode)
+                                    else
+                                        keybind:Set("None")
+                                    end
+                                elseif input.KeyCode == keybind:Get() then 
+                                    print('pressing key')
+                                    keybind:SetPressed(true)
+                                end
+                            end
+                        end)
+                        uis.InputEnded:Connect(function(input, gameProcessed)
+                            
+                            if not gameProcessed then
+                                if input.KeyCode == keybind:Get()  then 
+                                    print('left key')
+                                    keybind:SetPressed(false)
+                                end
+                            end
+                        end)
+                        table.insert(library.items, keybind)
+                        return keybind
+                    end
+                    
+                    -- local keybindgotten = keybindattachment:AddKeybind()
+                    local MouseEnter = function()
+                        keybindattachment.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
+                    end
+                    local MouseLeave = function()
+                        keybindattachment.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
+                    end
+
+                -- keybindattachment.Label.MouseEnter:Connect(MouseEnter)
+                -- keybindattachment.Label.MouseLeave:Connect(MouseLeave)
+                -- keybindattachment.BlackOutline2.MouseEnter:Connect(MouseEnter)
+                -- keybindattachment.BlackOutline2.MouseLeave:Connect(MouseLeave)
+                -- local keybinds = nil
+                -- if canreturnkeybind then 
+                --     local keybinds = keybindattachment:AddKeybind('.')
+                -- end
+                sector:FixSize()
+                table.insert(library.items, keybindattachment)
+                return keybindattachment
+            end
             function sector:AddTextbox(text, default, callback, flag)
                 local textbox = { }
                 textbox.text = text or ""
@@ -3838,5 +4076,3 @@ function library:CreateWindow(name, size, hidebutton)
 
     return window
 end
-
-return library
