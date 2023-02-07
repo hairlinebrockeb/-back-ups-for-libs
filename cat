@@ -4,7 +4,7 @@ local library = {
 	flags = { }, 
 	items = { } 
 }
-
+print('ran v1')
 -- Services
 local players = game:GetService("Players")
 local uis = game:GetService("UserInputService")
