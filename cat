@@ -4,7 +4,7 @@ local library = {
 	flags = { }, 
 	items = { } 
 }
-print('ran v1')
+
 -- Services
 local players = game:GetService("Players")
 local uis = game:GetService("UserInputService")
@@ -2300,7 +2300,7 @@ function library:CreateWindow(name, size, hidebutton)
                                         keybind:Set("None")
                                     end
                                 elseif input.KeyCode == keybind:Get() then 
-                                    print('pressing key')
+                                   -- print('pressing key')
                                     keybind:SetPressed(true)
                                 end
                             end
@@ -2309,7 +2309,7 @@ function library:CreateWindow(name, size, hidebutton)
                             
                             if not gameProcessed then
                                 if input.KeyCode == keybind:Get()  then 
-                                    print('left key')
+                                   -- print('left key')
                                     keybind:SetPressed(false)
                                 end
                             end
