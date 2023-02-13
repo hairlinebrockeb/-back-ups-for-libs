@@ -1174,7 +1174,7 @@ function library:CreateWindow(name, size, hidebutton)
                         return keybind.value
                     end
                     function keybind:Unbind()
-                        keybind.value = 'None'
+                        keybind:Set("None")
                     end
                     uis.InputBegan:Connect(function(input, gameProcessed)
                         if not gameProcessed then
