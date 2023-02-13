@@ -1173,7 +1173,9 @@ function library:CreateWindow(name, size, hidebutton)
                     function keybind:Get()
                         return keybind.value
                     end
-
+                    function keybind:Unbind()
+                        keybind.value = 'None'
+                    end
                     uis.InputBegan:Connect(function(input, gameProcessed)
                         if not gameProcessed then
                             if keybind.Main.Text == "[...]" then
