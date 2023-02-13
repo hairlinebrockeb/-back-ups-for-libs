@@ -204,6 +204,18 @@ function library:CreateWatermark(name, position)
         tweenservice:Create(watermark.BlackOutline, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), { BackgroundTransparency = 0, Active = true }):Play()
     end)
 
+    function watermark:SetState(state)
+        if state == 'Active' then 
+            --watermark.Visible = true 
+            watermark.mainbar.Visible = true
+
+        elseif state == 'Disable' then 
+            watermark.mainbar.Visible = false
+        else
+            warn('Unrecognised paramater, "'..state..'". Did nothing.')
+        end
+    end
+
     function watermark:UpdateTheme(theme)
         theme = theme or library.theme
         watermark.Outline.BackgroundColor3 = theme.outlinecolor
@@ -1162,7 +1174,6 @@ function library:CreateWindow(name, size, hidebutton)
                             if keybind.flag and keybind.flag ~= "" then
                                 library.flags[keybind.flag] = key
                             end
-			    return
                         end
                         keybind.Main.Text = "[" .. (shorter_keycodes[key.Name] or key.Name) .. "]"
                         keybind.value = key
@@ -1174,9 +1185,7 @@ function library:CreateWindow(name, size, hidebutton)
                     function keybind:Get()
                         return keybind.value
                     end
-                    function keybind:Unbind()
-                        keybind:Set("None")
-                    end
+
                     uis.InputBegan:Connect(function(input, gameProcessed)
                         if not gameProcessed then
                             if keybind.Main.Text == "[...]" then
@@ -4079,6 +4088,4 @@ function library:CreateWindow(name, size, hidebutton)
 
     return window
 end
-
-
 return library
