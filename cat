@@ -207,10 +207,10 @@ function library:CreateWatermark(name, position)
     function watermark:SetState(state)
         if state == 'Active' then 
             --watermark.Visible = true 
-            watermark.mainbar.Visible = true
+            watermark.main.Enabled = true
 
         elseif state == 'Disable' then 
-            watermark.mainbar.Visible = false
+            watermark.main.Enabled = false
         else
             warn('Unrecognised paramater, "'..state..'". Did nothing.')
         end
