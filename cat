@@ -1185,7 +1185,13 @@ function library:CreateWindow(name, size, hidebutton)
                     function keybind:Get()
                         return keybind.value
                     end
-
+                    function keybind:Unbind()
+                        keybind.Main.Text = "[" .. 'None' .. "]"
+                        keybind.value = 'None'
+                        if keybind.flag and keybind.flag ~= "" then
+                            library.flags[keybind.flag] = key
+                        end
+                    end
                     uis.InputBegan:Connect(function(input, gameProcessed)
                         if not gameProcessed then
                             if keybind.Main.Text == "[...]" then
@@ -2300,6 +2306,13 @@ function library:CreateWindow(name, size, hidebutton)
                         end
                         function keybind:SetPressed(set)
                             keybind.ispressed = set
+                        end
+                        function keybind:Unbind()
+                            keybind.Main.Text = "[" .. 'None' .. "]"
+                            keybind.value = 'None'
+                            if keybind.flag and keybind.flag ~= "" then
+                                library.flags[keybind.flag] = key
+                            end
                         end
                         uis.InputBegan:Connect(function(input, gameProcessed)
                             
