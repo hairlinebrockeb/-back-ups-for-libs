@@ -1106,15 +1106,19 @@ function library:CreateWindow(name, size, hidebutton)
                 local visiblestuff = {}
                 function toggle:MakeVisibleIfActive(makevisible)
                     table.insert(visiblestuff,makevisible)
-                    if toggle.value == true then 
-                        for _,v in next, visiblestuff do 
-                            v.Main.Visible = true
-                        end
-                    elseif toggle.value == false then
-                        for _,v in next, visiblestuff do 
-                            v.Main.Visible = false
-                        end
-                    end
+                    -- task.spawn(function()
+                    --     task.wait(1)
+                    --     if toggle.value == true then 
+                    --         for _,v in next, visiblestuff do 
+                    --             v.Main.Visible = true
+                    --         end
+                    --     elseif toggle.value == false then
+                    --         for _,v in next, visiblestuff do 
+                    --             v.Main.Visible = false
+                    --         end
+                    --     end
+                    -- end)
+
                 end
                 function toggle:RemoveVisibleWhenActive(makevisible)
                     for _,v in next, visiblestuff do 
