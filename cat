@@ -1106,14 +1106,23 @@ function library:CreateWindow(name, size, hidebutton)
                 local visiblestuff = {}
                 function toggle:MakeVisibleIfActive(makevisible)
                     table.insert(visiblestuff,makevisible)
+                    if toggle.value == true then 
+                        for _,v in next, visiblestuff do 
+                            v.Main.Visible = true
+                        end
+                    elseif toggle.value == false then
+                        for _,v in next, visiblestuff do 
+                            v.Main.Visible = false
+                        end
+                    end
                 end
                 function toggle:RemoveVisibleWhenActive(makevisible)
                     for _,v in next, visiblestuff do 
                         if v == makevisible then 
-
                             table.remove(visiblestuff,_)
                         end
                     end
+                    makevisible.Main.Visible = true;
                     -- table.insert(visiblestuff,makevisible)
                 end
                 function toggle:Set(value) 
@@ -1146,6 +1155,7 @@ function library:CreateWindow(name, size, hidebutton)
                     return toggle.value
                 end
                 toggle:Set(toggle.default)
+
 
                 function toggle:AddKeybind(default, flag)
                     local keybind = { }
