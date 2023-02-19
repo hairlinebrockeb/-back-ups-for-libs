@@ -235,6 +235,8 @@ function library:CreateWindow(name, size, hidebutton)
     window.hidebutton = hidebutton or Enum.KeyCode.RightShift
     window.theme = library.theme
 
+    
+
     local updateevent = Instance.new("BindableEvent")
     function window:UpdateTheme(theme)
         updateevent:Fire(theme or library.theme)
@@ -247,7 +249,7 @@ function library:CreateWindow(name, size, hidebutton)
     if syn then
         syn.protect_gui(window.Main)
     end
-
+    window.storeobjects = Instance.new('Folder',window.Main); window.storeobjects.Name = 'storeobjects'
     if getgenv().uilib then
         getgenv().uilib:Remove()
     end
@@ -726,7 +728,7 @@ function library:CreateWindow(name, size, hidebutton)
                 
 		
 		
-		updateevent.Event:Connect(function(theme)
+		        updateevent.Event:Connect(function(theme)
                     button.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, theme.buttoncolor), ColorSequenceKeypoint.new(1.00, theme.buttoncolor2) })
                 end)
 
@@ -780,7 +782,7 @@ function library:CreateWindow(name, size, hidebutton)
 		
 		if getgenv().disablefeatures == true then return end
 		if info then 
-		getgenv().disablefeatures = true
+		    getgenv().disablefeatures = true
 		    local text = info.ask
 		    local yes = info.accept
 		    local no = info.reject
@@ -940,20 +942,20 @@ function library:CreateWindow(name, size, hidebutton)
 			    button.callback()
 		    end
 		end)
-		-- could do mousebutton1down and check if info then do
-		-- or check info and then check for the button pressed and add the cover stuff
-                updateevent.Event:Connect(function(theme)
-                    button.Label.Font = theme.font
-                    button.Label.TextColor3 = theme.itemscolor
-                end)
+                    -- could do mousebutton1down and check if info then do
+                    -- or check info and then check for the button pressed and add the cover stuff
+                            updateevent.Event:Connect(function(theme)
+                                button.Label.Font = theme.font
+                                button.Label.TextColor3 = theme.itemscolor
+                            end)
 
-                button.BlackOutline2.MouseEnter:Connect(function()
-		if getgenv().disablefeatures == true then return end
-                    button.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
-                end)
+                            button.BlackOutline2.MouseEnter:Connect(function()
+                                if getgenv().disablefeatures == true then return end
+                                button.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
+                            end)
 
-                button.BlackOutline2.MouseLeave:Connect(function()
-		-- if getgenv().disablefeatures == true then return end
+                            button.BlackOutline2.MouseLeave:Connect(function()
+                    -- if getgenv().disablefeatures == true then return end
                     button.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
                 end)
 
@@ -1101,11 +1103,35 @@ function library:CreateWindow(name, size, hidebutton)
                 if toggle.flag and toggle.flag ~= "" then
                     library.flags[toggle.flag] = toggle.default or false
                 end
+                local visiblestuff = {}
+                function toggle:MakeVisibleIfActive(makevisible)
+                    table.insert(visiblestuff,makevisible)
+                end
+                function toggle:RemoveVisibleWhenActive(makevisible)
+                    for _,v in next, visiblestuff do 
+                        if v == makevisible then 
 
+                            table.remove(visiblestuff,_)
+                        end
+                    end
+                    -- table.insert(visiblestuff,makevisible)
+                end
                 function toggle:Set(value) 
                     if value then
+                        for _,v in next, visiblestuff do 
+                            -- for i,obj in next, window.storeobjects:GetChildren() do 
+                            --     if obj == v then 
+                            --         v.Main.Parent = sector.Items
+                            --     end
+                            -- end
+                            v.Main.Visible = true
+                        end
                         toggle.Label.TextColor3 = window.theme.itemscolor2
                     else
+                        for _,v in next, visiblestuff do 
+                            -- v.Main.Parent = window.storeobjects
+                            v.Main.Visible = false
+                        end
                         toggle.Label.TextColor3 = window.theme.itemscolor
                     end
 
@@ -2091,6 +2117,8 @@ function library:CreateWindow(name, size, hidebutton)
                     table.insert(library.items, slider)
                     return slider
                 end
+
+
 
                 toggle.Main.MouseButton1Down:Connect(function()
                     toggle:Set(not toggle.CheckedFrame.Visible)
@@ -3864,7 +3892,7 @@ function library:CreateWindow(name, size, hidebutton)
         function tab:CreateConfigSystem(side)
             local configSystem = { }
 
-            configSystem.configFolder = window.name .. "/" .. tostring(game.PlaceId)
+            configSystem.configFolder = 'Azfake V3'--window.name .. "/" .. tostring(game.PlaceId)
             if (not isfolder(configSystem.configFolder)) then
                 makefolder(configSystem.configFolder)
             end
@@ -3876,13 +3904,13 @@ function library:CreateWindow(name, size, hidebutton)
             local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function() end, "")
             for i,v in pairs(listfiles(configSystem.configFolder)) do
                 if v:find(".txt") then
-                    Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+                    Config:Add(tostring(v):gsub(configSystem.configFolder..gname .. "\\", ""):gsub(".txt", ""))
                 end
             end
 
             configSystem.Create = configSystem.sector:AddButton("Create", function()
                 for i,v in pairs(listfiles(configSystem.configFolder)) do
-                    Config:Remove(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+                    Config:Remove(tostring(v):gsub(configSystem.configFolder..gname .. "\\", ""):gsub(".txt", ""))
                 end
 
                 if ConfigName:Get() and ConfigName:Get() ~= "" then
@@ -3901,12 +3929,12 @@ function library:CreateWindow(name, size, hidebutton)
                             end
                         end
                     end
-    
-                    writefile(configSystem.configFolder .. "/" .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
+                    local gname = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+                    writefile(configSystem.configFolder..gname .. "/" .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
     
                     for i,v in pairs(listfiles(configSystem.configFolder)) do
                         if v:find(".txt") then
-                            Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+                            Config:Add(tostring(v):gsub(configSystem.configFolder..gname .. "\\", ""):gsub(".txt", ""))
                         end
                     end
                 end
@@ -3929,12 +3957,12 @@ function library:CreateWindow(name, size, hidebutton)
                         end
                     end
     
-                    writefile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
+                    writefile(configSystem.configFolder..gname .. "/" .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
                 end
             end)
 
             configSystem.Load = configSystem.sector:AddButton("Load", function()
-                local Success = pcall(readfile, configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
+                local Success = pcall(readfile, configSystem.configFolder..gname .. "/" .. Config:Get() .. ".txt")
                 if (Success) then
                     pcall(function() 
                         local ReadConfig = httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
@@ -3973,16 +4001,16 @@ function library:CreateWindow(name, size, hidebutton)
 
             configSystem.Delete = configSystem.sector:AddButton("Delete", function()
                 for i,v in pairs(listfiles(configSystem.configFolder)) do
-                    Config:Remove(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+                    Config:Remove(tostring(v):gsub(configSystem.configFolder..gname .. "\\", ""):gsub(".txt", ""))
                 end
 
                 if (not Config:Get() or Config:Get() == "") then return end
-                if (not isfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt")) then return end
-                delfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
+                if (not isfile(configSystem.configFolder..gname .. "/" .. Config:Get() .. ".txt")) then return end
+                delfile(configSystem.configFolder..gname .. "/" .. Config:Get() .. ".txt")
 
                 for i,v in pairs(listfiles(configSystem.configFolder)) do
                     if v:find(".txt") then
-                        Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+                        Config:Add(tostring(v):gsub(configSystem.configFolder..gname .. "\\", ""):gsub(".txt", ""))
                     end
                 end
             end)
