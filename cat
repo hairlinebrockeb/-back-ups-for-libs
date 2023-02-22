@@ -778,183 +778,183 @@ function library:CreateWindow(name, size, hidebutton)
                 button.Label.TextStrokeTransparency = 1
                 button.Label.TextXAlignment = Enum.TextXAlignment.Center -- 765
 
-		button.Main.MouseButton1Down:Connect(function()
-		
-		if getgenv().disablefeatures == true then return end
-		if info then 
-		    getgenv().disablefeatures = true
-		    local text = info.ask
-		    local yes = info.accept
-		    local no = info.reject
+                button.Main.MouseButton1Down:Connect(function()
+                
+                    if getgenv().disablefeatures == true then return end
+                    if info then 
+                        getgenv().disablefeatures = true
+                        local text = info.ask
+                        local yes = info.accept
+                        local no = info.reject
 
-			local cover = Instance.new('Frame')	
-			cover.Size = window.Frame.Size	
-			cover.Parent = window.Frame
-			cover.Transparency = 0.4	
-			cover.BackgroundColor3= Color3.fromRGB(30,30,30)	
+                        local cover = Instance.new('Frame')	
+                        cover.Size = window.Frame.Size	
+                        cover.Parent = window.Frame
+                        cover.Transparency = 0.4	
+                        cover.BackgroundColor3= Color3.fromRGB(30,30,30)	
 
 
-			local LinesNeededtoCreateNew = 15
+                        local LinesNeededtoCreateNew = 15
 
-			local function SubstitutionText()
-			    local text = info.ask
-			    for i=1,string.len(text) do 
-				if i%LinesNeededtoCreateNew == 0 then 
-				    --info.ask = info.ask:sub() i wanted to get it and make a new line
-				    -- gonna have to find the 11th letter and make a new line there
-				    for x = 1,string.len(text) do 
-					if x == i then 
-					    local restofit = text:sub(x+1,string.len(text))
-					    text = text:sub(1,x)
-					    text = text..'\n'
-					    text = text..restofit
-					end
-				    end
-				end
-			    end
-			    return text
-			end
-			local function perTextaddSpace()
-			end
-
-			-- print(typeof(tab.SectorsLeft))
-            local changedstuff = {}
-
-            local function changeTransparencies(info)
-                if info.s == 'change' then 
-                    print('change')
-                    local function dosamefor(ul)
-                        for _,v in next, ul do 
-                            for itemI,item in next, v['Main']:GetChildren() do 
-                                -- local hasBackgroundTransparency = false
-                                -- hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
-                                -- if hasBackgroundTransparency and item.BackgroundTransparency == 0 then 
-                                --     print(item.Name)
-                                --     table.insert(changedstuff,{
-                                --         r = item;
-                                --         previous = item.BackgroundTransparency
-                                --     })
-                                --     task.wait(.01)
-                                --     item.BackgroundTransparency = .4
-                                -- end
-                                item.Visible = false
+                        local function SubstitutionText()
+                            local text = info.ask
+                            for i=1,string.len(text) do 
+                            if i%LinesNeededtoCreateNew == 0 then 
+                                --info.ask = info.ask:sub() i wanted to get it and make a new line
+                                -- gonna have to find the 11th letter and make a new line there
+                                for x = 1,string.len(text) do 
+                                if x == i then 
+                                    local restofit = text:sub(x+1,string.len(text))
+                                    text = text:sub(1,x)
+                                    text = text..'\n'
+                                    text = text..restofit
+                                end
+                                end
                             end
-                        end
-                    end
-
-                    dosamefor(tab.SectorsLeft)
-                    dosamefor(tab.SectorsRight)
-                elseif info.s == 'revert' then 
-                    local function dosamefor(ul)
-                        for _,v in next, ul do 
-                            for itemI,item in next, v['Main']:GetChildren() do 
-                                -- local hasBackgroundTransparency = false
-                                -- hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
-                                -- if hasBackgroundTransparency and item.BackgroundTransparency == 0 then 
-                                --     print(item.Name)
-                                --     table.insert(changedstuff,{
-                                --         r = item;
-                                --         previous = item.BackgroundTransparency
-                                --     })
-                                --     task.wait(.01)
-                                --     item.BackgroundTransparency = .4
-                                -- end
-                                item.Visible = true
                             end
+                            return text
                         end
+                        local function perTextaddSpace()
+                        end
+
+                        -- print(typeof(tab.SectorsLeft))
+                        local changedstuff = {}
+
+                        local function changeTransparencies(info)
+                            if info.s == 'change' then 
+                                print('change')
+                                local function dosamefor(ul)
+                                    for _,v in next, ul do 
+                                        for itemI,item in next, v['Main']:GetChildren() do 
+                                            -- local hasBackgroundTransparency = false
+                                            -- hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
+                                            -- if hasBackgroundTransparency and item.BackgroundTransparency == 0 then 
+                                            --     print(item.Name)
+                                            --     table.insert(changedstuff,{
+                                            --         r = item;
+                                            --         previous = item.BackgroundTransparency
+                                            --     })
+                                            --     task.wait(.01)
+                                            --     item.BackgroundTransparency = .4
+                                            -- end
+                                            item.Visible = false
+                                        end
+                                    end
+                                end
+
+                                dosamefor(tab.SectorsLeft)
+                                dosamefor(tab.SectorsRight)
+                            elseif info.s == 'revert' then 
+                                local function dosamefor(ul)
+                                    for _,v in next, ul do 
+                                        for itemI,item in next, v['Main']:GetChildren() do 
+                                            -- local hasBackgroundTransparency = false
+                                            -- hasBackgroundTransparency =  pcall(function() return item.BackgroundTransparency end)  
+                                            -- if hasBackgroundTransparency and item.BackgroundTransparency == 0 then 
+                                            --     print(item.Name)
+                                            --     table.insert(changedstuff,{
+                                            --         r = item;
+                                            --         previous = item.BackgroundTransparency
+                                            --     })
+                                            --     task.wait(.01)
+                                            --     item.BackgroundTransparency = .4
+                                            -- end
+                                            item.Visible = true
+                                        end
+                                    end
+                                end
+                                
+                                dosamefor(tab.SectorsLeft)
+                                dosamefor(tab.SectorsRight)
+                                -- for _Index,itemTable in next, changedstuff do 
+
+                                --     itemTable['r'].BackgroundTransparency = itemTable['previous']
+
+                                --     table.remove(changedstuff,_Index)
+                                -- end
+                            end 
+                        end
+
+                        changeTransparencies{s = 'change'}
+                        
+                        local label = {}
+                        label.Main = Instance.new("TextLabel", cover)
+                        label.Main.Name = "AskingLabel"
+                        label.Main.BackgroundTransparency = 1
+                        label.Main.Position = UDim2.new(0,cover.Size.X.Offset/2,0,cover.Size.Y.Offset/2-50)         -- 185   
+                        label.Main.ZIndex = 4
+                        label.Main.Font = window.theme.font
+                        label.Main.Text = info.ask
+                        label.Main.TextColor3 = Color3.new(255, 255, 255)-- window.theme.itemscolor
+                        label.Main.TextSize = 15
+                        label.Main.TextStrokeTransparency = 1
+                        label.Main.TextXAlignment = Enum.TextXAlignment.Center
+
+
+
+                        local yes = {}	
+                        yes.Main = Instance.new("TextButton", cover)
+                        yes.Main.BorderSizePixel = 0
+                        yes.Main.Text = info.accept
+                        yes.Main.AutoButtonColor = false
+                        yes.Main.Name = 'yes'
+                        yes.Main.TextColor3 = Color3.fromRGB(255,255,255)
+                        yes.Main.ZIndex = 50
+                        yes.Main.Size = UDim2.new(0,75,0,25)                
+                        yes.Main.Position = UDim2.new(0,cover.Size.X.Offset/3.1,0,cover.Size.Y.Offset/2) -- cover.Position.X.Offset to 160            
+                        -- yes.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+                        -- yes.Gradient = Instance.new("UIGradient", yes.Main)
+                        -- yes.Gradient.Rotation = 90
+                        -- yes.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.buttoncolor), ColorSequenceKeypoint.new(1.00, window.theme.buttoncolor2) })
+                        
+                        yes.Main.BackgroundTransparency = 0.6
+                        yes.Main.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+
+                        local no ={}
+                        no.Main = Instance.new("TextButton", cover)
+                        no.Main.BorderSizePixel = 0
+                        no.Main.Text = info.reject
+                        no.Main.AutoButtonColor = false
+                        no.Main.Name = 'no'
+                        no.Main.TextColor3 = Color3.fromRGB(255,255,255)
+                        no.Main.ZIndex = 50
+                        no.Main.Size = UDim2.new(0,75,0,25)                
+                        no.Main.Position = UDim2.new(0,yes.Main.Position.X.Offset+100,0,cover.Size.Y.Offset/2)             
+                        -- no.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+                        -- no.Gradient = Instance.new("UIGradient", no.Main)
+                        -- no.Gradient.Rotation = 90
+                        -- no.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.buttoncolor), ColorSequenceKeypoint.new(1.00, window.theme.buttoncolor2) })
+                        no.Main.BackgroundTransparency = 0.6
+                        no.Main.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+
+                        yes.Main.MouseButton1Down:Connect(function()
+                            getgenv().disablefeatures =false
+                            button.callback()
+                            cover:Destroy()
+                            changeTransparencies{s = 'revert'}
+                        end)
+                        no.Main.MouseButton1Down:Connect(function()
+                            getgenv().disablefeatures =false
+                            cover:Destroy()
+                            changeTransparencies{s = 'revert'}
+                        end)
+                    else
+                        button.callback()
                     end
-                    
-                    dosamefor(tab.SectorsLeft)
-                    dosamefor(tab.SectorsRight)
-                    -- for _Index,itemTable in next, changedstuff do 
-
-                    --     itemTable['r'].BackgroundTransparency = itemTable['previous']
-
-                    --     table.remove(changedstuff,_Index)
-                    -- end
-                end 
-            end
-
-            changeTransparencies{s = 'change'}
-			
-			local label = {}
-			label.Main = Instance.new("TextLabel", cover)
-			label.Main.Name = "AskingLabel"
-			label.Main.BackgroundTransparency = 1
-			label.Main.Position = UDim2.new(0,cover.Size.X.Offset/2,0,cover.Size.Y.Offset/2-50)         -- 185   
-			label.Main.ZIndex = 4
-			label.Main.Font = window.theme.font
-			label.Main.Text = info.ask
-			label.Main.TextColor3 = Color3.new(255, 255, 255)-- window.theme.itemscolor
-			label.Main.TextSize = 15
-			label.Main.TextStrokeTransparency = 1
-			label.Main.TextXAlignment = Enum.TextXAlignment.Center
-
-
-
-			local yes = {}	
-			yes.Main = Instance.new("TextButton", cover)
-			yes.Main.BorderSizePixel = 0
-			yes.Main.Text = info.accept
-			yes.Main.AutoButtonColor = false
-			yes.Main.Name = 'yes'
-			yes.Main.TextColor3 = Color3.fromRGB(255,255,255)
-			yes.Main.ZIndex = 50
-			yes.Main.Size = UDim2.new(0,75,0,25)                
-			yes.Main.Position = UDim2.new(0,cover.Size.X.Offset/3.1,0,cover.Size.Y.Offset/2) -- cover.Position.X.Offset to 160            
-			-- yes.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-			-- yes.Gradient = Instance.new("UIGradient", yes.Main)
-			-- yes.Gradient.Rotation = 90
-			-- yes.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.buttoncolor), ColorSequenceKeypoint.new(1.00, window.theme.buttoncolor2) })
-			
-            yes.Main.BackgroundTransparency = 0.6
-            yes.Main.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-
-            local no ={}
-			no.Main = Instance.new("TextButton", cover)
-			no.Main.BorderSizePixel = 0
-			no.Main.Text = info.reject
-			no.Main.AutoButtonColor = false
-			no.Main.Name = 'no'
-			no.Main.TextColor3 = Color3.fromRGB(255,255,255)
-			no.Main.ZIndex = 50
-			no.Main.Size = UDim2.new(0,75,0,25)                
-			no.Main.Position = UDim2.new(0,yes.Main.Position.X.Offset+100,0,cover.Size.Y.Offset/2)             
-			-- no.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-			-- no.Gradient = Instance.new("UIGradient", no.Main)
-			-- no.Gradient.Rotation = 90
-			-- no.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.buttoncolor), ColorSequenceKeypoint.new(1.00, window.theme.buttoncolor2) })
-            no.Main.BackgroundTransparency = 0.6
-            no.Main.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-
-			yes.Main.MouseButton1Down:Connect(function()
-			getgenv().disablefeatures =false
-			    button.callback()
-			    cover:Destroy()
-                changeTransparencies{s = 'revert'}
-			end)
-			no.Main.MouseButton1Down:Connect(function()
-			getgenv().disablefeatures =false
-				cover:Destroy()
-                changeTransparencies{s = 'revert'}
-			end)
-			else
-			    button.callback()
-		    end
-		end)
+                end)
                     -- could do mousebutton1down and check if info then do
                     -- or check info and then check for the button pressed and add the cover stuff
-                            updateevent.Event:Connect(function(theme)
-                                button.Label.Font = theme.font
-                                button.Label.TextColor3 = theme.itemscolor
-                            end)
+                updateevent.Event:Connect(function(theme)
+                    button.Label.Font = theme.font
+                    button.Label.TextColor3 = theme.itemscolor
+                end)
 
-                            button.BlackOutline2.MouseEnter:Connect(function()
-                                if getgenv().disablefeatures == true then return end
-                                button.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
-                            end)
+                button.BlackOutline2.MouseEnter:Connect(function()
+                    if getgenv().disablefeatures == true then return end
+                    button.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
+                end)
 
-                            button.BlackOutline2.MouseLeave:Connect(function()
+                button.BlackOutline2.MouseLeave:Connect(function()
                     -- if getgenv().disablefeatures == true then return end
                     button.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
                 end)
@@ -1231,6 +1231,7 @@ function library:CreateWindow(name, size, hidebutton)
                         if keybind.flag and keybind.flag ~= "" then
                             library.flags[keybind.flag] = key
                         end
+                        keybind:Set("None")
                     end
                     uis.InputBegan:Connect(function(input, gameProcessed)
                         if not gameProcessed then
@@ -2642,6 +2643,7 @@ function library:CreateWindow(name, size, hidebutton)
                 slider.SlideBar.ZIndex = 5
                 slider.SlideBar.BorderSizePixel = 0
                 slider.SlideBar.Size = UDim2.fromOffset(0, slider.Main.Size.Y.Offset)
+                -- slider.SlideBar.Position +=UDim2.fromOffset(100, 0)
 
                 slider.Gradient2 = Instance.new("UIGradient", slider.SlideBar)
                 slider.Gradient2.Rotation = 90
@@ -3923,6 +3925,54 @@ function library:CreateWindow(name, size, hidebutton)
                     Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
                 end
             end
+            local autoloadfile = nil 
+            local autoloadindex = configSystem.configFolder .. '/' .. 'settings.conf' 
+            local autoloadsetting = false 
+            local IsFileSet = false;
+            -- httpdecode or separate?
+            if not isfile(autoloadindex) then 
+                local tablepack = {
+                    autoload = false;
+                    fileautoload = '';
+                }
+                writefile(autoloadindex,httpservice:JSONEncode(tablepack))
+            else
+                IsFileSet = true;
+            end
+            autoloadfile = httpservice:JSONDecode(readfile(autoloadindex))
+            configSystem.AutoLoad = configSystem.sector:AddToggle('Auto Load',autoloadfile['autoload'],function(xtate)
+                local pack = {
+                    autoload = xtate;
+                    fileautoload = autoloadfile['fileautoload'];
+                }
+                writefile(autoloadindex,httpservice:JSONEncode(pack))
+                autoloadfile = httpservice:JSONDecode(readfile(autoloadindex))
+            end)
+
+
+            configSystem.SetAutoLoadFile = configSystem.sector:AddButton("Set Auto load", function()
+                -- print(Config:Get())
+                local Success = Config:Get()-- pcall(readfile, Config:Get())
+                if Success then 
+                    pcall(function()
+                        local configname = Config:Get() -- configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt" 
+
+                        local tablepack = {
+
+                        }
+                        local pack = {
+                            autoload = autoloadfile['autoload'];
+                            fileautoload = configname;
+                        }
+                        -- if not isfile('autoload.txt') then 
+                        --     writefile('autoload.txt',configname)
+                        -- end
+                        writefile(autoloadindex,httpservice:JSONEncode(pack))
+
+                    end)
+                end
+
+            end)
 
             configSystem.Create = configSystem.sector:AddButton("Create", function()
                 for i,v in pairs(listfiles(configSystem.configFolder)) do
@@ -3949,7 +3999,7 @@ function library:CreateWindow(name, size, hidebutton)
                     
                     --writefile(configSystem.configFolder .. "/" .. gname .. '---' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
                     writefile(configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
-                    print('wrnt')
+                    --print('wrnt')
                     for i,v in pairs(listfiles(configSystem.configFolder)) do
                         if v:find(".txt") then
                             Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
@@ -4042,6 +4092,45 @@ function library:CreateWindow(name, size, hidebutton)
                     end
                 end
             end)
+
+
+            if IsFileSet == true then 
+                local Success = pcall(readfile, autoloadfile['fileautoload'])
+                if (Success) then
+                    pcall(function() 
+                        local ReadConfig =  httpservice:JSONDecode(readfile(autoloadfile['fileautoload']..'.txt'))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                        local NewConfig = {}
+    
+                        for i,v in pairs(ReadConfig) do
+                            if (typeof(v) == "table") then
+                                if (typeof(v[1]) == "number") then
+                                    NewConfig[i] = Color3.new(v[1], v[2], v[3])
+                                elseif (typeof(v[1]) == "table") then
+                                    NewConfig[i] = v[1]
+                                end
+                            elseif (tostring(v):find("Enum.KeyCode.")) then
+                                NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                            else
+                                NewConfig[i] = v
+                            end
+                        end
+    
+                        library.flags = NewConfig
+    
+                        for i,v in pairs(library.flags) do
+                            for i2,v2 in pairs(library.items) do
+                                if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
+                                    if (v2.flag == i) then
+                                        pcall(function() 
+                                            v2:Set(v)
+                                        end)
+                                    end
+                                end
+                            end
+                        end
+                    end)
+                end
+            end
 
             return configSystem
         end
