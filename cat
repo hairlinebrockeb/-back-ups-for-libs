@@ -4095,7 +4095,7 @@ function library:CreateWindow(name, size, hidebutton)
 
 
             if IsFileSet == true then 
-                local Success = pcall(readfile, autoloadfile['fileautoload'])
+                local Success = pcall(readfile, autoloadfile['fileautoload']..'.txt')
                 if (Success) then
                     pcall(function() 
                         local ReadConfig =  httpservice:JSONDecode(readfile(autoloadfile['fileautoload']..'.txt'))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
@@ -4246,4 +4246,5 @@ function library:CreateWindow(name, size, hidebutton)
 
     return window
 end
+
 return library
