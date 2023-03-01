@@ -514,7 +514,7 @@ function library:CreateWindow(name, size, hidebutton)
         tab.RightListPadding.PaddingRight = UDim.new(0, 12)
 
         local function createExtra()
-            tab.Extra = Instance.new("ScrollingFrame", window.Frame) 
+            tab.Extra = Instance.new("ScrollingFrame", window.Frame)  -- make var for extra then set tab.Extra to the var
             tab.Extra.Name = "extraside"
             tab.Extra.ScrollBarThickness = 0
             tab.Extra.ScrollingDirection = "Y"
@@ -522,7 +522,7 @@ function library:CreateWindow(name, size, hidebutton)
             tab.Extra.BorderSizePixel = 0
             -- tab.Left.Size = UDim2.fromOffset(window.size.X.Offset / 3, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
             -- tab.Right.Size = UDim2.fromOffset(window.size.X.Offset / 3, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
-            window.Frame.Size += UDim2.fromOffset(25,0)--UDim2.new(0.152,0,0,0) -- UDim2.fromOffset()--
+             --UDim2.new(0.152,0,0,0) -- UDim2.fromOffset()--
             -- window.size = UDim2.fromOffset(size.X+500, size.Y)
             -- window.BlackOutline.Size = window.size + UDim2.fromOffset(2, 2)
             -- window.Outline.Size = window.size + UDim2.fromOffset(4, 4)
@@ -534,21 +534,7 @@ function library:CreateWindow(name, size, hidebutton)
             -- window.BackgroundImage.Size = UDim2.fromOffset(window.size.X.Offset, window.size.Y.Offset - window.TopBar.AbsoluteSize.Y - 1)
             -- window.Line.Size = UDim2.fromOffset(60, 1)
 
-            window.Frame.top.Size += UDim2.fromOffset(290,0)
-            window.Frame.top.line.Size += UDim2.fromOffset(290,0)
-            window.Frame.blackline.Size += UDim2.fromOffset(290,0)
-            for _,v in next, window.Frame:GetChildren() do 
-                if v.Name == 'outline' then 
-                    if _==1 then 
-                        v.Size += UDim2.fromOffset(290, 1)
-                    elseif _ ==2 then 
-                        v.Size += UDim2.fromOffset(290, 2)
-                    elseif _== 3 then 
-                        v.Size += UDim2.fromOffset(290,1)
-                    end 
-                end 
-            end 
-            window.Frame.background.Size += UDim2.fromOffset(290,0)
+
             -- tab.Left.Size = UDim2.fromOffset(window.size.X.Offset / 3, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
             -- for _,v in next, tab.Left:GetChildren() do 
             --     for kc,unewv in next, v:GetChildren() do 
@@ -564,7 +550,7 @@ function library:CreateWindow(name, size, hidebutton)
 
             tab.Extra.Size = UDim2.fromOffset(window.size.X.Offset / 2, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
             tab.Extra.BackgroundTransparency = 1
-            tab.Extra.Position = tab.Right.Position + UDim2.fromOffset(tab.Right.AbsoluteSize.X-7, 0)--tab.Right.Position + UDim2.fromOffset(10, 0)
+            tab.Extra.Position = tab.Right.Position + UDim2.fromOffset(tab.Right.AbsoluteSize.X-2, 0)--tab.Right.Position + UDim2.fromOffset(10, 0)
     
             tab.ExtraListLayout = Instance.new("UIListLayout", tab.Extra)
             tab.ExtraListLayout.FillDirection = Enum.FillDirection.Vertical
@@ -575,7 +561,41 @@ function library:CreateWindow(name, size, hidebutton)
             tab.ExtraListPadding.PaddingTop = UDim.new(0, 12)
             tab.ExtraListPadding.PaddingLeft = UDim.new(0, 6)
             tab.ExtraListPadding.PaddingRight = UDim.new(0, 12)
+
+
+            window.Frame.Size += UDim2.fromOffset(tab.Extra.Size.X.Offset/3,0)
+            local xAddition = tab.Extra.Size.X.Offset + 6
+            window.Frame.top.Size += UDim2.fromOffset(xAddition,0)
+            window.Frame.top.line.Size += UDim2.fromOffset(xAddition,0)
+            window.Frame.blackline.Size += UDim2.fromOffset(xAddition,0)
+            for _,v in next, window.Frame:GetChildren() do 
+                if v.Name == 'outline' then 
+                    if _==1 then 
+                        v.Size += UDim2.fromOffset(xAddition, 1)
+                    elseif _ ==2 then 
+                        v.Size += UDim2.fromOffset(xAddition, 2)
+                    elseif _== 3 then 
+                        v.Size += UDim2.fromOffset(xAddition,1)
+                    end 
+                end 
+            end 
+            window.Frame.background.Size += UDim2.fromOffset(xAddition,0)
+
+
             tab.Extra.Visible = true
+
+
+
+
+
+
+
+
+
+
+
+
+
             return tab.Extra
         end 
 
@@ -4323,7 +4343,7 @@ end
 
 -- return library
  
-local window = library:CreateWindow("Azfake V3{"..game.PlaceId..'}', Vector2.new(800, 598), Enum.KeyCode.LeftAlt) -- 498 -- 600
+local window = library:CreateWindow("Azfake V3{"..game.PlaceId..'}', Vector2.new(600, 598), Enum.KeyCode.LeftAlt) -- 498 -- 600
 local Top = window:CreateTab("test");
 local e1 = Top:CreateSector('Cheats','left')
 local e2 = Top:CreateSector('Cheats','right')
