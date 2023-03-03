@@ -2256,15 +2256,15 @@ function library:CreateWindow(name, size, hidebutton)
                         if slider.flag and slider.flag ~= "" then
                             library.flags[slider.flag] = slider.value
                         end
-                        print(slider.value)
-                        print('setting')
-                        if slider.value < 0 then 
-                            slider.SlideBar:TweenSize(UDim2.fromOffset(-(percent * slider.Main.AbsoluteSize.X), slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
-                        else
-                            slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
-                        end
+                        -- print(slider.value)
+                        -- print('setting')
+                        -- if slider.value < 0 then 
+                        --     slider.SlideBar:TweenSize(UDim2.fromOffset(-(percent * slider.Main.AbsoluteSize.X), slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
+                        -- else
+                        --     slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
+                        -- end
                         
-                        
+                        slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
                         slider.InputLabel.Text = slider.value
                         pcall(slider.callback, slider.value)
                     end
@@ -2872,6 +2872,37 @@ function library:CreateWindow(name, size, hidebutton)
                     return slider.value
                 end
 
+                -- function slider:Set(value)
+                --     slider.value = math.clamp(math.round(value * slider.decimals) / slider.decimals, slider.min, slider.max)
+                --     local percent = 1 - ((slider.max - slider.value) / (slider.max - slider.min))
+                --     if slider.flag and slider.flag ~= "" then
+                --         library.flags[slider.flag] = slider.value
+                --     end
+                --     -- print(slider.value)
+                --     -- print('setting')
+                --     --slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
+                    
+                --     slider.SlideBar:TweenSize(UDim2.fromOffset((slider.value/slider.max)*142, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
+                    
+                --     -- if slider.value < 0 then 
+                --     --     slider.SlideBar.Visible = false
+                --     --     slider.SlideBarNegative.Visible = true
+                --     --     slider.SlideBarNegative:TweenSize(UDim2.fromOffset(-(percent * slider.Main.AbsoluteSize.X), slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
+                    
+                --     -- else
+                --     --     slider.SlideBarNegative.Visible = false
+                --     --     slider.SlideBar.Visible = true
+                --     --     slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
+                --     -- end
+				-- 	slider.InputLabel.Text = slider.value
+				-- 	pcall(slider.callback, slider.value)
+				-- end
+
+
+
+
+
+
                 function slider:Set(value)
                     slider.value = math.clamp(math.round(value * slider.decimals) / slider.decimals, slider.min, slider.max)
                     local percent = 1 - ((slider.max - slider.value) / (slider.max - slider.min))
@@ -2880,24 +2911,26 @@ function library:CreateWindow(name, size, hidebutton)
                     end
                     -- print(slider.value)
                     -- print('setting')
-                    --slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
-                    
-                    slider.SlideBar:TweenSize(UDim2.fromOffset((slider.value/slider.max)*142, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
-                    
                     -- if slider.value < 0 then 
-                    --     slider.SlideBar.Visible = false
-                    --     slider.SlideBarNegative.Visible = true
-                    --     slider.SlideBarNegative:TweenSize(UDim2.fromOffset(-(percent * slider.Main.AbsoluteSize.X), slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
-                    
+                    --     slider.SlideBar:TweenSize(UDim2.fromOffset(-(percent * slider.Main.AbsoluteSize.X), slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
                     -- else
-                    --     slider.SlideBarNegative.Visible = false
-                    --     slider.SlideBar.Visible = true
                     --     slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
                     -- end
-					slider.InputLabel.Text = slider.value
-					pcall(slider.callback, slider.value)
-				end
+                    
+                    slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
+                    slider.InputLabel.Text = slider.value
+                    pcall(slider.callback, slider.value)
+                end
                 slider:Set(slider.default)
+
+
+
+
+
+
+
+
+                -- slider:Set(slider.default)
 
                 slider.InputLabel.FocusLost:Connect(function(Return)
                     if not Return then 
@@ -2909,14 +2942,24 @@ function library:CreateWindow(name, size, hidebutton)
                         slider.InputLabel.Text = tostring(slider.value)
                     end
                 end)
+
+
                 function slider:Refresh()
                     local mousePos = camera:WorldToViewportPoint(mouse.Hit.p)
                     local percent = math.clamp(mousePos.X - slider.SlideBar.AbsolutePosition.X, 0, slider.Main.AbsoluteSize.X) / slider.Main.AbsoluteSize.X
-                    -- mouse x smaller = negative
                     local value = math.floor((slider.min + (slider.max - slider.min) * percent) * slider.decimals) / slider.decimals
                     value = math.clamp(value, slider.min, slider.max)
                     slider:Set(value)
                 end
+
+                -- function slider:Refresh()
+                --     local mousePos = camera:WorldToViewportPoint(mouse.Hit.p)
+                --     local percent = math.clamp(mousePos.X - slider.SlideBar.AbsolutePosition.X, 0, slider.Main.AbsoluteSize.X) / slider.Main.AbsoluteSize.X
+                --     -- mouse x smaller = negative
+                --     local value = math.floor((slider.min + (slider.max - slider.min) * percent) * slider.decimals) / slider.decimals
+                --     value = math.clamp(value, slider.min, slider.max)
+                --     slider:Set(value)
+                -- end
                 -- function slider:Refresh()
                 --     local mousePos = camera:WorldToViewportPoint(mouse.Hit.p)
                 --     local closesttonegative = true;
@@ -4592,4 +4635,3 @@ function library:CreateWindow(name, size, hidebutton)
 end
 
 return library
- 
