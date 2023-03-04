@@ -790,6 +790,8 @@ function library:CreateWindow(name, size, hidebutton)
 
             function sector:AddButton(text, callback,info)
                 local button = { }
+                button.hint = false;
+                button.knowledgemessage = '';
                 button.text = text or ""
                 button.callback = callback or function() end
 
@@ -1028,16 +1030,131 @@ function library:CreateWindow(name, size, hidebutton)
                     button.Label.Font = theme.font
                     button.Label.TextColor3 = theme.itemscolor
                 end)
+                function button:ActivateKnowledge()
+                    button.hint = true 
+                end
+                function button:DeactivateKnowledge()
+                    button.hint = false 
+                end
+                function button:AddKnowledge(text)
+                    -- 
+                    button.knowledgemessage = text
+                end
+                function button:AddKnowledgeButton()
+                    local knowledge = { }
+                    knowledge.Visible = true
+                
+                    knowledge.main = Instance.new("ScreenGui", window.storeobjects)
+                    knowledge.main.Name = "knowledge"
+                    -- if syn then
+                    --     syn.protect_gui(knowledge.main)
+                    -- end
+                
+                    local dividedy = (game.Players.LocalPlayer:GetMouse().Y / workspace.CurrentCamera.ViewportSize.Y)
+                    local dividedx = (game.Players.LocalPlayer:GetMouse().X / workspace.CurrentCamera.ViewportSize.X)
+                    --knowledge.main.Position = UDim2.fromOffset(dividedx,dividedy)
+                    local mouse = game.Players.LocalPlayer:GetMouse()
+                    local screenSize = knowledge.main.AbsoluteSize
+                    knowledge.mainbar = Instance.new("Frame", button.Main)
+                    knowledge.mainbar.Name = "KnowledgeFrame"
+                    knowledge.mainbar.BorderColor3 = Color3.fromRGB(80, 80, 80)
+                    knowledge.mainbar.Visible = knowledge.Visible
+                    knowledge.mainbar.BorderSizePixel = 0
+                    knowledge.mainbar.ZIndex = 5
+                    knowledge.AnchorPoint = Vector2.new(0.5,0.5)
 
+                    knowledge.mainbar.Position = UDim2.new(0, dividedx , 0, dividedy )--UDim2.new(dividedx,0,dividedy,0)--button.Main.Position + UDim2.fromOffset(,1)-- UDim2.new(0, position and position.X or 10, 0, position and position.Y or 10)
+                    knowledge.mainbar.Size = UDim2.new(0, 8, 0, 25)
+                
+                    knowledge.Gradient = Instance.new("UIGradient", knowledge.mainbar)
+                    knowledge.Gradient.Rotation = 90
+                    knowledge.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, Color3.fromRGB(40, 40, 40)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 10, 10)) })
+                
+                    knowledge.Outline = Instance.new("Frame", knowledge.mainbar)
+                    knowledge.Outline.Name = "outline"
+                    knowledge.Outline.ZIndex = 4
+                    knowledge.Outline.BorderSizePixel = 0
+                    knowledge.Outline.Visible = knowledge.Visible
+                    knowledge.Outline.BackgroundColor3 = library.theme.outlinecolor
+                    knowledge.Outline.Position = UDim2.fromOffset(-1, -1)
+                
+                    knowledge.BlackOutline = Instance.new("Frame", knowledge.mainbar)
+                    knowledge.BlackOutline.Name = "blackline"
+                    knowledge.BlackOutline.ZIndex = 3
+                    knowledge.BlackOutline.BorderSizePixel = 0
+                    knowledge.BlackOutline.BackgroundColor3 = library.theme.outlinecolor2
+                    knowledge.BlackOutline.Visible = knowledge.Visible
+                    knowledge.BlackOutline.Position = UDim2.fromOffset(-2, -2)
+                
+                    knowledge.label = Instance.new("TextLabel", knowledge.mainbar)
+                    knowledge.label.Name = "textlabel"
+                    knowledge.label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    knowledge.label.BackgroundTransparency = 1.000
+                    knowledge.label.Position = UDim2.new(0, 0, 0, 0)
+                    knowledge.label.Size = UDim2.new(0, 238, 0, 25)
+                    knowledge.label.Font = library.theme.font
+                    knowledge.label.ZIndex = 6
+                    knowledge.label.Visible = knowledge.Visible
+                    knowledge.label.Text = button.knowledgemessage
+                    knowledge.label.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    knowledge.label.TextSize = 15
+                    knowledge.label.TextStrokeTransparency = 0.000
+                    knowledge.label.TextXAlignment = Enum.TextXAlignment.Left
+                    knowledge.label.Size = UDim2.new(0, knowledge.label.TextBounds.X+10, 0, 25)
+                    
+                    knowledge.topbar = Instance.new("Frame", knowledge.mainbar)
+                    knowledge.topbar.Name = "TopBar"
+                    knowledge.topbar.ZIndex = 6
+                    knowledge.topbar.BackgroundColor3 = library.theme.accentcolor
+                    knowledge.topbar.BorderSizePixel = 0
+                    knowledge.topbar.Visible = knowledge.Visible
+                    knowledge.topbar.Size = UDim2.new(0, 0, 0, 1)
+                
+                    knowledge.mainbar.Size = UDim2.new(0, knowledge.label.TextBounds.X, 0, 25)
+                    knowledge.topbar.Size = UDim2.new(0, knowledge.label.TextBounds.X+6, 0, 1)
+                    knowledge.Outline.Size = knowledge.mainbar.Size + UDim2.fromOffset(2, 2)
+                    knowledge.BlackOutline.Size = knowledge.mainbar.Size + UDim2.fromOffset(4, 4)
+                
+                    knowledge.mainbar.Size = UDim2.new(0, knowledge.label.TextBounds.X+4, 0, 25)    
+                    knowledge.label.Size = UDim2.new(0, knowledge.label.TextBounds.X+4, 0, 25)
+                    knowledge.topbar.Size = UDim2.new(0, knowledge.label.TextBounds.X+6, 0, 1)
+                    knowledge.Outline.Size = knowledge.mainbar.Size + UDim2.fromOffset(2, 2)
+                    knowledge.BlackOutline.Size = knowledge.mainbar.Size + UDim2.fromOffset(4, 4)
+                    local connection = game.Players.LocalPlayer:GetMouse().Move:Connect(function()
+                        if knowledge.mainbar then 
+                            local dividedy = (game.Players.LocalPlayer:GetMouse().Y / workspace.CurrentCamera.ViewportSize.Y)
+                            local dividedx = (game.Players.LocalPlayer:GetMouse().X / workspace.CurrentCamera.ViewportSize.X)
+                            --local udim = UDim2.new(0, mouse.X-script.Parent.Parent.AbsolutePosition.X, 0, mouse.Y-script.Parent.Parent.AbsolutePosition.Y)
+                            knowledge.mainbar.Position = UDim2.new(0, mouse.X-button.Main.AbsolutePosition.X+20, 0, mouse.Y-button.Main.AbsolutePosition.Y)
+                        else
+                            connection:Disconnect()
+                        end
+                    end)
+                    
+                    return knowledge
+                end
                 button.BlackOutline2.MouseEnter:Connect(function()
                     if getgenv().disablefeatures == true then return end
                     button.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
+                    -- HINT
+                    if button.hint == true then 
+                        print('added hint')
+                        knowledge = button:AddKnowledgeButton()
+                        knowledge.label.Text = button.knowledgemessage
+                    end
                 end)
 
                 button.BlackOutline2.MouseLeave:Connect(function()
                     -- if getgenv().disablefeatures == true then return end
                     button.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
+                    if button.hint == true then 
+                        if button.Main:FindFirstChild('KnowledgeFrame') then 
+                            print('removed hint')
+                            button.Main:FindFirstChild('KnowledgeFrame'):Destroy()
+                        end
+                    end
                 end)
+
 
                 sector:FixSize()
                 return button
@@ -1197,7 +1314,7 @@ function library:CreateWindow(name, size, hidebutton)
                             --v.Main.Visible = true
                             local isdropdown = false
                             local isnotbutton = false
-                            if v.Main.Parent.Name == 'backlabel' and v.Main and v.Main.Parent then 
+                            if v.Main and v.Main.Parent and v.Main.Parent.Name == 'backlabel'  then 
                                 isnotbutton = true;
                                 v.Main.Parent.Visible = true
                                 -- for j,x in next, v.Main.Parent:GetChildren() do -- v.MainGetChildren()
@@ -1209,7 +1326,7 @@ function library:CreateWindow(name, size, hidebutton)
                                 --     isdropdown = true;
                                 --     -- return
                                 -- end
-                            elseif v.Main.Parent.Name ==  'holder' and v.Main and v.Main.Parent then  
+                            elseif v.Main and v.Main.Parent and v.Main.Parent.Name ==  'holder'  then  
                                 isnotbutton = true;
                                 --print(v.Main.Name)
                                 v.Main.Parent.Visible = true;
@@ -1217,16 +1334,19 @@ function library:CreateWindow(name, size, hidebutton)
                                 local ourobjindex = 0;
                                 for u,parentobj in next, v.Main.Parent.Parent:GetChildren() do 
                                     for y,obj in next, v.Main.Parent.Parent:GetChildren() do   
-                                        if obj == v then foundObj = true; ourobjindex = y; end
+                                        if obj == v.Main.Parent then foundObj = true; ourobjindex = y; end
                                     end
                                     
-                                    if parentobj:IsA('TextLabel') then 
-                                        if v.Main.Parent:FindFirstChild('textbox').PlaceholderText == parentobj.Text and u==y-1 then 
+                                    if parentobj:IsA('TextButton') then 
+                                        if v.Main.Parent:FindFirstChild('textbox').PlaceholderText == parentobj.Text and u==ourobjindex-1 then 
                                             parentobj.Visible = true
                                             break
                                         end
                                     end
                                 end
+                            elseif v.Main and v.Main.Parent and v.Main.Parent.Name == 'MainBack' then 
+                                isnotbutton = true;
+                                v.Main.Parent.Visible = true;
                             else
                                 v.Main.Visible = true
                             end
@@ -1244,7 +1364,7 @@ function library:CreateWindow(name, size, hidebutton)
                             --v.Main.Visible = false
                             --local isdropdown = false
                             local isnotbutton = false
-                            if v.Main.Parent.Name == 'backlabel' and v.Main and v.Main.Parent then 
+                            if v.Main and v.Main.Parent and v.Main.Parent.Name == 'backlabel'  then 
                                 isnotbutton = true;
                                 v.Main.Parent.Visible = false
                                 -- for j,x in next, v.Main.Parent:GetChildren() do -- v.MainGetChildren()
@@ -1256,7 +1376,7 @@ function library:CreateWindow(name, size, hidebutton)
                                 --     isdropdown = true;
                                 --     -- return
                                 -- end
-                            elseif v.Main.Parent.Name ==  'holder' and v.Main and v.Main.Parent then  
+                            elseif v.Main and v.Main.Parent and v.Main.Parent.Name ==  'holder'  then  
                                 isnotbutton = true;
                                 --print(v.Main.Name)
                                 v.Main.Parent.Visible = false;
@@ -1264,16 +1384,20 @@ function library:CreateWindow(name, size, hidebutton)
                                 local ourobjindex = 0;
                                 for u,parentobj in next, v.Main.Parent.Parent:GetChildren() do 
                                     for y,obj in next, v.Main.Parent.Parent:GetChildren() do   
-                                        if obj == v then foundObj = true; ourobjindex = y; end
+                                        if obj == v.Main.Parent then foundObj = true; ourobjindex = y;  end -- print('Obj found. Index: '..ourobjindex)
                                     end
                                     
-                                    if parentobj:IsA('TextLabel') then 
-                                        if v.Main.Parent:FindFirstChild('textbox').PlaceholderText == parentobj.Text and u==y-1 then 
+                                    if parentobj:IsA('TextButton') then 
+                                        --print('is label: '..parentobj.Name)
+                                        if v.Main.Parent:FindFirstChild('textbox').PlaceholderText == parentobj.Text and u==ourobjindex-1 then 
                                             parentobj.Visible = false
                                             break
                                         end
                                     end
                                 end
+                            elseif v.Main and v.Main.Parent and v.Main.Parent.Name == 'MainBack' then 
+                                isnotbutton = true;
+                                v.Main.Parent.Visible = false;
                             else
                                 v.Main.Visible = false
                             end
