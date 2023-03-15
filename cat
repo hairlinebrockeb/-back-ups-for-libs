@@ -639,6 +639,7 @@ function library:CreateWindow(name, size, hidebutton)
 
         tab.SectorsLeft = { }
         tab.SectorsRight = { }
+        tab.SectorsExtra = { }
 
         function tab:CreateSector(name,side)
             local sector = { }
@@ -1444,13 +1445,15 @@ function library:CreateWindow(name, size, hidebutton)
                     -- table.insert(visiblestuff,makevisible)
                 end
                 function toggle:Set(value) 
-
+                    local prevValue  = toggle.value -- valye 
                     toggle.value = value
                     toggle.CheckedFrame.Visible = value
                     if toggle.flag and toggle.flag ~= "" then
                         library.flags[toggle.flag] = toggle.value
                     end
-                    toggle:MakeActiveToValue() 
+                    if prevValue ~= value then 
+                        toggle:MakeActiveToValue() 
+                    end
                     pcall(toggle.callback, value)
                 end
                 function toggle:Get() 
@@ -4429,7 +4432,8 @@ function library:CreateWindow(name, size, hidebutton)
             local ConfigName = configSystem.sector:AddTextbox("Config Name", "", ConfigName, function() end, "")
             local default = tostring(listfiles(configSystem.configFolder)[1] or ""):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", "")
             -- print('default '..default)
-            local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function() end, "")
+            local selectedConfig = ''
+            local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function(xconfig) selectedConfig = xconfig end, "")
             for i,v in pairs(listfiles(configSystem.configFolder)) do
                 -- print(i,v)
                 if v:find(".txt") then
@@ -4538,14 +4542,70 @@ function library:CreateWindow(name, size, hidebutton)
 
                     --writefile(configSystem.configFolder.. "/"..gname .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
                     writefile(configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
+
+                elseif selectedConfig ~= '' then 
+                    local config = {}
+                    for i,v in pairs(library.flags) do
+                        if (v ~= nil and v ~= "") then
+                            if (typeof(v) == "Color3") then
+                                config[i] = { v.R, v.G, v.B }
+                            elseif (tostring(v):find("Enum.KeyCode")) then
+                                config[i] = "Enum.KeyCode." .. v.Name
+                            elseif (typeof(v) == "table") then
+                                config[i] = { v }
+                            else
+                                config[i] = v
+                            end
+                        end
+                    end
+
+                    --writefile(configSystem.configFolder.. "/"..gname .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
+                    writefile(configSystem.configFolder .. '/' .. selectedConfig .. ".txt", httpservice:JSONEncode(config))
                 end
             end)
 
             configSystem.Load = configSystem.sector:AddButton("Load", function()
                 local Success = pcall(readfile, configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt")
+                local SuccessDropdown = pcall(readfile, configSystem.configFolder .. '/' .. selectedConfig .. ".txt")
                 if (Success) then
                     pcall(function() 
                         local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                        local NewConfig = {}
+    
+                        for i,v in pairs(ReadConfig) do
+                            if (typeof(v) == "table") then
+                                if (typeof(v[1]) == "number") then
+                                    NewConfig[i] = Color3.new(v[1], v[2], v[3])
+                                elseif (typeof(v[1]) == "table") then
+                                    NewConfig[i] = v[1]
+                                end
+                            elseif (tostring(v):find("Enum.KeyCode.")) then
+                                NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                            else
+                                NewConfig[i] = v
+                            end
+                        end
+    
+                        library.flags = NewConfig
+    
+                        for i,v in pairs(library.flags) do
+                            for i2,v2 in pairs(library.items) do
+                                if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
+                                    if (v2.flag == i) then
+                                        pcall(function() 
+                                            -- if v2:Get() ~= v then 
+                                            --     v2:Set(v)
+                                            -- end
+                                            v2:Set(v)
+                                        end)
+                                    end
+                                end
+                            end
+                        end
+                    end)
+                elseif (SuccessDropdown) then 
+                    pcall(function() 
+                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.configFolder .. '/' .. selectedConfig .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
                         local NewConfig = {}
     
                         for i,v in pairs(ReadConfig) do
@@ -4606,10 +4666,13 @@ function library:CreateWindow(name, size, hidebutton)
 
 
             if IsFileSet == true then 
-                local Success = pcall(readfile, autoloadfile['fileautoload']..'.txt')
+                print('is file set')
+                local Success = pcall(readfile, configSystem.configFolder .. '/' .. autoloadfile['fileautoload']..'.txt')
+                print(Success)
+                print(autoloadfile['fileautoload'])
                 if (Success) then
                     pcall(function() 
-                        local ReadConfig =  httpservice:JSONDecode(readfile(autoloadfile['fileautoload']..'.txt'))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.configFolder .. '/' .. autoloadfile['fileautoload']..'.txt'))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
                         local NewConfig = {}
     
                         for i,v in pairs(ReadConfig) do
@@ -4757,5 +4820,6 @@ function library:CreateWindow(name, size, hidebutton)
 
     return window
 end
+
 
 return library
