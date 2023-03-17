@@ -4422,26 +4422,39 @@ function library:CreateWindow(name, size, hidebutton)
         function tab:CreateConfigSystem(side)
             local configSystem = { }
 
-            configSystem.configFolder = 'Azfake Hub V3'--window.name .. "/" .. tostring(game.PlaceId)
-            if (not isfolder(configSystem.configFolder)) then
-                makefolder(configSystem.configFolder)
+            configSystem.configFolderDomain = 'Azfake Hub V3'--window.name .. "/" .. tostring(game.PlaceId)
+            configSystem.AZFAKEconfigFolder= 'azfakeconfigs'
+            configSystem.configs = 'configs'
+            -- ConfigsDirectory = configFolder
+            configSystem.ConfigsDirectory = configSystem.configFolderDomain .. '/' .. configSystem.configs;
+            if (not isfolder(configSystem.configFolderDomain)) then
+                makefolder(configSystem.configFolderDomain)
             end
+            if (not isfolder(configSystem.configFolderDomain .. '/' .. configSystem.AZFAKEconfigFolder)) then
+                makefolder(configSystem.configFolderDomain .. '/' .. configSystem.AZFAKEconfigFolder)
+            end
+            if (not isfolder(configSystem.configFolderDomain .. '/' .. configSystem.configs)) then
+                makefolder(configSystem.configFolderDomain .. '/' .. configSystem.configs)
+            end
+
+
+
 
             configSystem.sector = tab:CreateSector("Configs", side or "left")
             local gname = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
             local ConfigName = configSystem.sector:AddTextbox("Config Name", "", ConfigName, function() end, "")
-            local default = tostring(listfiles(configSystem.configFolder)[1] or ""):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", "")
+            local default = tostring(listfiles(configSystem.ConfigsDirectory)[1] or ""):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", "")
             -- print('default '..default)
             local selectedConfig = ''
             local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function(xconfig) selectedConfig = xconfig end, "")
-            for i,v in pairs(listfiles(configSystem.configFolder)) do
+            for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                 -- print(i,v)
                 if v:find(".txt") then
-                    Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+                    Config:Add(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
                 end
             end
             local autoloadfile = nil 
-            local autoloadindex = configSystem.configFolder .. '/' .. 'settings.conf' 
+            local autoloadindex = configSystem.ConfigsDirectory .. '/' .. 'settings.conf' 
             local autoloadsetting = false 
             local IsFileSet = false;
             -- httpdecode or separate?
@@ -4490,9 +4503,9 @@ function library:CreateWindow(name, size, hidebutton)
             end)
 
             configSystem.Create = configSystem.sector:AddButton("Create", function()
-                for i,v in pairs(listfiles(configSystem.configFolder)) do
-                    Config:Remove(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
-                    print('removing '..tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+                for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
+                    Config:Remove(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
+                    print('removing '..tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
                 end
 
                 if ConfigName:Get() and ConfigName:Get() ~= "" then
@@ -4513,11 +4526,11 @@ function library:CreateWindow(name, size, hidebutton)
                     end
                     
                     --writefile(configSystem.configFolder .. "/" .. gname .. '---' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
-                    writefile(configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
+                    writefile(configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
                     --print('wrnt')
-                    for i,v in pairs(listfiles(configSystem.configFolder)) do
+                    for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                         if v:find(".txt") then
-                            Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+                            Config:Add(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
                         end
                     end
                 end
@@ -4541,7 +4554,7 @@ function library:CreateWindow(name, size, hidebutton)
                     end
 
                     --writefile(configSystem.configFolder.. "/"..gname .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
-                    writefile(configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
+                    writefile(configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
 
                 elseif selectedConfig ~= '' then 
                     local config = {}
@@ -4560,16 +4573,16 @@ function library:CreateWindow(name, size, hidebutton)
                     end
 
                     --writefile(configSystem.configFolder.. "/"..gname .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
-                    writefile(configSystem.configFolder .. '/' .. selectedConfig .. ".txt", httpservice:JSONEncode(config))
+                    writefile(configSystem.ConfigsDirectory .. '/' .. selectedConfig .. ".txt", httpservice:JSONEncode(config))
                 end
             end)
 
             configSystem.Load = configSystem.sector:AddButton("Load", function()
-                local Success = pcall(readfile, configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt")
-                local SuccessDropdown = pcall(readfile, configSystem.configFolder .. '/' .. selectedConfig .. ".txt")
+                local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt")
+                local SuccessDropdown = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. selectedConfig .. ".txt")
                 if (Success) then
                     pcall(function() 
-                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
                         local NewConfig = {}
     
                         for i,v in pairs(ReadConfig) do
@@ -4605,7 +4618,7 @@ function library:CreateWindow(name, size, hidebutton)
                     end)
                 elseif (SuccessDropdown) then 
                     pcall(function() 
-                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.configFolder .. '/' .. selectedConfig .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. selectedConfig .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
                         local NewConfig = {}
     
                         for i,v in pairs(ReadConfig) do
@@ -4644,8 +4657,8 @@ function library:CreateWindow(name, size, hidebutton)
                 --     Config:Remove(tostring(v):gsub(configSystem.configFolder..gname .. "\\", ""):gsub(".txt", ""))
                 -- end
 
-                for i,v in pairs(listfiles(configSystem.configFolder)) do
-                    Config:Remove(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+                for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
+                    Config:Remove(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
                 end
 
                 --if (not Config:Get() or Config:Get() == "") then return end
@@ -4654,12 +4667,12 @@ function library:CreateWindow(name, size, hidebutton)
 
 
                 if (not Config:Get() or Config:Get() == "") then return end
-                if (not isfile( configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt")) then return end
-                delfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt")
-                for i,v in pairs(listfiles(configSystem.configFolder)) do
+                if (not isfile( configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt")) then return end
+                delfile(configSystem.ConfigsDirectory .. "/" .. Config:Get() .. ".txt")
+                for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                     if v:find(".txt") then
                         --Config:Add(tostring(v):gsub(configSystem.configFolder..gname .. "\\", ""):gsub(".txt", ""))
-                        Config:Add(tostring(v):gsub(configSystem.configFolder .. "\\", ""):gsub(".txt", ""))
+                        Config:Add(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
                     end
                 end
             end)
@@ -4667,12 +4680,12 @@ function library:CreateWindow(name, size, hidebutton)
 
             if IsFileSet == true then 
                 print('is file set')
-                local Success = pcall(readfile, configSystem.configFolder .. '/' .. autoloadfile['fileautoload']..'.txt')
+                local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. autoloadfile['fileautoload']..'.txt')
                 print(Success)
                 print(autoloadfile['fileautoload'])
                 if (Success) then
                     pcall(function() 
-                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.configFolder .. '/' .. autoloadfile['fileautoload']..'.txt'))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. autoloadfile['fileautoload']..'.txt'))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
                         local NewConfig = {}
     
                         for i,v in pairs(ReadConfig) do
@@ -4820,6 +4833,5 @@ function library:CreateWindow(name, size, hidebutton)
 
     return window
 end
-
 
 return library
