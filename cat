@@ -4510,7 +4510,7 @@ function library:CreateWindow(name, size, hidebutton)
                     print('removing '..tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
                 end
 
-                if ConfigName:Get() and ConfigName:Get() ~= "" then
+                if Config:Get() and Config:Get() ~= "" then
                     local config = {}
     
                     for i,v in pairs(library.flags) do
@@ -4528,7 +4528,7 @@ function library:CreateWindow(name, size, hidebutton)
                     end
                     
                     --writefile(configSystem.configFolder .. "/" .. gname .. '---' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
-                    writefile(configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
+                    writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
                     --print('wrnt')
                     for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                         if v:find(".txt") then
@@ -4540,7 +4540,7 @@ function library:CreateWindow(name, size, hidebutton)
 
             configSystem.Save = configSystem.sector:AddButton("Save", function()
                 local config = {}
-                if Config:Get() and Config:Get() ~= "" then
+                if Config:Get() and Config:Get() ~= "" and Config:Get() ~= ' ' then
                     for i,v in pairs(library.flags) do
                         if (v ~= nil and v ~= "") then
                             if (typeof(v) == "Color3") then
@@ -4556,42 +4556,42 @@ function library:CreateWindow(name, size, hidebutton)
                     end
 
                     --writefile(configSystem.configFolder.. "/"..gname .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
-                    writefile(configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
+                    writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
                     if getgenv().__getnotify then 
-                        local NotifyMessage = 'Saved To '..ConfigName:Get()
+                        local NotifyMessage = 'Saved To '..Config:Get()
                         getgenv().__getnotify(NotifyMessage,3)
                     end
-                elseif selectedConfig ~= '' then 
-                    local config = {}
-                    for i,v in pairs(library.flags) do
-                        if (v ~= nil and v ~= "") then
-                            if (typeof(v) == "Color3") then
-                                config[i] = { v.R, v.G, v.B }
-                            elseif (tostring(v):find("Enum.KeyCode")) then
-                                config[i] = "Enum.KeyCode." .. v.Name
-                            elseif (typeof(v) == "table") then
-                                config[i] = { v }
-                            else
-                                config[i] = v
-                            end
-                        end
-                    end
+                -- elseif selectedConfig ~= '' then 
+                --     local config = {}
+                --     for i,v in pairs(library.flags) do
+                --         if (v ~= nil and v ~= "") then
+                --             if (typeof(v) == "Color3") then
+                --                 config[i] = { v.R, v.G, v.B }
+                --             elseif (tostring(v):find("Enum.KeyCode")) then
+                --                 config[i] = "Enum.KeyCode." .. v.Name
+                --             elseif (typeof(v) == "table") then
+                --                 config[i] = { v }
+                --             else
+                --                 config[i] = v
+                --             end
+                --         end
+                --     end
 
-                    --writefile(configSystem.configFolder.. "/"..gname .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
-                    writefile(configSystem.ConfigsDirectory .. '/' .. selectedConfig .. ".txt", httpservice:JSONEncode(config))
-                    if getgenv().__getnotify then 
-                        local NotifyMessage = 'Saved To '..selectedConfig
-                        getgenv().__getnotify(NotifyMessage,3)
-                    end
+                --     --writefile(configSystem.configFolder.. "/"..gname .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
+                --     writefile(configSystem.ConfigsDirectory .. '/' .. selectedConfig .. ".txt", httpservice:JSONEncode(config))
+                --     if getgenv().__getnotify then 
+                --         local NotifyMessage = 'Saved To '..selectedConfig
+                --         getgenv().__getnotify(NotifyMessage,3)
+                --     end
                 end
             end)
 
             configSystem.Load = configSystem.sector:AddButton("Load", function()
-                local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt")
+                local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt")
                 local SuccessDropdown = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. selectedConfig .. ".txt")
                 if (Success) then
                     pcall(function() 
-                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
                         local NewConfig = {}
     
                         for i,v in pairs(ReadConfig) do
@@ -4625,47 +4625,47 @@ function library:CreateWindow(name, size, hidebutton)
                             end
                         end
                         if getgenv().__getnotify then 
-                            local NotifyMessage = 'Loaded '..ConfigName:Get()
+                            local NotifyMessage = 'Loaded '..Config:Get()
                             getgenv().__getnotify(NotifyMessage,3)
                         end
                     end)
-                elseif (SuccessDropdown) then 
-                    pcall(function() 
-                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. selectedConfig .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
-                        local NewConfig = {}
+                -- elseif (SuccessDropdown) then 
+                --     pcall(function() 
+                --         local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. selectedConfig .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                --         local NewConfig = {}
     
-                        for i,v in pairs(ReadConfig) do
-                            if (typeof(v) == "table") then
-                                if (typeof(v[1]) == "number") then
-                                    NewConfig[i] = Color3.new(v[1], v[2], v[3])
-                                elseif (typeof(v[1]) == "table") then
-                                    NewConfig[i] = v[1]
-                                end
-                            elseif (tostring(v):find("Enum.KeyCode.")) then
-                                NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
-                            else
-                                NewConfig[i] = v
-                            end
-                        end
+                --         for i,v in pairs(ReadConfig) do
+                --             if (typeof(v) == "table") then
+                --                 if (typeof(v[1]) == "number") then
+                --                     NewConfig[i] = Color3.new(v[1], v[2], v[3])
+                --                 elseif (typeof(v[1]) == "table") then
+                --                     NewConfig[i] = v[1]
+                --                 end
+                --             elseif (tostring(v):find("Enum.KeyCode.")) then
+                --                 NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                --             else
+                --                 NewConfig[i] = v
+                --             end
+                --         end
     
-                        library.flags = NewConfig
+                --         library.flags = NewConfig
     
-                        for i,v in pairs(library.flags) do
-                            for i2,v2 in pairs(library.items) do
-                                if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
-                                    if (v2.flag == i) then
-                                        pcall(function() 
-                                            v2:Set(v)
-                                        end)
-                                    end
-                                end
-                            end
-                        end
-                        if getgenv().__getnotify then 
-                            local NotifyMessage = 'Loaded '..selectedConfig
-                            getgenv().__getnotify(NotifyMessage,3)
-                        end
-                    end)
+                --         for i,v in pairs(library.flags) do
+                --             for i2,v2 in pairs(library.items) do
+                --                 if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
+                --                     if (v2.flag == i) then
+                --                         pcall(function() 
+                --                             v2:Set(v)
+                --                         end)
+                --                     end
+                --                 end
+                --             end
+                --         end
+                --         if getgenv().__getnotify then 
+                --             local NotifyMessage = 'Loaded '..selectedConfig
+                --             getgenv().__getnotify(NotifyMessage,3)
+                --         end
+                --     end)
                 end
             end)
 
@@ -4684,7 +4684,7 @@ function library:CreateWindow(name, size, hidebutton)
 
 
                 if (not Config:Get() or Config:Get() == "") then return end
-                if (not isfile( configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt")) then return end
+                if (not isfile( configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt")) then return end
                 delfile(configSystem.ConfigsDirectory .. "/" .. Config:Get() .. ".txt")
                 for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                     if v:find(".txt") then
