@@ -4476,7 +4476,7 @@ function library:CreateWindow(name, size, hidebutton)
                     fileautoload = autoloadfile['fileautoload'];
                 }
                 writefile(autoloadindex,httpservice:JSONEncode(pack))
-                autoloadfile = httpservice:JSONDecode(readfile(autoloadindex))
+                autoloadfile = httpservice:JSONDecode(readfile(autoloadindex)) -- if false save the file its autoloading and check if the index name is autoload then set to this autoload value 
             end)
 
 
@@ -4497,7 +4497,7 @@ function library:CreateWindow(name, size, hidebutton)
                         -- if not isfile('autoload.txt') then 
                         --     writefile('autoload.txt',configname)
                         -- end
-                        writefile(autoloadindex,httpservice:JSONEncode(pack))
+                        writefile(autoloadindex,httpservice:JSONEncode(pack))-- save the file its autoloading
 
                     end)
                 end
@@ -4527,8 +4527,8 @@ function library:CreateWindow(name, size, hidebutton)
                         end
                     end
                     
-                    --writefile(configSystem.configFolder .. "/" .. gname .. '---' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
-                    writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
+                    writefile(configSystem.configFolder .. "/" .. gname .. '---' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
+                    --writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
                     --print('wrnt')
                     for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                         if v:find(".txt") then
