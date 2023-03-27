@@ -4459,6 +4459,7 @@ function library:CreateWindow(name, size, hidebutton)
             local autoloadindex = configSystem.ConfigsDirectory .. '/' .. 'settings.conf' 
             local autoloadsetting = false 
             local IsFileSet = false;
+            local configsdir = 'configs'
             -- httpdecode or separate?
             if not isfile(autoloadindex) then 
                 local tablepack = {
@@ -4526,8 +4527,12 @@ function library:CreateWindow(name, size, hidebutton)
                             end
                         end
                     end
-                    
-                    writefile(configSystem.configFolder .. "/" .. gname .. '---' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
+                    --print(ConfigName:Get())
+                    --print(configSystem.configFolder .. "/" .. 'configs' .. ConfigName:Get() .. ".txt")
+                    -- print(configSystem.ConfigsDirectory .. "/" .. configsdir .. '/' .. ConfigName:Get() .. ".txt")
+                    writefile(configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
+                    local CreateMessage = 'Created Config - '..ConfigName:Get();
+                    getgenv().__getnotify(CreateMessage,3)
                     --writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
                     --print('wrnt')
                     for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
