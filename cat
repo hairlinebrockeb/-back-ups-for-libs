@@ -2684,6 +2684,8 @@ function library:CreateWindow(name, size, hidebutton)
                                 elseif input.KeyCode == keybind:Get() then 
                                    -- print('pressing key')
                                     keybind:SetPressed(true)
+                                elseif input.UserInputType == keybind:Get() then 
+                                    keybind:SetPressed(true)
                                 end
                             end
                         end)
@@ -2691,6 +2693,8 @@ function library:CreateWindow(name, size, hidebutton)
                             if not gameProcessed then
                                 if input.KeyCode == keybind:Get()  then 
                                    -- print('left key')
+                                    keybind:SetPressed(false)
+                                elseif input.UserInputType == keybind:Get() then 
                                     keybind:SetPressed(false)
                                 end
                             end
