@@ -2602,7 +2602,9 @@ function library:CreateWindow(name, size, hidebutton)
                             ["LeftControl"] = "LCTRL",
                             ["RightControl"] = "RCTRL",
                             ["LeftAlt"] = "LALT",
-                            ["RightAlt"] = "RALT"
+                            ["RightAlt"] = "RALT",
+                            ['MouseButton1'] = 'MB1',
+                            ['MouseButton2'] = 'MB2'
                         }
 
                         local text = keybind.default == "None" and "[None]" or "[" .. (shorter_keycodes[keybind.default.Name] or keybind.default.Name) .. "]"
@@ -2667,14 +2669,17 @@ function library:CreateWindow(name, size, hidebutton)
                             end
                         end
                         uis.InputBegan:Connect(function(input, gameProcessed)
-                            
                             if not gameProcessed then
                                 if keybind.Main.Text == "[...]" then
                                     keybind.Main.TextColor3 = Color3.fromRGB(136, 136, 136)
+                                    print(tostring(input.UserInputType)..' TS')
                                     if input.UserInputType == Enum.UserInputType.Keyboard then
                                         keybind:Set(input.KeyCode)
+                                    elseif string.find(tostring(input.UserInputType),'MouseButton') then -- == Enum.UserInputType.MouseButton1 then 
+                                        print('M BUTTON'..string.split(tostring(input.UserInputType),'.')[3])
+                                        keybind:Set(input.UserInputType)
                                     else
-                                        keybind:Set("None")
+                                        keybind:Set('None')
                                     end
                                 elseif input.KeyCode == keybind:Get() then 
                                    -- print('pressing key')
@@ -2683,7 +2688,6 @@ function library:CreateWindow(name, size, hidebutton)
                             end
                         end)
                         uis.InputEnded:Connect(function(input, gameProcessed)
-                            
                             if not gameProcessed then
                                 if input.KeyCode == keybind:Get()  then 
                                    -- print('left key')
