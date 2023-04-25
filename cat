@@ -23,8 +23,8 @@ library.theme = {
     fontsize = 15,
     titlesize = 18,
     font = Enum.Font.Code,
-    background = "rbxassetid://5553946656",
-    tilesize = 30,
+    background = "rbxassetid://5553946656", -- rbxassetid://2454009026 5553946656
+    tilesize = 500, -- 30
     cursor = false,
     cursorimg = "https://t0.rbxcdn.com/42f66da98c40252ee151326a82aab51f",
     backgroundcolor = Color3.fromRGB(20, 20, 20),
@@ -359,9 +359,9 @@ function library:CreateWindow(name, size, hidebutton)
 
     window.TopGradient = Instance.new("UIGradient", window.TopBar)
     window.TopGradient.Rotation = 90
-    window.TopGradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.topcolor), ColorSequenceKeypoint.new(1.00, window.theme.topcolor2) })
+    window.TopGradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, Color3.fromRGB(22,22,22)), ColorSequenceKeypoint.new(1, Color3.fromRGB(15,15,15)) })--ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.topcolor), ColorSequenceKeypoint.new(1.00, window.theme.topcolor2) })
     updateevent.Event:Connect(function(theme)
-        window.TopGradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, theme.topcolor), ColorSequenceKeypoint.new(1.00, theme.topcolor2) })
+        --window.TopGradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, theme.topcolor), ColorSequenceKeypoint.new(1.00, theme.topcolor2) })
     end)
 
     window.NameLabel = Instance.new("TextLabel", window.TopBar)
@@ -443,6 +443,14 @@ function library:CreateWindow(name, size, hidebutton)
     window.ListLayout = Instance.new("UIListLayout", window.TabList)
     window.ListLayout.FillDirection = Enum.FillDirection.Horizontal
     window.ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+
+    window.BackgroundGradient = Instance.new('UIGradient')
+    window.BackgroundGradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.topcolor), ColorSequenceKeypoint.new(1.00, window.theme.topcolor2) }) -- ColorSequence.new({0,0.45098,0.45098,0.45098,0,1,1,1,1,0}) -- backgrg
+    window.BackgroundGradient.Parent = window.TopBar
+    updateevent.Event:Connect(function(theme)
+        window.BackgroundGradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, theme.topcolor), ColorSequenceKeypoint.new(1.00, theme.topcolor2) })
+    end)
 
     window.OpenedColorPickers = { }
     window.Tabs = { }
@@ -4456,7 +4464,8 @@ function library:CreateWindow(name, size, hidebutton)
             local default = tostring(listfiles(configSystem.ConfigsDirectory)[1] or ""):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", "")
             -- print('default '..default)
             local selectedConfig = ''
-            local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function(xconfig) selectedConfig = xconfig; print(selectedConfig) end, "")
+            local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function(xconfig) selectedConfig = xconfig;  end, "") -- print(selectedConfig)
+            -- make the config dropdown instantly set to the previous one
             for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                 -- print(i,v)
                 if v:find(".txt") then
@@ -4468,6 +4477,8 @@ function library:CreateWindow(name, size, hidebutton)
             local autoloadsetting = false 
             local IsFileSet = false;
             local configsdir = 'configs'
+            local autosaving = false
+            local previousautosavefile = ''
             -- httpdecode or separate?
             if not isfile(autoloadindex) then 
                 local tablepack = {
@@ -4487,8 +4498,6 @@ function library:CreateWindow(name, size, hidebutton)
                 writefile(autoloadindex,httpservice:JSONEncode(pack))
                 autoloadfile = httpservice:JSONDecode(readfile(autoloadindex)) -- if false save the file its autoloading and check if the index name is autoload then set to this autoload value 
             end)
-
-
             configSystem.SetAutoLoadFile = configSystem.sector:AddButton("Set Auto load", function()
                 -- print(Config:Get())
                 local Success = Config:Get()-- pcall(readfile, Config:Get())
@@ -4513,6 +4522,38 @@ function library:CreateWindow(name, size, hidebutton)
 
             end)
 
+            configSystem.AutoSave = configSystem.sector:AddToggle('Auto Save',true,function(xstate)
+                autosaving = xstate
+                if autosaving == true then 
+                    task.spawn(function()
+                        while task.wait(6) do 
+                            local config = {}
+                            -- if previousautosavefile ~= Config:Get() then
+                            --     print('swapped to save on '..Config:Get())
+                            -- end
+                            -- previousautosavefile = Config:Get()
+                            if Config:Get() and Config:Get() ~= "" and Config:Get() ~= ' ' then
+                                for i,v in pairs(library.flags) do
+                                    if (v ~= nil and v ~= "") then
+                                        if (typeof(v) == "Color3") then
+                                            config[i] = { v.R, v.G, v.B }
+                                        elseif (tostring(v):find("Enum.KeyCode")) then
+                                            config[i] = "Enum.KeyCode." .. v.Name
+                                        elseif (typeof(v) == "table") then
+                                            config[i] = { v }
+                                        else
+                                            config[i] = v
+                                        end
+                                    end
+                                end
+                                writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
+                            end
+                        end
+                    end) -- endedloop
+                end
+            end) -- savte
+
+            configSystem:AddSeperator()
             configSystem.Create = configSystem.sector:AddButton("Create", function()
                 for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                     Config:Remove(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
@@ -4551,11 +4592,11 @@ function library:CreateWindow(name, size, hidebutton)
                 end
             end)
 
-            configSystem.Save = configSystem.sector:AddButton("Save", function()
-                local config = {}
+            configSystem.Save = configSystem.sector:AddButton("Save", function() -- make this a function you can call
+                local config = {} -- make this a function you can call
                 if Config:Get() and Config:Get() ~= "" and Config:Get() ~= ' ' then
-                    for i,v in pairs(library.flags) do
-                        if (v ~= nil and v ~= "") then
+                    for i,v in pairs(library.flags) do -- flags are used so you can have the same textbox with the same text name with a different value to save and it wont bug when loading and load the two textboxes with the same value
+                        if (v ~= nil and v ~= "") then -- and v.Name ~= autoload and the flag for autoload isnt equal to the autoload we use on our configurations tab
                             if (typeof(v) == "Color3") then
                                 config[i] = { v.R, v.G, v.B }
                             elseif (tostring(v):find("Enum.KeyCode")) then
