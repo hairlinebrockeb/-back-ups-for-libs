@@ -4553,7 +4553,7 @@ function library:CreateWindow(name, size, hidebutton)
                 end
             end) -- savte
 
-            configSystem.sector:AddSeperator()
+            configSystem.sector:AddSeperator('')
             configSystem.Create = configSystem.sector:AddButton("Create", function()
                 for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                     Config:Remove(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
