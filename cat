@@ -4446,12 +4446,17 @@ function library:CreateWindow(name, size, hidebutton)
             -- ConfigsDirectory = configFolder
             configSystem.ConfigsDirectory = configSystem.configFolderDomain .. '/' .. configSystem.configs;
             if (not isfolder(configSystem.configFolderDomain)) then
+                warn('creating domain')
                 makefolder(configSystem.configFolderDomain)
+            else
+                -- print('found')
             end
             if (not isfolder(configSystem.configFolderDomain .. '/' .. configSystem.AZFAKEconfigFolder)) then
+                warn('creating folder cofg')
                 makefolder(configSystem.configFolderDomain .. '/' .. configSystem.AZFAKEconfigFolder)
             end
             if (not isfolder(configSystem.configFolderDomain .. '/' .. configSystem.configs)) then
+                warn('creating main conf')
                 makefolder(configSystem.configFolderDomain .. '/' .. configSystem.configs)
             end
 
@@ -4461,14 +4466,14 @@ function library:CreateWindow(name, size, hidebutton)
             configSystem.sector = tab:CreateSector("Configs", side or "left")
             local gname = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
             local ConfigName = configSystem.sector:AddTextbox("Config Name", "", ConfigName, function() end, "")
-            local default = tostring(listfiles(configSystem.ConfigsDirectory)[1] or ""):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", "")
+            local default = 'default' --tostring(listfiles(configSystem.ConfigsDirectory)[1] or ""):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", "")
             -- print('default '..default)
             local selectedConfig = ''
             local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function(xconfig) selectedConfig = xconfig;  end, "") -- print(selectedConfig)
             -- make the config dropdown instantly set to the previous one
             for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                 -- print(i,v)
-                if v:find(".txt") then
+                if v:find(".txt") and tostring(v) ~= 'settings.conf' then
                     Config:Add(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
                 end
             end
@@ -4480,7 +4485,10 @@ function library:CreateWindow(name, size, hidebutton)
             local autosaving = false
             local previousautosavefile = ''
             -- httpdecode or separate?
-            if not isfile(autoloadindex) then 
+            -- if autoloadindex == 'settings.conf' then 
+            --     autoloadindex = 'default.txt'
+            -- end
+            if not isfile(autoloadindex)  then 
                 local tablepack = {
                     autoload = false;
                     fileautoload = '';
@@ -4489,38 +4497,54 @@ function library:CreateWindow(name, size, hidebutton)
             else
                 IsFileSet = true;
             end
-            autoloadfile = httpservice:JSONDecode(readfile(autoloadindex))
-            configSystem.AutoLoad = configSystem.sector:AddToggle('Auto Load',autoloadfile['autoload'],function(xtate)
-                local pack = {
-                    autoload = xtate;
-                    fileautoload = autoloadfile['fileautoload'];
+            warn(autoloadindex)
+            local worked,notwork = pcall(function()
+                autoloadfile = httpservice:JSONDecode(readfile(autoloadindex))
+            end)
+            if notwork then 
+                warn('didnt work')
+                local tablepack = {
+                    autoload = false;
+                    fileautoload = '';
                 }
-                writefile(autoloadindex,httpservice:JSONEncode(pack))
-                autoloadfile = httpservice:JSONDecode(readfile(autoloadindex)) -- if false save the file its autoloading and check if the index name is autoload then set to this autoload value 
-            end)
-            configSystem.SetAutoLoadFile = configSystem.sector:AddButton("Set Auto load", function()
-                -- print(Config:Get())
+                writefile(autoloadindex,httpservice:JSONEncode(tablepack))
+            end
+            configSystem.AutoLoad = configSystem.sector:AddToggle('Auto Load',autoloadfile['autoload'],function(xtate)
                 local Success = Config:Get()-- pcall(readfile, Config:Get())
-                if Success then 
-                    pcall(function()
-                        local configname = Config:Get() -- configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt" 
-
-                        local tablepack = {
-
-                        }
-                        local pack = {
-                            autoload = autoloadfile['autoload'];
-                            fileautoload = configname;
-                        }
-                        -- if not isfile('autoload.txt') then 
-                        --     writefile('autoload.txt',configname)
-                        -- end
-                        writefile(autoloadindex,httpservice:JSONEncode(pack))-- save the file its autoloading
-
-                    end)
+                if Success and Config:Get() ~= 'settings.conf' then 
+                    local pack = {
+                        autoload = xtate;
+                        fileautoload = Config:Get();
+                    }
+                    writefile(autoloadindex,httpservice:JSONEncode(pack))
+                    autoloadfile = httpservice:JSONDecode(readfile(autoloadindex)) -- if false save the file its autoloading and check if the index name is autoload then set to this autoload value 
                 end
+            end,'AUTOLOADNOSAVEMENT')
+            configSystem.AutoLoad:Set(autoloadfile['autoload'])
+            -- configSystem.SetAutoLoadFile = configSystem.sector:AddButton("Set Auto load", function()
+            --     -- print(Config:Get())
+            --     local Success = Config:Get()-- pcall(readfile, Config:Get())
+            --     if Success and Config:Get() ~= 'settings.conf' then 
+            --         pcall(function()
+            --             local configname = Config:Get() -- configSystem.configFolder .. '/' .. ConfigName:Get() .. ".txt" 
 
-            end)
+            --             local tablepack = {
+
+            --             }
+            --             local pack = {
+            --                 autoload = autoloadfile['autoload'];
+            --                 fileautoload = configname;
+            --             }
+            --             -- if not isfile('autoload.txt') then 
+            --             --     writefile('autoload.txt',configname)
+            --             -- end
+            --             writefile(autoloadindex,httpservice:JSONEncode(pack))-- save the file its autoloading
+            --             autoloadfile = httpservice:JSONDecode(readfile(autoloadindex)) -- new addon
+
+            --         end)
+            --     end
+
+            -- end)
 
             configSystem.AutoSave = configSystem.sector:AddToggle('Auto Save',true,function(xstate)
                 autosaving = xstate
@@ -4534,7 +4558,7 @@ function library:CreateWindow(name, size, hidebutton)
                             -- previousautosavefile = Config:Get()
                             if Config:Get() and Config:Get() ~= "" and Config:Get() ~= ' ' then
                                 for i,v in pairs(library.flags) do
-                                    if (v ~= nil and v ~= "") then
+                                    if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') then
                                         if (typeof(v) == "Color3") then
                                             config[i] = { v.R, v.G, v.B }
                                         elseif (tostring(v):find("Enum.KeyCode")) then
@@ -4564,7 +4588,7 @@ function library:CreateWindow(name, size, hidebutton)
                     local config = {}
     
                     for i,v in pairs(library.flags) do
-                        if (v ~= nil and v ~= "") then
+                        if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') then
                             if (typeof(v) == "Color3") then
                                 config[i] = { v.R, v.G, v.B }
                             elseif (tostring(v):find("Enum.KeyCode")) then
@@ -4579,9 +4603,12 @@ function library:CreateWindow(name, size, hidebutton)
                     --print(ConfigName:Get())
                     --print(configSystem.configFolder .. "/" .. 'configs' .. ConfigName:Get() .. ".txt")
                     -- print(configSystem.ConfigsDirectory .. "/" .. configsdir .. '/' .. ConfigName:Get() .. ".txt")
+                    pcall(function()
+                        local CreateMessage = 'Created Config - '..ConfigName:Get();
+                        getgenv().__getnotify(CreateMessage,3)
+                    end)
                     writefile(configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
-                    local CreateMessage = 'Created Config - '..ConfigName:Get();
-                    getgenv().__getnotify(CreateMessage,3)
+
                     --writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
                     --print('wrnt')
                     for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
@@ -4596,7 +4623,7 @@ function library:CreateWindow(name, size, hidebutton)
                 local config = {} -- make this a function you can call
                 if Config:Get() and Config:Get() ~= "" and Config:Get() ~= ' ' then
                     for i,v in pairs(library.flags) do -- flags are used so you can have the same textbox with the same text name with a different value to save and it wont bug when loading and load the two textboxes with the same value
-                        if (v ~= nil and v ~= "") then -- and v.Name ~= autoload and the flag for autoload isnt equal to the autoload we use on our configurations tab
+                        if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') then -- and v.Name ~= autoload and the flag for autoload isnt equal to the autoload we use on our configurations tab
                             if (typeof(v) == "Color3") then
                                 config[i] = { v.R, v.G, v.B }
                             elseif (tostring(v):find("Enum.KeyCode")) then
