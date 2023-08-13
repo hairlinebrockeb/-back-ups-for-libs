@@ -301,6 +301,7 @@ function library:CreateWindow(name, size, hidebutton)
         if key.KeyCode == window.hidebutton then
             window.Frame.Visible = not window.Frame.Visible
         end
+        warn(key.KeyCode)
     end)
 
     local function checkIfGuiInFront(Pos)
@@ -2594,14 +2595,24 @@ function library:CreateWindow(name, size, hidebutton)
                     keybindattachment.ListLayout.Padding = UDim.new(0.04, 6)
 
 
+                    keybindattachment.keybind = 'None'
+                    keybindattachment.keybindchanged = function()
 
-
+                    end
+                    function keybindattachment:GetKeybind()
+                        return keybindattachment.keybind
+                    end
+                    function keybindattachment:keychangedmethod(f)
+                        keybindattachment.keybindchanged = f
+                        return nil
+                    end
 
                     function keybindattachment:AddKeybind(default, flag)
                         local keybind = { }
 
                         keybind.default = default or "None"
                         keybind.value = keybind.default
+                        keybindattachment.keybind = keybind.value
                         keybind.flag = flag or ( (keybindattachment.text or "") .. tostring(#keybindattachment.Items:GetChildren()))
 
                         local shorter_keycodes = {
@@ -2652,6 +2663,8 @@ function library:CreateWindow(name, size, hidebutton)
                                 if keybind.flag and keybind.flag ~= "" then
                                     library.flags[keybind.flag] = key
                                 end
+                            else
+                                keybindattachment.keybind = keybind.value
                             end
                             keybind.Main.Text = "[" .. (shorter_keycodes[key.Name] or key.Name) .. "]"
                             keybind.value = key
@@ -2663,6 +2676,7 @@ function library:CreateWindow(name, size, hidebutton)
                         function keybind:Get()
                             return keybind.value
                         end
+                        keybindattachment.keybind = keybind.value
                         function keybind:IsPressed()
                             return keybind.ispressed
                         end
@@ -2676,13 +2690,16 @@ function library:CreateWindow(name, size, hidebutton)
                                 library.flags[keybind.flag] = key
                             end
                         end
+                        
                         uis.InputBegan:Connect(function(input, gameProcessed)
                             if not gameProcessed then
+                                keybindattachment.keybind = input.KeyCode
                                 if keybind.Main.Text == "[...]" then
                                     keybind.Main.TextColor3 = Color3.fromRGB(136, 136, 136)
                                     print(tostring(input.UserInputType)..' TS')
                                     if input.UserInputType == Enum.UserInputType.Keyboard then
                                         keybind:Set(input.KeyCode)
+                                        keybindattachment.keybind = input.KeyCode
                                     elseif string.find(tostring(input.UserInputType),'MouseButton') then -- == Enum.UserInputType.MouseButton1 then 
                                         print('M BUTTON'..string.split(tostring(input.UserInputType),'.')[3])
                                         keybind:Set(input.UserInputType)
@@ -2691,6 +2708,7 @@ function library:CreateWindow(name, size, hidebutton)
                                     end
                                 elseif input.KeyCode == keybind:Get() then 
                                    -- print('pressing key')
+                                    keybindattachment.keybind = input.KeyCode
                                     keybind:SetPressed(true)
                                 elseif input.UserInputType == keybind:Get() then 
                                     keybind:SetPressed(true)
@@ -2701,6 +2719,9 @@ function library:CreateWindow(name, size, hidebutton)
                             if not gameProcessed then
                                 if input.KeyCode == keybind:Get()  then 
                                    -- print('left key')
+                                   if keybindattachment.keybindchanged then 
+                                        keybindattachment.keybindchanged()
+                                    end
                                     keybind:SetPressed(false)
                                 elseif input.UserInputType == keybind:Get() then 
                                     keybind:SetPressed(false)
@@ -4509,6 +4530,7 @@ function library:CreateWindow(name, size, hidebutton)
                 }
                 writefile(autoloadindex,httpservice:JSONEncode(tablepack))
             end
+            
             configSystem.AutoLoad = configSystem.sector:AddToggle('Auto Load',autoloadfile['autoload'],function(xtate)
                 local Success = Config:Get()-- pcall(readfile, Config:Get())
                 if Success and Config:Get() ~= 'settings.conf' then 
@@ -4545,7 +4567,18 @@ function library:CreateWindow(name, size, hidebutton)
             --     end
 
             -- end)
-
+            local menubtton = configSystem.sector:AddKeybindAttachment('Open Menu') -- string.split(tostring(window.hidebutton))[3]
+            menubtton:AddKeybind()
+            function awlafwa()
+                --warn('key press..'..string.split(tostring(menubtton:GetKeybind()),'.')[3])
+                if menubtton:GetKeybind() ~= nil and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton1 and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton2 then 
+                    window.hidebutton = menubtton:GetKeybind()
+                    print(menubtton:GetKeybind())
+                else
+                    print(menubtton:GetKeybind())
+                end
+            end
+            menubtton:keychangedmethod(awlafwa)
             configSystem.AutoSave = configSystem.sector:AddToggle('Auto Save',true,function(xstate)
                 autosaving = xstate
                 if autosaving == true then 
