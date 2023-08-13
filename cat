@@ -4568,7 +4568,7 @@ function library:CreateWindow(name, size, hidebutton)
 
             -- end)
             local menubtton = configSystem.sector:AddKeybindAttachment('Open Menu') -- string.split(tostring(window.hidebutton))[3]
-            menubtton:AddKeybind()
+            menubtton:AddKeybind(Enum.KeyCode.Insert)
             function awlafwa()
                 --warn('key press..'..string.split(tostring(menubtton:GetKeybind()),'.')[3])
                 if menubtton:GetKeybind() ~= nil and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton1 and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton2 then 
