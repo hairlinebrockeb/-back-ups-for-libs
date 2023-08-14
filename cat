@@ -301,7 +301,7 @@ function library:CreateWindow(name, size, hidebutton)
         if key.KeyCode == window.hidebutton then
             window.Frame.Visible = not window.Frame.Visible
         end
-        warn(key.KeyCode)
+        --warn(key.KeyCode)
     end)
 
     local function checkIfGuiInFront(Pos)
