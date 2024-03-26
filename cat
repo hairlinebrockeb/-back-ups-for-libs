@@ -1,4 +1,4 @@
-		    
+setthreadidentity(7)
 -- insert troll face, memcorruptv2
 local library = { 
 	flags = { }, 
@@ -228,6 +228,7 @@ function library:CreateWatermark(name, position)
 end
 
 function library:CreateWindow(name, size, hidebutton)
+    setthreadidentity(8);
     local window = { }
 
     window.name = name or ""
