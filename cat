@@ -653,6 +653,7 @@ function library:CreateWindow(name, size, hidebutton)
         tab.SectorsExtra = { }
 
         function tab:CreateSector(name,side)
+            setthreadidentity(7)
             local sector = { }
             sector.name = name or ""
             sector.side = side:lower() or "left"
@@ -4018,7 +4019,6 @@ function library:CreateWindow(name, size, hidebutton)
             end
 
             function sector:AddDropdown(text, items, default, multichoice, callback, flag)
-                setthreadidentity(7)
                 local dropdown = { }
 
                 dropdown.text = text or ""
