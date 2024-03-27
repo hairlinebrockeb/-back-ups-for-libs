@@ -2481,7 +2481,7 @@ function library:CreateWindow(name, size, hidebutton)
                 table.insert(library.items, toggle)
                 return toggle
             end
-            function sector:AddKeybindAttachment(text)
+            function sector:AddKeybindAttachment(text, flag)
                 local keybindattachment = { }
                 -- 
                     keybindattachment.text = text or ""
