@@ -4639,11 +4639,12 @@ function library:CreateWindow(name, size, hidebutton)
                     --print(ConfigName:Get())
                     --print(configSystem.configFolder .. "/" .. 'configs' .. ConfigName:Get() .. ".txt")
                     -- print(configSystem.ConfigsDirectory .. "/" .. configsdir .. '/' .. ConfigName:Get() .. ".txt")
+                    local configrs = httpservice:JSONEncode(config)
                     pcall(function()
                         local CreateMessage = 'Created Config - '..ConfigName:Get();
                         getgenv().__getnotify(CreateMessage,3)
                     end)
-                    writefile(configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt", httpservice:JSONEncode(config))
+                    writefile(configSystem.ConfigsDirectory .. '/' .. ConfigName:Get() .. ".txt", configrs)
 
                     --writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
                     --print('wrnt')
@@ -4673,7 +4674,8 @@ function library:CreateWindow(name, size, hidebutton)
                     end
 
                     --writefile(configSystem.configFolder.. "/"..gname .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
-                    writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
+                    local configsav = httpservice:JSONEncode(config)
+                    writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", configsav)
                     if getgenv().__getnotify then 
                         local NotifyMessage = 'Saved To '..Config:Get()
                         getgenv().__getnotify(NotifyMessage,3)
