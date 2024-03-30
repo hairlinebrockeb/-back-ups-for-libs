@@ -4582,32 +4582,51 @@ function library:CreateWindow(name, size, hidebutton)
                 end
             end
             menubtton:keychangedmethod(awlafwa)
+
+            local universeId = httpservice:JSONDecode(game:HttpGet(`https://apis.roblox.com/universes/v1/places/{game.PlaceId}/universe`))['universeId']
+            
+            configSystem.savefunc = function()
+                local configwriting = Config:Get()
+                if configwriting == '' or configwriting == ' ' then return end;
+                local config = {}
+                for i,v in pairs(library.flags) do -- flags are used so you can have the same textbox with the same text name with a different value to save and it wont bug when loading and load the two textboxes with the same value
+                    if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') then -- and v.Name ~= autoload and the flag for autoload isnt equal to the autoload we use on our configurations tab
+                        if (typeof(v) == "Color3") then
+                            config[i] = { v.R, v.G, v.B }
+                        elseif (tostring(v):find("Enum.KeyCode")) then
+                            config[i] = "Enum.KeyCode." .. v.Name
+                        elseif (typeof(v) == "table") then
+                            config[i] = { v }
+                        else
+                            config[i] = v
+                        end
+                    end
+                end
+                -- read current config
+                -- or we can store them under a game place or universe
+                -- ['10101'] = {config}
+
+                --writefile(configSystem.configFolder.. "/"..gname .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
+                --config = {universeId} = config
+                local currentconfig = readfile(configSystem.ConfigsDirectory..'/'..configwriting..".txt")
+                local uniqueTable = httpservice:JSONDecode(currentconfig); --{};
+                uniqueTable[tostring(universeId)] = config
+                uniqueTable = httpservice:JSONEncode(uniqueTable)
+              --  print(uniqueTable)
+                for i,v in next, config do 
+                 --   print(i,v)
+                end
+                --local configsav = httpservice:JSONEncode(config)
+                writefile(configSystem.ConfigsDirectory .. '/' .. configwriting .. ".txt", uniqueTable)
+            end
+
+            
             configSystem.AutoSave = configSystem.sector:AddToggle('Auto Save',true,function(xstate)
                 autosaving = xstate
                 if autosaving == true then 
                     task.spawn(function()
                         while task.wait(6) do 
-                            local config = {}
-                            -- if previousautosavefile ~= Config:Get() then
-                            --     print('swapped to save on '..Config:Get())
-                            -- end
-                            -- previousautosavefile = Config:Get()
-                            if Config:Get() and Config:Get() ~= "" and Config:Get() ~= ' ' then
-                                for i,v in pairs(library.flags) do
-                                    if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') then
-                                        if (typeof(v) == "Color3") then
-                                            config[i] = { v.R, v.G, v.B }
-                                        elseif (tostring(v):find("Enum.KeyCode")) then
-                                            config[i] = "Enum.KeyCode." .. v.Name
-                                        elseif (typeof(v) == "table") then
-                                            config[i] = { v }
-                                        else
-                                            config[i] = v
-                                        end
-                                    end
-                                end
-                                writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
-                            end
+                            configSystem.savefunc()
                         end
                     end) -- endedloop
                 end
@@ -4659,23 +4678,7 @@ function library:CreateWindow(name, size, hidebutton)
             configSystem.Save = configSystem.sector:AddButton("Save", function() -- make this a function you can call
                 local config = {} -- make this a function you can call
                 if Config:Get() and Config:Get() ~= "" and Config:Get() ~= ' ' then
-                    for i,v in pairs(library.flags) do -- flags are used so you can have the same textbox with the same text name with a different value to save and it wont bug when loading and load the two textboxes with the same value
-                        if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') then -- and v.Name ~= autoload and the flag for autoload isnt equal to the autoload we use on our configurations tab
-                            if (typeof(v) == "Color3") then
-                                config[i] = { v.R, v.G, v.B }
-                            elseif (tostring(v):find("Enum.KeyCode")) then
-                                config[i] = "Enum.KeyCode." .. v.Name
-                            elseif (typeof(v) == "table") then
-                                config[i] = { v }
-                            else
-                                config[i] = v
-                            end
-                        end
-                    end
-
-                    --writefile(configSystem.configFolder.. "/"..gname .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
-                    local configsav = httpservice:JSONEncode(config)
-                    writefile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt", configsav)
+                    configSystem.savefunc()
                     if getgenv().__getnotify then 
                         local NotifyMessage = 'Saved To '..Config:Get()
                         getgenv().__getnotify(NotifyMessage,3)
@@ -4712,8 +4715,17 @@ function library:CreateWindow(name, size, hidebutton)
                     pcall(function() 
                         local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
                         local NewConfig = {}
+                        local actualread = {}
+                        warn('loading func')
+                        for i,v in next, ReadConfig do 
+                            print(i,universeId)
+                            if i == tostring(universeId) then
+                                print('loading save in universe')
+                                actualread = v
+                            end
+                        end
     
-                        for i,v in pairs(ReadConfig) do
+                        for i,v in pairs(actualread) do
                             if (typeof(v) == "table") then
                                 if (typeof(v[1]) == "number") then
                                     NewConfig[i] = Color3.new(v[1], v[2], v[3])
@@ -4821,10 +4833,17 @@ function library:CreateWindow(name, size, hidebutton)
                 print(autoloadfile['fileautoload'])
                 if (Success) then
                     pcall(function() 
-                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. autoloadfile['fileautoload']..'.txt'))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
                         local NewConfig = {}
+                        local actualread = {}
+                        for i,v in next, ReadConfig do 
+                            if i == tostring(universeId) then
+                                print('loading save in universe')
+                                actualread = v
+                            end
+                        end
     
-                        for i,v in pairs(ReadConfig) do
+                        for i,v in pairs(actualread) do
                             if (typeof(v) == "table") then
                                 if (typeof(v[1]) == "number") then
                                     NewConfig[i] = Color3.new(v[1], v[2], v[3])
@@ -4845,6 +4864,9 @@ function library:CreateWindow(name, size, hidebutton)
                                 if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
                                     if (v2.flag == i) then
                                         pcall(function() 
+                                            -- if v2:Get() ~= v then 
+                                            --     v2:Set(v)
+                                            -- end
                                             v2:Set(v)
                                         end)
                                     end
