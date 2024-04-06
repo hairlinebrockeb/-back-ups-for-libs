@@ -4960,7 +4960,7 @@ function library:CreateWindow(name, size, hidebutton)
                 end
             end)
 
-
+            updateevent:Fire(library.theme)
             if IsFileSet == true then 
                 print('is file set')
                 local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. autoloadfile['fileautoload']..'.txt')
@@ -5010,6 +5010,7 @@ function library:CreateWindow(name, size, hidebutton)
                         end
                     end)
                 end
+                updateevent:Fire(library.theme)
             end
 
             return configSystem
@@ -5124,7 +5125,7 @@ function library:CreateWindow(name, size, hidebutton)
         return tab
     end
 
-    updateevent:Fire()
+    window:UpdateTheme()
     return window
 end
 
