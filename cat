@@ -1,6 +1,6 @@
 setthreadidentity(7)
 -- insert troll face, memcorruptv2
-local library = { 
+getgenv().library = { 
 	flags = { }, 
 	items = { } 
 }
