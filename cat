@@ -830,7 +830,7 @@ function library:CreateWindow(name, size, hidebutton)
             sector.ListPadding.PaddingLeft = UDim.new(0, 6)
             sector.ListPadding.PaddingRight = UDim.new(0, 6)
 
-            table.insert(sector.side:lower() == "left" and tab.SectorsLeft or tab.SectorsRight, sector)
+            table.insert(sector.side:lower() == "left" and tab.SectorsLeft or sector.side:lower() == "right" and tab.SectorsRight or sector.side:lower() == "extra" and tab.SectorsExtra, sector)
 
             function sector:FixSize()
                 sector.Main.Size = UDim2.fromOffset(window.size.X.Offset / 2 - 17, sector.ListLayout.AbsoluteContentSize.Y + 22)
@@ -4630,6 +4630,29 @@ function library:CreateWindow(name, size, hidebutton)
                 library['theme']['itemscolor2'] = ztx
                 clientUpdTheme()
             end)
+            configSystem.rightsector:AddButton('Reset Keybinds',function()
+                if window.Tabs then 
+                    for i, item in next, library.items do 
+                        if item.Main and item.Main.Name == 'keybind' then 
+                            pcall(item.Unbind)
+                        end
+                    end;
+                    --[[
+                        local function sueReset(v)
+
+                        end
+                        for _, Item in next, Tab.SectorsLeft do 
+                            sueReset(Item)
+                        end
+                        for _, Item in next, Tab.SectorsLeft do 
+                            sueReset(Item)
+                        end
+                        for _, Item in next, Tab.SectorsLeft do 
+                            sueReset(Item)
+                        end
+                    ]]
+                end
+            end) -- configurations
             local autoloadfile = nil 
             local autoloadindex = configSystem.ConfigsDirectory .. '/' .. 'settings.conf' 
             local autoloadsetting = false 
@@ -4700,7 +4723,7 @@ function library:CreateWindow(name, size, hidebutton)
 
             -- end)
             local menubtton = configSystem.sector:AddKeybindAttachment('Open Menu') -- string.split(tostring(window.hidebutton))[3]
-            menubtton:AddKeybind(Enum.KeyCode.Insert)
+            menubtton:AddKeybind(Enum.KeyCode.LeftAlt)
             function awlafwa()
                 --warn('key press..'..string.split(tostring(menubtton:GetKeybind()),'.')[3])
                 if menubtton:GetKeybind() ~= nil and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton1 and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton2 then 
