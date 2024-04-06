@@ -196,7 +196,11 @@ function library:CheckForPermission(info)
                     end
                 end
             end
-            
+            for i,v in next, library.items do 
+                if v.Main and v.Main.Name == 'textbox' then 
+                    v.Main.TextEditable = true;
+                end
+            end
             dosamefor(tab.SectorsLeft)
             dosamefor(tab.SectorsRight)
             -- for _Index,itemTable in next, changedstuff do 
@@ -208,6 +212,11 @@ function library:CheckForPermission(info)
         end 
     end
 
+    for i,v in next, library.items do 
+        if v.Main and v.Main.Name == 'textbox' then 
+            v.Main.TextEditable = false;
+        end
+    end -- if getgenv().disablefeatures == true then return end
     changeTransparencies{s = 'change'}
     
     local label = {}
@@ -1133,7 +1142,7 @@ function library:CreateWindow(name, size, hidebutton)
                 button.Label.TextXAlignment = Enum.TextXAlignment.Center -- 765
 
                 button.Main.MouseButton1Down:Connect(function()         
-                    if getgenv().disablefeatures == true then return print('no go no show') end
+                    if getgenv().disablefeatures == true then return end -- print('no go no show')
                     if info and info.shouldcheck then -- text
                         if library:CheckForPermission({ask = info.ask}) == true  then 
                             button.callback()
@@ -2481,9 +2490,11 @@ function library:CreateWindow(name, size, hidebutton)
                     end)
     
                     slider.BlackOutline2.MouseEnter:Connect(function()
+                        if getgenv().disablefeatures == true then return end
                         slider.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
                     end)
                     slider.BlackOutline2.MouseLeave:Connect(function()
+                        if getgenv().disablefeatures == true then return end
                         slider.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
                     end)
     
@@ -2524,6 +2535,7 @@ function library:CreateWindow(name, size, hidebutton)
                     end
     
                     slider.SlideBar.InputBegan:Connect(function(input)
+                        if getgenv().disablefeatures == true then return end
                         if input.UserInputType == Enum.UserInputType.MouseButton1 then
                             dragging = true
                             slider:Refresh()
@@ -2531,12 +2543,14 @@ function library:CreateWindow(name, size, hidebutton)
                     end)
     
                     slider.SlideBar.InputEnded:Connect(function(input)
+                        if getgenv().disablefeatures == true then return end
                         if input.UserInputType == Enum.UserInputType.MouseButton1 then
                             dragging = false
                         end
                     end)
     
                     slider.Main.InputBegan:Connect(function(input)
+                        if getgenv().disablefeatures == true then return end
                         if input.UserInputType == Enum.UserInputType.MouseButton1 then
                             dragging = true
                             slider:Refresh()
@@ -2544,12 +2558,14 @@ function library:CreateWindow(name, size, hidebutton)
                     end)
     
                     slider.Main.InputEnded:Connect(function(input)
+                        if getgenv().disablefeatures == true then return end
                         if input.UserInputType == Enum.UserInputType.MouseButton1 then
                             dragging = false
                         end
                     end)
     
                     uis.InputChanged:Connect(function(input)
+                        if getgenv().disablefeatures == true then return end
                         if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
                             slider:Refresh()
                         end
@@ -2563,18 +2579,22 @@ function library:CreateWindow(name, size, hidebutton)
 
 
                 toggle.Main.MouseButton1Down:Connect(function()
+                    if getgenv().disablefeatures == true then return end
                     toggle:Set(not toggle.CheckedFrame.Visible)
                 end)
                 toggle.Label.InputBegan:Connect(function(input)
+                    if getgenv().disablefeatures == true then return end
                     if input.UserInputType == Enum.UserInputType.MouseButton1 then
                         toggle:Set(not toggle.CheckedFrame.Visible)
                     end
                 end)
 
                 local MouseEnter = function()
+                    if getgenv().disablefeatures == true then return end
                     toggle.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
                 end
                 local MouseLeave = function()
+                    if getgenv().disablefeatures == true then return end
                     toggle.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
                 end
 
@@ -2750,6 +2770,7 @@ function library:CreateWindow(name, size, hidebutton)
                         keybind.Main.TextSize = 15
                         keybind.Main.TextXAlignment = Enum.TextXAlignment.Right
                         keybind.Main.MouseButton1Down:Connect(function()
+                            if getgenv().disablefeatures == true then return end
                             keybind.Main.Text = "[...]"
                             keybind.Main.TextColor3 = window.theme.accentcolor
                         end)
@@ -3133,9 +3154,11 @@ function library:CreateWindow(name, size, hidebutton)
                 end)
 
                 slider.BlackOutline2.MouseEnter:Connect(function()
+                    if getgenv().disablefeatures == true then return end
                     slider.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
                 end)
                 slider.BlackOutline2.MouseLeave:Connect(function()
+                    if getgenv().disablefeatures == true then return end
                     slider.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
                 end)
 
@@ -3299,6 +3322,7 @@ function library:CreateWindow(name, size, hidebutton)
                 -- end
 
                 slider.SlideBar.InputBegan:Connect(function(input)
+                    if getgenv().disablefeatures == true then return end
                     if input.UserInputType == Enum.UserInputType.MouseButton1 then
                         dragging = true
                         slider:Refresh()
@@ -3319,12 +3343,14 @@ function library:CreateWindow(name, size, hidebutton)
                 -- end
 
                 slider.SlideBar.InputEnded:Connect(function(input)
+                    if getgenv().disablefeatures == true then return end
                     if input.UserInputType == Enum.UserInputType.MouseButton1 then
                         dragging = false
                     end
                 end)
 
                 slider.Main.InputBegan:Connect(function(input)
+                    if getgenv().disablefeatures == true then return end
                     if input.UserInputType == Enum.UserInputType.MouseButton1 then
                         dragging = true
                         slider:Refresh()
@@ -3332,12 +3358,14 @@ function library:CreateWindow(name, size, hidebutton)
                 end)
 
                 slider.Main.InputEnded:Connect(function(input)
+                    if getgenv().disablefeatures == true then return end
                     if input.UserInputType == Enum.UserInputType.MouseButton1 then
                         dragging = false
                     end
                 end)
 
 				uis.InputChanged:Connect(function(input)
+                    if getgenv().disablefeatures == true then return end
 					if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
                         slider:Refresh()
                         --slider:NegativeRefresh()
@@ -3382,6 +3410,7 @@ function library:CreateWindow(name, size, hidebutton)
 
 
 				uis.InputChanged:Connect(function(input)
+                    if getgenv().disablefeatures == true then return end
 					if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
                         slider:Refresh()
                         --slider:NegativeRefresh()
@@ -3824,6 +3853,7 @@ function library:CreateWindow(name, size, hidebutton)
                         dropdown.ItemsFrame.CanvasSize = dropdown.ItemsFrame.CanvasSize + UDim2.fromOffset(0, Item.AbsoluteSize.Y)
     
                         Item.MouseButton1Down:Connect(function()
+                            if getgenv().disablefeatures == true then return end
                             if dropdown.multichoice then
                                 if dropdown:isSelected(v) then
                                     for i2, v2 in pairs(dropdown.values) do
@@ -3905,6 +3935,7 @@ function library:CreateWindow(name, size, hidebutton)
                     end
     
                     local MouseButton1Down = function()
+                        if getgenv().disablefeatures == true then return end
                         if dropdown.Nav.Rotation == 90 then
                             dropdown.ItemsFrame.ScrollingEnabled = true
                             sector.Main.Parent.ScrollingEnabled = false
@@ -4051,6 +4082,7 @@ function library:CreateWindow(name, size, hidebutton)
                 keybind.Bind.TextSize = 15
                 keybind.Bind.TextXAlignment = Enum.TextXAlignment.Right
                 keybind.Bind.MouseButton1Down:Connect(function()
+                    if getgenv().disablefeatures == true then return end
                     keybind.Bind.Text = "[...]"
                     keybind.Bind.TextColor3 = window.theme.accentcolor
                 end)
@@ -4374,6 +4406,7 @@ function library:CreateWindow(name, size, hidebutton)
                     dropdown.ItemsFrame.CanvasSize = dropdown.ItemsFrame.CanvasSize + UDim2.fromOffset(0, Item.AbsoluteSize.Y)
 
                     Item.MouseButton1Down:Connect(function()
+                        if getgenv().disablefeatures == true then return end
                         if dropdown.multichoice then
                             if dropdown:isSelected(v) then
                                 for i2, v2 in pairs(dropdown.values) do
@@ -4455,6 +4488,7 @@ function library:CreateWindow(name, size, hidebutton)
                 end
 
                 local MouseButton1Down = function()
+                    if getgenv().disablefeatures == true then return end
                     if dropdown.Nav.Rotation == 90 then
                         tweenservice:Create(dropdown.Nav, TweenInfo.new(0.1, Enum.EasingStyle.Linear, Enum.EasingDirection.In), { Rotation = -90 }):Play()
                         if dropdown.items and #dropdown.items ~= 0 then
