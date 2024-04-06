@@ -240,6 +240,7 @@ function library:CreateWindow(name, size, hidebutton)
 
     local updateevent = Instance.new("BindableEvent")
     function window:UpdateTheme(theme)
+        print('firied')
         updateevent:Fire(theme or library.theme)
         window.theme = (theme or library.theme)
     end
@@ -358,6 +359,10 @@ function library:CreateWindow(name, size, hidebutton)
     window.TopBar.InputChanged:Connect(dragend)
     updateevent.Event:Connect(function(theme)
         window.TopBar.Size = UDim2.fromOffset(window.size.X.Offset, theme.topheight)
+        if window.Frame:FindFirstChild('extraside') then 
+            local xAddition = window.Frame:FindFirstChild('extraside').Size.X.Offset + 6
+            window.TopBar.Size += UDim2.fromOffset(xAddition,0)
+        end
     end)
 
     window.TopGradient = Instance.new("UIGradient", window.TopBar)
@@ -457,7 +462,8 @@ function library:CreateWindow(name, size, hidebutton)
 
     window.OpenedColorPickers = { }
     window.Tabs = { }
-
+    local xAddition;
+    local offsetWas ;
     function window:CreateTab(name)
         local tab = { }
         tab.name = name or ""
@@ -524,69 +530,101 @@ function library:CreateWindow(name, size, hidebutton)
         tab.RightListPadding.PaddingLeft = UDim.new(0, 6)
         tab.RightListPadding.PaddingRight = UDim.new(0, 12)
 
-        local function createExtra()
-            tab.Extra = Instance.new("ScrollingFrame", window.Frame)  -- make var for extra then set tab.Extra to the var
-            tab.Extra.Name = "extraside"
-            tab.Extra.ScrollBarThickness = 0
-            tab.Extra.ScrollingDirection = "Y"
-            tab.Extra.Visible = false
-            tab.Extra.BorderSizePixel = 0
-            -- tab.Left.Size = UDim2.fromOffset(window.size.X.Offset / 3, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
-            -- tab.Right.Size = UDim2.fromOffset(window.size.X.Offset / 3, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
-             --UDim2.new(0.152,0,0,0) -- UDim2.fromOffset()--
-            -- window.size = UDim2.fromOffset(size.X+500, size.Y)
-            -- window.BlackOutline.Size = window.size + UDim2.fromOffset(2, 2)
-            -- window.Outline.Size = window.size + UDim2.fromOffset(4, 4)
-            -- window.BlackOutline2.Size = window.size + UDim2.fromOffset(6, 6)
-            -- window.TopBar.Size = UDim2.fromOffset(window.size.X.Offset, window.theme.topheight)
-            -- window.Line2.Size = UDim2.fromOffset(window.size.X.Offset, 1)
-            -- window.TabList.Size = UDim2.fromOffset(window.size.X.Offset, window.TopBar.AbsoluteSize.Y / 2)
-            -- window.BlackLine.Size = UDim2.fromOffset(window.size.X.Offset, 1)
-            -- window.BackgroundImage.Size = UDim2.fromOffset(window.size.X.Offset, window.size.Y.Offset - window.TopBar.AbsoluteSize.Y - 1)
-            -- window.Line.Size = UDim2.fromOffset(60, 1)
+        local function createExtra(n)
+            print(`removing status {n} and {xAddition}`)
+            if n == 'remove' and xAddition and window.Frame:FindFirstChild('extraside') then 
+                window.Frame:FindFirstChild('extraside').Visible = false
+                print('added, '..tostring(xAddition))
+                xAddition = -xAddition
+                print('removing, '..tostring(xAddition))
+                window.Frame.Size -= UDim2.fromOffset(offsetWas,0)
+                --xAddition = tab.Extra.Size.X.Offset - 6
+                window.Frame.top.Size += UDim2.fromOffset(xAddition,0)
+                window.Frame.top.line.Size += UDim2.fromOffset(xAddition,0)
+                window.Frame.blackline.Size += UDim2.fromOffset(xAddition,0)
+                for _,v in next, window.Frame:GetChildren() do 
+                    if v.Name == 'outline' then 
+                        if _==1 then 
+                            v.Size += UDim2.fromOffset(xAddition, 0) --1 rest are 1s
+                        elseif _ ==2 then 
+                            v.Size += UDim2.fromOffset(xAddition, 0) --2
+                        elseif _== 3 then 
+                            v.Size += UDim2.fromOffset(xAddition, 0) --1
+                        end 
+                    end 
+                end 
+                window.Frame.background.Size += UDim2.fromOffset(xAddition,0)
+                return
+            elseif n == 'remove' then 
 
-
-            -- tab.Left.Size = UDim2.fromOffset(window.size.X.Offset / 3, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
-            -- for _,v in next, tab.Left:GetChildren() do 
-            --     for kc,unewv in next, v:GetChildren() do 
-            --         if unewv.Name == 'items' then 
-            --             unewv.Size = tab.Left.Size
-            --         end 
-            --     end 
-            -- end 
-            -- tab.Right.Size = UDim2.fromOffset(window.size.X.Offset / 3, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
-
-
-
-
-            tab.Extra.Size = UDim2.fromOffset(window.size.X.Offset / 2, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
-            tab.Extra.BackgroundTransparency = 1
-            tab.Extra.Position = tab.Right.Position + UDim2.fromOffset(tab.Right.AbsoluteSize.X-2, 0)--tab.Right.Position + UDim2.fromOffset(10, 0)
+                return
+            end
+            if window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then return end
+            if not window.Frame:FindFirstChild('extraside') then 
+                print('new exter')
+                tab.Extra = Instance.new("ScrollingFrame", window.Frame)  -- make var for extra then set tab.Extra to the var
+                tab.Extra.Name = "extraside"
+                tab.Extra.ScrollBarThickness = 0
+                tab.Extra.ScrollingDirection = "Y"
+                tab.Extra.Visible = false
+                tab.Extra.BorderSizePixel = 0
+                -- tab.Left.Size = UDim2.fromOffset(window.size.X.Offset / 3, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
+                -- tab.Right.Size = UDim2.fromOffset(window.size.X.Offset / 3, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
+                 --UDim2.new(0.152,0,0,0) -- UDim2.fromOffset()--
+                -- window.size = UDim2.fromOffset(size.X+500, size.Y)
+                -- window.BlackOutline.Size = window.size + UDim2.fromOffset(2, 2)
+                -- window.Outline.Size = window.size + UDim2.fromOffset(4, 4)
+                -- window.BlackOutline2.Size = window.size + UDim2.fromOffset(6, 6)
+                -- window.TopBar.Size = UDim2.fromOffset(window.size.X.Offset, window.theme.topheight)
+                -- window.Line2.Size = UDim2.fromOffset(window.size.X.Offset, 1)
+                -- window.TabList.Size = UDim2.fromOffset(window.size.X.Offset, window.TopBar.AbsoluteSize.Y / 2)
+                -- window.BlackLine.Size = UDim2.fromOffset(window.size.X.Offset, 1)
+                -- window.BackgroundImage.Size = UDim2.fromOffset(window.size.X.Offset, window.size.Y.Offset - window.TopBar.AbsoluteSize.Y - 1)
+                -- window.Line.Size = UDim2.fromOffset(60, 1)
     
-            tab.ExtraListLayout = Instance.new("UIListLayout", tab.Extra)
-            tab.ExtraListLayout.FillDirection = Enum.FillDirection.Vertical
-            tab.ExtraListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-            tab.ExtraListLayout.Padding = UDim.new(0, 12)
     
-            tab.ExtraListPadding = Instance.new("UIPadding", tab.Extra)
-            tab.ExtraListPadding.PaddingTop = UDim.new(0, 12)
-            tab.ExtraListPadding.PaddingLeft = UDim.new(0, 6)
-            tab.ExtraListPadding.PaddingRight = UDim.new(0, 12)
+                -- tab.Left.Size = UDim2.fromOffset(window.size.X.Offset / 3, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
+                -- for _,v in next, tab.Left:GetChildren() do 
+                --     for kc,unewv in next, v:GetChildren() do 
+                --         if unewv.Name == 'items' then 
+                --             unewv.Size = tab.Left.Size
+                --         end 
+                --     end 
+                -- end 
+                -- tab.Right.Size = UDim2.fromOffset(window.size.X.Offset / 3, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
+    
+    
+    
+    
+                tab.Extra.Size = UDim2.fromOffset(window.size.X.Offset / 2, window.size.Y.Offset - (window.TopBar.AbsoluteSize.Y + 1))
+                tab.Extra.BackgroundTransparency = 1
+                tab.Extra.Position = tab.Right.Position + UDim2.fromOffset(tab.Right.AbsoluteSize.X-2, 0)--tab.Right.Position + UDim2.fromOffset(10, 0)
+        
+                tab.ExtraListLayout = Instance.new("UIListLayout", tab.Extra)
+                tab.ExtraListLayout.FillDirection = Enum.FillDirection.Vertical
+                tab.ExtraListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                tab.ExtraListLayout.Padding = UDim.new(0, 12)
+        
+                tab.ExtraListPadding = Instance.new("UIPadding", tab.Extra)
+                tab.ExtraListPadding.PaddingTop = UDim.new(0, 12)
+                tab.ExtraListPadding.PaddingLeft = UDim.new(0, 6)
+                tab.ExtraListPadding.PaddingRight = UDim.new(0, 12)
+            end
 
-
+            offsetWas = tab.Extra.Size.X.Offset/3
             window.Frame.Size += UDim2.fromOffset(tab.Extra.Size.X.Offset/3,0)
-            local xAddition = tab.Extra.Size.X.Offset + 6
+            xAddition = tab.Extra.Size.X.Offset + 6
             window.Frame.top.Size += UDim2.fromOffset(xAddition,0)
             window.Frame.top.line.Size += UDim2.fromOffset(xAddition,0)
             window.Frame.blackline.Size += UDim2.fromOffset(xAddition,0)
             for _,v in next, window.Frame:GetChildren() do 
                 if v.Name == 'outline' then 
                     if _==1 then 
-                        v.Size += UDim2.fromOffset(xAddition, 1)
+                        v.Size += UDim2.fromOffset(xAddition, 0)-- 1
                     elseif _ ==2 then 
-                        v.Size += UDim2.fromOffset(xAddition, 2)
+                        v.Size += UDim2.fromOffset(xAddition, 0) -- 2
                     elseif _== 3 then 
-                        v.Size += UDim2.fromOffset(xAddition,1)
+                        v.Size += UDim2.fromOffset(xAddition, 0)--1
                     end 
                 end 
             end 
@@ -594,13 +632,15 @@ function library:CreateWindow(name, size, hidebutton)
 
 
             tab.Extra.Visible = true
+            task.delay(2,function()
+                --window.TopBar.Size += UDim2.fromOffset(xAddition, window.theme.topheight)
+            end)
 
 
 
 
 
-
-
+            tab.Extra.Visible = true
 
 
 
@@ -633,7 +673,11 @@ function library:CreateWindow(name, size, hidebutton)
             tab.Right.Visible = true
             tab.Left.Visible = true
             if tab.Extra then 
-                tab.Extra.Visible = true
+                createExtra()
+                --tab.Extra.Visible = true
+            else
+                print('SUPPOSED TO REMOVE')
+                createExtra('remove')
             end 
             window.Line:TweenSizeAndPosition(UDim2.fromOffset(size.X + 15, 1), UDim2.new(0, (tab.TabButton.AbsolutePosition.X - window.Frame.AbsolutePosition.X), 0, 0) + (window.BlackLine.Position - UDim2.fromOffset(0, 1)), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.15)
             wait(0.2)
@@ -668,6 +712,7 @@ function library:CreateWindow(name, size, hidebutton)
                 if tab.Extra  == nil then 
                     createExtra()
                 end 
+                tab.needsextra = true;
                 tabg = tab.Extra; 
         
             end
@@ -4484,10 +4529,30 @@ function library:CreateWindow(name, size, hidebutton)
                 makefolder(configSystem.configFolderDomain .. '/' .. configSystem.configs)
             end
 
-
+            --[[
+                    cursor = false,
+                    cursorimg = "https://t0.rbxcdn.com/42f66da98c40252ee151326a82aab51f",
+                    backgroundcolor = Color3.fromRGB(20, 20, 20),
+                    tabstextcolor = Color3.fromRGB(240, 240, 240),
+                    bordercolor = Color3.fromRGB(60, 60, 60),
+                    accentcolor = Color3.fromRGB(28, 56, 139),
+                    accentcolor2 = Color3.fromRGB(16, 31, 78),
+                    outlinecolor = Color3.fromRGB(60, 60, 60),
+                    outlinecolor2 = Color3.fromRGB(0, 0, 0),
+                    sectorcolor = Color3.fromRGB(30, 30, 30),
+                    toptextcolor = Color3.fromRGB(255, 255, 255),
+                    topheight = 48,
+                    topcolor = Color3.fromRGB(30, 30, 30),
+                    topcolor2 = Color3.fromRGB(30, 30, 30),
+                    buttoncolor = Color3.fromRGB(49, 49, 49),
+                    buttoncolor2 = Color3.fromRGB(39, 39, 39),
+                    itemscolor = Color3.fromRGB(200, 200, 200),
+                    itemscolor2 = Color3.fromRGB(210, 210, 210)
+            ]]
 
 
             configSystem.sector = tab:CreateSector("Configs", side or "left")
+            configSystem.rightsector = tab:CreateSector('Configs', 'right')
             local gname = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
             local ConfigName = configSystem.sector:AddTextbox("Config Name", "", ConfigName, function() end, "")
             local default = 'default' --tostring(listfiles(configSystem.ConfigsDirectory)[1] or ""):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", "")
@@ -4501,6 +4566,70 @@ function library:CreateWindow(name, size, hidebutton)
                     Config:Add(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
                 end
             end
+
+            local function clientUpdTheme()
+                if getgenv().watermark then 
+                    getgenv().watermark:UpdateTheme()
+                end
+                window:UpdateTheme(library['theme'])
+            end
+            local theme = library.theme;
+            configSystem.rightsector:AddColorpicker('Accent Colour 1', theme.accentcolor , function(ztx)
+                library['theme']['accentcolor'] = ztx
+                clientUpdTheme() -- if flag, updtheme then upd theme
+            end)
+            configSystem.rightsector:AddColorpicker('Accent Colour 2',theme.accentcolor2, function(ztx)
+                library['theme']['accentcolor2'] = ztx
+                clientUpdTheme() -- if flag, updtheme then upd theme
+            end)
+            configSystem.rightsector:AddColorpicker('Background Colour',theme.backgroundcolor, function(ztx)
+                library['theme']['backgroundcolor'] = ztx
+                clientUpdTheme()
+            end)
+            configSystem.rightsector:AddColorpicker('Outline Colour 1',theme.outlinecolor, function(ztx)
+                library['theme']['outlinecolor'] = ztx
+                clientUpdTheme()
+            end)
+            configSystem.rightsector:AddColorpicker('Outline Colour 2',theme.outlinecolor2, function(ztx)
+                library['theme']['outlinecolor2'] = ztx
+                clientUpdTheme()
+            end)
+            configSystem.rightsector:AddColorpicker('Sector Colour',theme.sectorcolor, function(ztx)
+                library['theme']['sectorcolor'] = ztx
+                clientUpdTheme()
+            end)
+            configSystem.rightsector:AddColorpicker('Title Colour', theme.toptextcolor , function(ztx)
+                library['theme']['toptextcolor'] = ztx
+                clientUpdTheme()
+            end)
+            configSystem.rightsector:AddSlider('Topbar Height', 0, theme.topheight, 60, 1 , function(ztx)
+                library['theme']['topheight'] = ztx
+                clientUpdTheme()
+            end)
+            configSystem.rightsector:AddColorpicker('Top Colour 1', theme.topcolor , function(ztx)
+                library['theme']['topcolor'] = ztx
+                clientUpdTheme()
+            end)
+            configSystem.rightsector:AddColorpicker('Top Colour 2', theme.topcolor2 , function(ztx)
+                library['theme']['topcolor2'] = ztx
+                clientUpdTheme()
+            end)
+            configSystem.rightsector:AddColorpicker('Button Colour 1', theme.buttoncolor , function(ztx)
+                library['theme']['buttoncolor'] = ztx
+                clientUpdTheme()
+            end)
+            configSystem.rightsector:AddColorpicker('Button Colour 2', theme.buttoncolor2 , function(ztx)
+                library['theme']['buttoncolor2'] = ztx
+                clientUpdTheme()
+            end)
+            configSystem.rightsector:AddColorpicker('Items Colour 1', theme.itemscolor , function(ztx)
+                library['theme']['itemscolor'] = ztx
+                clientUpdTheme()
+            end)
+            configSystem.rightsector:AddColorpicker('Items Colour 2', theme.itemscolor2 , function(ztx)
+                library['theme']['itemscolor2'] = ztx
+                clientUpdTheme()
+            end)
             local autoloadfile = nil 
             local autoloadindex = configSystem.ConfigsDirectory .. '/' .. 'settings.conf' 
             local autoloadsetting = false 
