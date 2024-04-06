@@ -1,9 +1,10 @@
 setthreadidentity(7)
 -- insert troll face, memcorruptv2
-getgenv().library = { 
+local library = { 
 	flags = { }, 
 	items = { } 
 }
+--local library = getgenv().library
 
 -- Services
 local players = game:GetService("Players")
@@ -20,6 +21,31 @@ local mouse = player:GetMouse()
 local camera = game.Workspace.CurrentCamera
 getgenv().disablefeatures =false
 library.theme = {
+    fontsize = 15,
+    titlesize = 18,
+    font = Enum.Font.Code,
+    background = "rbxassetid://5553946656", -- rbxassetid://2454009026 5553946656
+    tilesize = 500, -- 30
+    cursor = false,
+    cursorimg = "https://t0.rbxcdn.com/42f66da98c40252ee151326a82aab51f",
+    backgroundcolor = Color3.fromRGB(20, 20, 20),
+    tabstextcolor = Color3.fromRGB(240, 240, 240),
+    bordercolor = Color3.fromRGB(60, 60, 60),
+    accentcolor = Color3.fromRGB(28, 56, 139),
+    accentcolor2 = Color3.fromRGB(16, 31, 78),
+    outlinecolor = Color3.fromRGB(60, 60, 60),
+    outlinecolor2 = Color3.fromRGB(0, 0, 0),
+    sectorcolor = Color3.fromRGB(30, 30, 30),
+    toptextcolor = Color3.fromRGB(255, 255, 255),
+    topheight = 48,
+    topcolor = Color3.fromRGB(30, 30, 30),
+    topcolor2 = Color3.fromRGB(30, 30, 30),
+    buttoncolor = Color3.fromRGB(49, 49, 49),
+    buttoncolor2 = Color3.fromRGB(39, 39, 39),
+    itemscolor = Color3.fromRGB(200, 200, 200),
+    itemscolor2 = Color3.fromRGB(210, 210, 210)
+}
+library.defaulttheme = {
     fontsize = 15,
     titlesize = 18,
     font = Enum.Font.Code,
@@ -271,6 +297,7 @@ function library:CreateWatermark(name, position)
     if getgenv().watermark then
         getgenv().watermark:Remove()
     end
+    getgenv().watermarktable = watermark
     getgenv().watermark = watermark.main
     
     watermark.mainbar = Instance.new("Frame", watermark.main)
@@ -424,7 +451,7 @@ function library:CreateWindow(name, size, hidebutton)
 
     local updateevent = Instance.new("BindableEvent")
     function window:UpdateTheme(theme)
-        print('firied')
+        --print('firied')
         updateevent:Fire(theme or library.theme)
         window.theme = (theme or library.theme)
     end
@@ -2099,6 +2126,7 @@ function library:CreateWindow(name, size, hidebutton)
                 function toggle:AddColorpicker(default, callback, flag)
                     local colorpicker = { }
 
+                    colorpicker.iscolorpicker = true;
                     colorpicker.callback = callback or function() end
                     colorpicker.default = default or Color3.fromRGB(255, 255, 255)
                     colorpicker.value = colorpicker.default
@@ -3372,6 +3400,7 @@ function library:CreateWindow(name, size, hidebutton)
             function sector:AddColorpicker(text, default, callback, flag)
                 local colorpicker = { }
 
+                colorpicker.iscolorpicker = true;
                 colorpicker.text = text or ""
                 colorpicker.callback = callback or function() end
                 colorpicker.default = default or Color3.fromRGB(255, 255, 255)
@@ -4601,8 +4630,8 @@ function library:CreateWindow(name, size, hidebutton)
             end
 
             local function clientUpdTheme()
-                if getgenv().watermark then 
-                    getgenv().watermark:UpdateTheme()
+                if getgenv().watermarktable then 
+                   getgenv().watermarktable:UpdateTheme(library['theme'])
                 end
                 window:UpdateTheme(library['theme'])
             end
@@ -4663,6 +4692,9 @@ function library:CreateWindow(name, size, hidebutton)
                 library['theme']['itemscolor2'] = ztx
                 clientUpdTheme()
             end)
+            configSystem.rightsector:AddToggle('Watermark', false, function(e)
+                getgenv().watermarktable:SetState(e == false and 'Disable' or 'Active')
+            end)
             configSystem.rightsector:AddButton('Reset Keybinds',function()
                 if window.Tabs then 
                     for i, item in next, library.items do 
@@ -4686,6 +4718,22 @@ function library:CreateWindow(name, size, hidebutton)
                     ]]
                 end
             end) -- configurations
+            configSystem.rightsector:AddButton('Reset Theme',function() -- Colors, the em
+                library.theme = library.defaulttheme -- theme --
+                for i,v in next, library.theme do 
+                    if library.defaulttheme[i] ~= v then 
+                        print('should swap, '..i)
+                    else
+                        print(library.defaulttheme[i],v)
+                    end
+                end
+                for i,v in next, library.items do 
+                    if type(v) == 'table' and v.iscolorpicker then 
+                        v:Set(v.default)
+                    end
+                end
+                clientUpdTheme()
+            end)
             local autoloadfile = nil 
             local autoloadindex = configSystem.ConfigsDirectory .. '/' .. 'settings.conf' 
             local autoloadsetting = false 
@@ -4799,6 +4847,7 @@ function library:CreateWindow(name, size, hidebutton)
                     uniqueTable = httpservice:JSONDecode(currentconfig); --{};
                 end)
                 if uniqueTable == nil then 
+                    print('was nil so reset')
                     uniqueTable = {}
                 end
                 uniqueTable[tostring(universeId)] = config
