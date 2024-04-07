@@ -2800,6 +2800,7 @@ function library:CreateWindow(name, size, hidebutton)
                             keybind.value = key
                             if keybind.flag and keybind.flag ~= "" then
                                 library.flags[keybind.flag] = keybind.value
+                                print('setting '..keybind.flag..' to '..tostring(keybind.value))
                             end
                         end
 
@@ -4843,9 +4844,9 @@ function library:CreateWindow(name, size, hidebutton)
                 --warn('key press..'..string.split(tostring(menubtton:GetKeybind()),'.')[3])
                 if menubtton:GetKeybind() ~= nil and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton1 and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton2 then 
                     window.hidebutton = menubtton:GetKeybind()
-                    print(menubtton:GetKeybind())
+                    --print(menubtton:GetKeybind())
                 else
-                    print(menubtton:GetKeybind())
+                    --print(menubtton:GetKeybind())
                 end
             end
             menubtton:keychangedmethod(awlafwa)
@@ -4862,11 +4863,18 @@ function library:CreateWindow(name, size, hidebutton)
                             config[i] = { v.R, v.G, v.B }
                         elseif (tostring(v):find("Enum.KeyCode")) then
                             config[i] = "Enum.KeyCode." .. v.Name
+                        elseif (tostring(v):find("Enum.UserInputType")) then
+                            config[i] = "Enum.UserInputType." .. v.Name
                         elseif (typeof(v) == "table") then
                             config[i] = { v }
                         else
                             config[i] = v
                         end
+                    end
+                end
+                for i,v in next, config do 
+                    if tostring(v):find('InputType') then 
+                        print(i,v)
                     end
                 end
                 -- read current config
@@ -4998,21 +5006,56 @@ function library:CreateWindow(name, size, hidebutton)
                                 actualread = v
                             end
                         end
-    
                         for i,v in pairs(actualread) do
-                            if (typeof(v) == "table") then
+                            if tostring(v):find('Enum.UserInput') then 
+                                --print(i,v,'cuz of input')
+                                --print('keybind loading input type,',tostring(v):gsub("Enum.UserInputType.", ""))
+                                local getConv = string.gsub(tostring(v),'Enum.UserInputType.','')
+                                --print('input to '..getConv)
+                                --print(Enum.KeyCode[getConv])
+                                NewConfig[i] = Enum.UserInputType[getConv]
+                            elseif (typeof(v) == "table") then
                                 if (typeof(v[1]) == "number") then
                                     NewConfig[i] = Color3.new(v[1], v[2], v[3])
                                 elseif (typeof(v[1]) == "table") then
                                     NewConfig[i] = v[1]
                                 end
                             elseif (tostring(v):find("Enum.KeyCode.")) then
+                                --print('cuz of keycode')
                                 NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                            -- elseif (tostring(v):find("Enum.UserInput")) then -- Type.
+                            --     NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.UserInputType.", "")]
+                            --     print('userinput '..i,v) -- USERINPUT T YPE, 
                             else
+                                --print('set it other',i,v)
                                 NewConfig[i] = v
                             end
                         end
-    
+                        -- for i,v in pairs(actualread) do
+                        --     if tostring(v):find('Enum.UserInput') then 
+                        --         --print(i,v,'cuz of input')
+                        --         print('loading input type')
+                        --         NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.UserInputType.", "")]
+                        --     elseif (typeof(v) == "table") then
+                        --         if (typeof(v[1]) == "number") then
+                        --             NewConfig[i] = Color3.new(v[1], v[2], v[3])
+                        --         elseif (typeof(v[1]) == "table") then
+                        --             NewConfig[i] = v[1]
+                        --         end
+                        --     elseif (tostring(v):find("Enum.KeyCode.")) then
+                        --         --print('cuz of keycode')
+                        --         NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                        --     -- elseif (tostring(v):find("Enum.UserInput")) then -- Type.
+                        --     --     NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.UserInputType.", "")]
+                        --     --     print('userinput '..i,v) -- USERINPUT T YPE, 
+                        --     else
+                        --         --print('set it other',i,v)
+                        --         NewConfig[i] = v
+                        --     end
+                        -- end
+                        -- for i,v in next, NewConfig do 
+                        --     print(i,v)
+                        -- end
                         library.flags = NewConfig
     
                         for i,v in pairs(library.flags) do
@@ -5020,6 +5063,7 @@ function library:CreateWindow(name, size, hidebutton)
                                 if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
                                     if (v2.flag == i) then
                                         pcall(function() 
+                                            print(i,v)
                                             -- if v2:Get() ~= v then 
                                             --     v2:Set(v)
                                             -- end
@@ -5116,21 +5160,49 @@ function library:CreateWindow(name, size, hidebutton)
                                 actualread = v
                             end
                         end
-    
                         for i,v in pairs(actualread) do
-                            if (typeof(v) == "table") then
+                            if tostring(v):find('Enum.UserInput') then 
+                                --print(i,v,'cuz of input')
+                                --print('keybind loading input type,',tostring(v):gsub("Enum.UserInputType.", ""))
+                                local getConv = string.gsub(tostring(v),'Enum.UserInputType.','')
+                                --print('input to '..getConv)
+                                --print(Enum.KeyCode[getConv])
+                                NewConfig[i] = Enum.UserInputType[getConv]
+                            elseif (typeof(v) == "table") then
                                 if (typeof(v[1]) == "number") then
                                     NewConfig[i] = Color3.new(v[1], v[2], v[3])
                                 elseif (typeof(v[1]) == "table") then
                                     NewConfig[i] = v[1]
                                 end
                             elseif (tostring(v):find("Enum.KeyCode.")) then
+                                --print('cuz of keycode')
                                 NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                            -- elseif (tostring(v):find("Enum.UserInput")) then -- Type.
+                            --     NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.UserInputType.", "")]
+                            --     print('userinput '..i,v) -- USERINPUT T YPE, 
                             else
+                                --print('set it other',i,v)
                                 NewConfig[i] = v
                             end
                         end
-    
+                        -- for i,v in pairs(actualread) do
+                        --     if (typeof(v) == "table") then
+                        --         if (typeof(v[1]) == "number") then
+                        --             NewConfig[i] = Color3.new(v[1], v[2], v[3])
+                        --         elseif (typeof(v[1]) == "table") then
+                        --             NewConfig[i] = v[1]
+                        --         end
+                        --     elseif (tostring(v):find("Enum.KeyCode.")) then
+                        --         NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                        --     elseif (tostring(v):find("Enum.UserInputType.")) then
+                        --         NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.UserInputType.", "")]
+                        --     else
+                        --         NewConfig[i] = v
+                        --     end
+                        -- end
+                        -- for i,v in next, NewConfig do 
+                          --  print(i,v)
+                        -- end
                         library.flags = NewConfig
     
                         for i,v in pairs(library.flags) do
@@ -5138,6 +5210,10 @@ function library:CreateWindow(name, size, hidebutton)
                                 if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
                                     if (v2.flag == i) then
                                         pcall(function() 
+                                            if tostring(v):find('Enum') then 
+                                                print(i,' is a keybind being set to ',tostring(v))
+                                            end
+                                            --print(v)
                                             -- if v2:Get() ~= v then 
                                             --     v2:Set(v)
                                             -- end
