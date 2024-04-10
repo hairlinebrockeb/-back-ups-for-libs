@@ -1570,7 +1570,7 @@ function library:CreateWindow(name, size, hidebutton)
                     makevisible.Main.Visible = true;
                     -- table.insert(visiblestuff,makevisible)
                 end
-                function toggle:Set(value) 
+                function toggle:Set(value, wasclicked) 
                     local prevValue  = toggle.value -- valye 
                     toggle.value = value
                     toggle.CheckedFrame.Visible = value
@@ -1580,7 +1580,7 @@ function library:CreateWindow(name, size, hidebutton)
                     if prevValue ~= value then 
                         toggle:MakeActiveToValue() 
                     end
-                    pcall(toggle.callback, value)
+                    pcall(toggle.callback, value, wasclicked) -- wasclciked
                 end
                 function toggle:Get() 
                     return toggle.value
@@ -2580,7 +2580,7 @@ function library:CreateWindow(name, size, hidebutton)
 
                 toggle.Main.MouseButton1Down:Connect(function()
                     if getgenv().disablefeatures == true then return end
-                    toggle:Set(not toggle.CheckedFrame.Visible)
+                    toggle:Set(not toggle.CheckedFrame.Visible, true)
                 end)
                 toggle.Label.InputBegan:Connect(function(input)
                     if getgenv().disablefeatures == true then return end
