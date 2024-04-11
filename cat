@@ -109,6 +109,7 @@ function library:CheckForPermission(info)
     end
     if not window then return print('no window') end
     local text = type(info) == 'string' and info or info and info.ask
+    print(text)
     if not text then return print('no next given, '..tostring(text)) end;
     local yesI = type(info) == 'table' and info and info.accept or 'Yes'
     local noI = type(info) == 'table' and info and info.reject or 'No'
@@ -117,7 +118,7 @@ function library:CheckForPermission(info)
     local cover = Instance.new('Frame')	
     --cover.Size = window.Frame.Size	
     cover.Size = UDim2.fromOffset(window.size.X.Offset, window.size.Y.Offset)
-    if window.Frame:FindFirstChild('extraside') then 
+    if window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then 
         local xAddition = window.Frame:FindFirstChild('extraside').Size.X.Offset + 6
         cover.Size += UDim2.fromOffset(xAddition,0)
     end
@@ -226,13 +227,19 @@ function library:CheckForPermission(info)
     label.Main.Position = UDim2.new(0,cover.Size.X.Offset/2,0,cover.Size.Y.Offset/2-50)         -- 185   
     label.Main.ZIndex = 200
     label.Main.Font = window.theme.font
-    label.Main.Text = info.ask
+    label.Main.Text = text; --info.ask
     label.Main.TextColor3 = Color3.new(255, 255, 255)-- window.theme.itemscolor
     label.Main.TextSize = 15
     label.Main.TextStrokeTransparency = 1
     label.Main.TextXAlignment = Enum.TextXAlignment.Center
 
 
+    local YesDelay = 25;
+    local NoDelay = 100;
+    if window.Frame:FindFirstChild('extraside').Visible == false then 
+        NoDelay = -5;
+        YesDelay = -75
+    end 
 
     local yes = {}	
     yes.Main = Instance.new("TextButton", cover)
@@ -243,7 +250,7 @@ function library:CheckForPermission(info)
     yes.Main.TextColor3 = Color3.fromRGB(255,255,255)
     yes.Main.ZIndex = 200
     yes.Main.Size = UDim2.new(0,75,0,25)                
-    yes.Main.Position = UDim2.fromOffset(LinesNeededtoCreateNew + 25, cover.Size.Y.Offset/2); --UDim2.new(0,cover.Size.X.Offset/3.1,0,cover.Size.Y.Offset/2) -- cover.Position.X.Offset to 160            
+    yes.Main.Position = UDim2.fromOffset(LinesNeededtoCreateNew + YesDelay, cover.Size.Y.Offset/2); --UDim2.new(0,cover.Size.X.Offset/3.1,0,cover.Size.Y.Offset/2) -- cover.Position.X.Offset to 160            
     -- yes.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     -- yes.Gradient = Instance.new("UIGradient", yes.Main)
     -- yes.Gradient.Rotation = 90
@@ -261,7 +268,7 @@ function library:CheckForPermission(info)
     no.Main.TextColor3 = Color3.fromRGB(255,255,255)
     no.Main.ZIndex = 200
     no.Main.Size = UDim2.new(0,75,0,25)                
-    no.Main.Position = UDim2.fromOffset(LinesNeededtoCreateNew + 100 , cover.Size.Y.Offset/2); --UDim2.new(0,yes.Main.Position.X.Offset+100,0,cover.Size.Y.Offset/2)             
+    no.Main.Position = UDim2.fromOffset(LinesNeededtoCreateNew + NoDelay , cover.Size.Y.Offset/2); --UDim2.new(0,yes.Main.Position.X.Offset+100,0,cover.Size.Y.Offset/2)             
     -- no.Main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     -- no.Gradient = Instance.new("UIGradient", no.Main)
     -- no.Gradient.Rotation = 90
@@ -4874,7 +4881,7 @@ function library:CreateWindow(name, size, hidebutton)
                 end
                 for i,v in next, config do 
                     if tostring(v):find('InputType') then 
-                        print(i,v)
+                        --print(i,v)
                     end
                 end
                 -- read current config
