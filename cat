@@ -762,7 +762,7 @@ function library:CreateWindow(name, size, hidebutton)
 
         local function createExtra(n)
             print(`removing status {n} and {xAddition}`)
-            if n == 'remove' and xAddition and window.Frame:FindFirstChild('extraside') then 
+            if n == 'remove' and xAddition and window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then 
                 window.Frame:FindFirstChild('extraside').Visible = false
                 print('added, '..tostring(xAddition))
                 xAddition = -xAddition
