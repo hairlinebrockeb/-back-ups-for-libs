@@ -294,7 +294,7 @@ function library:CheckForPermission(info)
         print('did no')
     end)
     repeat task.wait() until b ~= nil
-    print('returned')
+    --print('returned')
     return b
 end
 
@@ -1579,6 +1579,14 @@ function library:CreateWindow(name, size, hidebutton)
                 end
                 function toggle:Set(value, wasclicked) 
                     local prevValue  = toggle.value -- valye 
+                    local info = toggle.info -- ifno
+                    if wasclicked and value == true and info then 
+                        if info.shouldcheck ~= nil then  -- check
+                            if library:CheckForPermission({ask = info.ask}) == false  then 
+                                return
+                            end
+                        end
+                    end
                     toggle.value = value
                     toggle.CheckedFrame.Visible = value
                     if toggle.flag and toggle.flag ~= "" then
@@ -1587,8 +1595,12 @@ function library:CreateWindow(name, size, hidebutton)
                     if prevValue ~= value then 
                         toggle:MakeActiveToValue() 
                     end
+                    print('was clicked '..tostring(wasclicked))
                     pcall(toggle.callback, value, wasclicked) -- wasclciked
                 end
+                function toggle:revert(value)
+                    toggle.CheckedFrame.Visible = value
+                end;
                 function toggle:Get() 
                     return toggle.value
                 end
@@ -2587,12 +2599,13 @@ function library:CreateWindow(name, size, hidebutton)
 
                 toggle.Main.MouseButton1Down:Connect(function()
                     if getgenv().disablefeatures == true then return end
+                    print('setting')
                     toggle:Set(not toggle.CheckedFrame.Visible, true)
                 end)
                 toggle.Label.InputBegan:Connect(function(input)
                     if getgenv().disablefeatures == true then return end
                     if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                        toggle:Set(not toggle.CheckedFrame.Visible)
+                        toggle:Set(not toggle.CheckedFrame.Visible, true)
                     end
                 end)
 
