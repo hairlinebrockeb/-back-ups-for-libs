@@ -236,7 +236,7 @@ function library:CheckForPermission(info)
 
     local YesDelay = 25;
     local NoDelay = 100;
-    if window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == false then 
+    if not window.Frame:FindFirstChild('extraside') or window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == false then 
         NoDelay = -5;
         YesDelay = -75
     end 
