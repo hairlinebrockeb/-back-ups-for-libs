@@ -4817,7 +4817,7 @@ function library:CreateWindow(name, size, hidebutton)
                 warn('didnt work')
                 local tablepack = {
                     autoload = false;
-                    fileautoload = '';
+                    fileautoload = 'default';
                 }
                 writefile(autoloadindex,httpservice:JSONEncode(tablepack))
             end
