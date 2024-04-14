@@ -4903,12 +4903,15 @@ function library:CreateWindow(name, size, hidebutton)
 
                 --writefile(configSystem.configFolder.. "/"..gname .. Config:Get() .. ".txt", httpservice:JSONEncode(config))
                 --config = {universeId} = config
-                local currentconfig = readfile(configSystem.ConfigsDirectory..'/'..configwriting..".txt")
+                --if not pcall(readfile, configSystem.ConfigsDirectory..'/'..configwriting..".txt") then 
+
+                --end
+                local _, currentconfig = pcall(readfile, configSystem.ConfigsDirectory..'/'..configwriting..".txt")
                 local uniqueTable = nil;
                 pcall(function()
                     uniqueTable = httpservice:JSONDecode(currentconfig); --{};
                 end)
-                if uniqueTable == nil then 
+                if uniqueTable == nil or _ == false then 
                     print('was nil so reset')
                     uniqueTable = {}
                 end
