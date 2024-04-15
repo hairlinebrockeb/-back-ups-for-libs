@@ -2,8 +2,28 @@ setthreadidentity(7)
 -- insert troll face, memcorruptv2
 local library = { 
 	flags = { }, 
-	items = { } 
+	items = { },
+    configurations = {},
+    __configurations = {};
 }
+
+setmetatable(library.configurations, {
+    __index = function(table, key)
+        if not __configurations[key] then 
+            print('@configurations, no key associated')
+            return
+        end
+        return __configurations[key].value
+    end;
+})  -- if library.configurations.
+--[[
+    :addtoggle('new toggle')
+    if library.configurations.new_toggle then 
+
+    else
+        return print('toggle off')
+    end 
+]]
 --local library = getgenv().library
 
 -- Services
@@ -1329,6 +1349,14 @@ function library:CreateWindow(name, size, hidebutton)
                 toggle.default = default or false
                 toggle.callback = callback or function(value) end
                 toggle.flag = flag or text or ""
+
+                local convertedconfigtext = toggle.text;
+                for i=1, string.len(convertedconfigtext) do 
+                    if convertedconfigtext:sub(i,i) == ' ' then -- Too Tact
+                        convertedconfigtext = convertedconfigtext:sub(1,i-1)..'_'convertedconfigtext:sub(i+1,string.len(convertedconfigtext))
+                    end
+                end
+                library.__configurations[convertedconfigtext] = toggle
                 
                 toggle.value = toggle.default
 
@@ -4678,6 +4706,7 @@ function library:CreateWindow(name, size, hidebutton)
             local default = 'default' --tostring(listfiles(configSystem.ConfigsDirectory)[1] or ""):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", "")
             local worked,notwork = pcall(function()
                 default = httpservice:JSONDecode(readfile(autoloadindex))['fileautoload']
+                print(default)
             end)
 
             
@@ -4685,6 +4714,7 @@ function library:CreateWindow(name, size, hidebutton)
             -- print('default '..default)
             local selectedConfig = ''
             local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function(xconfig) selectedConfig = xconfig;  end, "") -- print(selectedConfig)
+            Config:Set(default)
             -- make the config dropdown instantly set to the previous one
             for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                 -- print(i,v)
