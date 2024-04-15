@@ -4823,6 +4823,7 @@ function library:CreateWindow(name, size, hidebutton)
                 writefile(autoloadindex,httpservice:JSONEncode(tablepack))
             end
             
+            local beenset = false
             configSystem.AutoLoad = configSystem.sector:AddToggle('Auto Load',autoloadfile['autoload'],function(xtate)
                 local Success = Config:Get()-- pcall(readfile, Config:Get())
                 if Success and Config:Get() ~= 'settings.conf' then 
@@ -4832,7 +4833,9 @@ function library:CreateWindow(name, size, hidebutton)
                     }
                     writefile(autoloadindex,httpservice:JSONEncode(pack))
                     autoloadfile = pack; --httpservice:JSONDecode(readfile(autoloadindex)) -- if false save the file its autoloading and check if the index name is autoload then set to this autoload value 
-                    configevent:Fire('setautoloadf')
+                    if beenset == false then 
+                        configevent:Fire('setautoloadf')
+                    end
                 end
             end,'AUTOLOADNOSAVEMENT')
             configSystem.AutoLoad:Set(autoloadfile['autoload'])
@@ -5014,7 +5017,7 @@ function library:CreateWindow(name, size, hidebutton)
                 --     end
                 end
             end)
-
+            -- ToOurPosition
             configSystem.Load = configSystem.sector:AddButton("Load", function()
                 local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt")
                 local SuccessDropdown = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. selectedConfig .. ".txt")
@@ -5026,7 +5029,7 @@ function library:CreateWindow(name, size, hidebutton)
                         warn('loading func')
                         for i,v in next, ReadConfig do 
                             print(i,universeId)
-                            if i == tostring(universeId) then
+                            if tostring(i) == tostring(universeId) then
                                 print('loading save in universe')
                                 actualread = v
                             end
@@ -5181,7 +5184,7 @@ function library:CreateWindow(name, size, hidebutton)
                             local NewConfig = {}
                             local actualread = {}
                             for i,v in next, ReadConfig do 
-                                if i == tostring(universeId) then
+                                if tostring(i) == tostring(universeId) then
                                     print('loading save in universe')
                                     actualread = v
                                 end
@@ -5258,6 +5261,7 @@ function library:CreateWindow(name, size, hidebutton)
                 if b == 'setautoloadf' then 
                     autoLoad()
                 end
+                beenset = true
             end)
             --
 
