@@ -1273,7 +1273,7 @@ function library:CreateWindow(name, size, hidebutton)
                     button.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
                     -- HINT
                     if button.hint == true then 
-                        print('added hint')
+                        --print('added hint')
                         knowledge = button:AddKnowledgeButton()
                         knowledge.label.Text = button.knowledgemessage
                     end
@@ -1596,7 +1596,7 @@ function library:CreateWindow(name, size, hidebutton)
                     if prevValue ~= value then 
                         toggle:MakeActiveToValue() 
                     end
-                    print('was clicked '..tostring(wasclicked))
+                    --print('was clicked '..tostring(wasclicked))
                     pcall(toggle.callback, value, wasclicked) -- wasclciked
                 end
                 function toggle:revert(value)
@@ -2600,7 +2600,7 @@ function library:CreateWindow(name, size, hidebutton)
 
                 toggle.Main.MouseButton1Down:Connect(function()
                     if getgenv().disablefeatures == true then return end
-                    print('setting')
+                    --print('setting')
                     toggle:Set(not toggle.CheckedFrame.Visible, true)
                 end)
                 toggle.Label.InputBegan:Connect(function(input)
@@ -4673,7 +4673,15 @@ function library:CreateWindow(name, size, hidebutton)
             configSystem.rightsector = tab:CreateSector('Configs', 'right')
             local gname = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
             local ConfigName = configSystem.sector:AddTextbox("Config Name", "", ConfigName, function() end, "")
+            local autoloadindex = configSystem.ConfigsDirectory .. '/' .. 'settings.conf' 
+
             local default = 'default' --tostring(listfiles(configSystem.ConfigsDirectory)[1] or ""):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", "")
+            local worked,notwork = pcall(function()
+                default = httpservice:JSONDecode(readfile(autoloadindex))['fileautoload']
+            end)
+
+            
+            
             -- print('default '..default)
             local selectedConfig = ''
             local Config = configSystem.sector:AddDropdown("Configs", {}, default, false, function(xconfig) selectedConfig = xconfig;  end, "") -- print(selectedConfig)
@@ -4791,7 +4799,7 @@ function library:CreateWindow(name, size, hidebutton)
                 clientUpdTheme()
             end)
             local autoloadfile = nil 
-            local autoloadindex = configSystem.ConfigsDirectory .. '/' .. 'settings.conf' 
+            -- index
             local autoloadsetting = false 
             local IsFileSet = false;
             local configsdir = 'configs'
@@ -4827,6 +4835,7 @@ function library:CreateWindow(name, size, hidebutton)
             configSystem.AutoLoad = configSystem.sector:AddToggle('Auto Load',autoloadfile['autoload'],function(xtate)
                 local Success = Config:Get()-- pcall(readfile, Config:Get())
                 if Success and Config:Get() ~= 'settings.conf' then 
+                    print('setting autoload to '..Config:Get())
                     local pack = {
                         autoload = xtate;
                         fileautoload = Config:Get();
