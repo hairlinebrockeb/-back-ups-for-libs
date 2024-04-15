@@ -5296,8 +5296,10 @@ function library:CreateWindow(name, size, hidebutton)
                     updateevent:Fire(library.theme)
                 end
             end
+            autoLoad()
             configevent.Event:Connect(function(b)
                 if b == 'setautoloadf' then 
+                    print('do autoload')
                     autoLoad()
                 end
                 beenset = true
