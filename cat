@@ -466,6 +466,7 @@ function library:CreateWindow(name, size, hidebutton)
     
 
     local updateevent = Instance.new("BindableEvent")
+    local configevent = Instance.new("BindableEvent")
     function window:UpdateTheme(theme)
         --print('firied')
         updateevent:Fire(theme or library.theme)
@@ -4830,7 +4831,8 @@ function library:CreateWindow(name, size, hidebutton)
                         fileautoload = Config:Get();
                     }
                     writefile(autoloadindex,httpservice:JSONEncode(pack))
-                    autoloadfile = httpservice:JSONDecode(readfile(autoloadindex)) -- if false save the file its autoloading and check if the index name is autoload then set to this autoload value 
+                    autoloadfile = pack; --httpservice:JSONDecode(readfile(autoloadindex)) -- if false save the file its autoloading and check if the index name is autoload then set to this autoload value 
+                    configevent:Fire('setautoloadf')
                 end
             end,'AUTOLOADNOSAVEMENT')
             configSystem.AutoLoad:Set(autoloadfile['autoload'])
@@ -5167,89 +5169,97 @@ function library:CreateWindow(name, size, hidebutton)
             end)
 
             updateevent:Fire(library.theme)
-            if IsFileSet == true then 
-                print('is file set')
-                local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. autoloadfile['fileautoload']..'.txt')
-                print(Success)
-                print(autoloadfile['fileautoload'])
-                if (Success) then
-                    pcall(function() 
-                        local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
-                        local NewConfig = {}
-                        local actualread = {}
-                        for i,v in next, ReadConfig do 
-                            if i == tostring(universeId) then
-                                print('loading save in universe')
-                                actualread = v
-                            end
-                        end
-                        for i,v in pairs(actualread) do
-                            if tostring(v):find('Enum.UserInput') then 
-                                --print(i,v,'cuz of input')
-                                --print('keybind loading input type,',tostring(v):gsub("Enum.UserInputType.", ""))
-                                local getConv = string.gsub(tostring(v),'Enum.UserInputType.','')
-                                --print('input to '..getConv)
-                                --print(Enum.KeyCode[getConv])
-                                NewConfig[i] = Enum.UserInputType[getConv]
-                            elseif (typeof(v) == "table") then
-                                if (typeof(v[1]) == "number") then
-                                    NewConfig[i] = Color3.new(v[1], v[2], v[3])
-                                elseif (typeof(v[1]) == "table") then
-                                    NewConfig[i] = v[1]
+            local function autoLoad()
+                if IsFileSet == true then 
+                    print('is file set')
+                    local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. autoloadfile['fileautoload']..'.txt')
+                    print(Success)
+                    print(autoloadfile['fileautoload'])
+                    if (Success) then
+                        pcall(function() 
+                            local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                            local NewConfig = {}
+                            local actualread = {}
+                            for i,v in next, ReadConfig do 
+                                if i == tostring(universeId) then
+                                    print('loading save in universe')
+                                    actualread = v
                                 end
-                            elseif (tostring(v):find("Enum.KeyCode.")) then
-                                --print('cuz of keycode')
-                                NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
-                            -- elseif (tostring(v):find("Enum.UserInput")) then -- Type.
-                            --     NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.UserInputType.", "")]
-                            --     print('userinput '..i,v) -- USERINPUT T YPE, 
-                            else
-                                --print('set it other',i,v)
-                                NewConfig[i] = v
                             end
-                        end
-                        -- for i,v in pairs(actualread) do
-                        --     if (typeof(v) == "table") then
-                        --         if (typeof(v[1]) == "number") then
-                        --             NewConfig[i] = Color3.new(v[1], v[2], v[3])
-                        --         elseif (typeof(v[1]) == "table") then
-                        --             NewConfig[i] = v[1]
-                        --         end
-                        --     elseif (tostring(v):find("Enum.KeyCode.")) then
-                        --         NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
-                        --     elseif (tostring(v):find("Enum.UserInputType.")) then
-                        --         NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.UserInputType.", "")]
-                        --     else
-                        --         NewConfig[i] = v
-                        --     end
-                        -- end
-                        -- for i,v in next, NewConfig do 
-                          --  print(i,v)
-                        -- end
-                        library.flags = NewConfig
-    
-                        for i,v in pairs(library.flags) do
-                            for i2,v2 in pairs(library.items) do
-                                if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
-                                    if (v2.flag == i) then
-                                        pcall(function() 
-                                            if tostring(v):find('Enum') then 
-                                                print(i,' is a keybind being set to ',tostring(v))
-                                            end
-                                            --print(v)
-                                            -- if v2:Get() ~= v then 
-                                            --     v2:Set(v)
-                                            -- end
-                                            v2:Set(v)
-                                        end)
+                            for i,v in pairs(actualread) do
+                                if tostring(v):find('Enum.UserInput') then 
+                                    --print(i,v,'cuz of input')
+                                    --print('keybind loading input type,',tostring(v):gsub("Enum.UserInputType.", ""))
+                                    local getConv = string.gsub(tostring(v),'Enum.UserInputType.','')
+                                    --print('input to '..getConv)
+                                    --print(Enum.KeyCode[getConv])
+                                    NewConfig[i] = Enum.UserInputType[getConv]
+                                elseif (typeof(v) == "table") then
+                                    if (typeof(v[1]) == "number") then
+                                        NewConfig[i] = Color3.new(v[1], v[2], v[3])
+                                    elseif (typeof(v[1]) == "table") then
+                                        NewConfig[i] = v[1]
+                                    end
+                                elseif (tostring(v):find("Enum.KeyCode.")) then
+                                    --print('cuz of keycode')
+                                    NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                                -- elseif (tostring(v):find("Enum.UserInput")) then -- Type.
+                                --     NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.UserInputType.", "")]
+                                --     print('userinput '..i,v) -- USERINPUT T YPE, 
+                                else
+                                    --print('set it other',i,v)
+                                    NewConfig[i] = v
+                                end
+                            end
+                            -- for i,v in pairs(actualread) do
+                            --     if (typeof(v) == "table") then
+                            --         if (typeof(v[1]) == "number") then
+                            --             NewConfig[i] = Color3.new(v[1], v[2], v[3])
+                            --         elseif (typeof(v[1]) == "table") then
+                            --             NewConfig[i] = v[1]
+                            --         end
+                            --     elseif (tostring(v):find("Enum.KeyCode.")) then
+                            --         NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                            --     elseif (tostring(v):find("Enum.UserInputType.")) then
+                            --         NewConfig[i] = Enum.KeyCode[tostring(v):gsub("Enum.UserInputType.", "")]
+                            --     else
+                            --         NewConfig[i] = v
+                            --     end
+                            -- end
+                            -- for i,v in next, NewConfig do 
+                              --  print(i,v)
+                            -- end
+                            library.flags = NewConfig
+        
+                            for i,v in pairs(library.flags) do
+                                for i2,v2 in pairs(library.items) do
+                                    if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
+                                        if (v2.flag == i) then
+                                            pcall(function() 
+                                                if tostring(v):find('Enum') then 
+                                                    print(i,' is a keybind being set to ',tostring(v))
+                                                end
+                                                --print(v)
+                                                -- if v2:Get() ~= v then 
+                                                --     v2:Set(v)
+                                                -- end
+                                                v2:Set(v)
+                                            end)
+                                        end
                                     end
                                 end
                             end
-                        end
-                    end)
+                        end)
+                    end
+                    updateevent:Fire(library.theme)
                 end
-                updateevent:Fire(library.theme)
             end
+            configevent.Event:Connect(function(b)
+                if b == 'setautoloadf' then 
+                    autoLoad()
+                end
+            end)
+            --
 
             return configSystem
         end
