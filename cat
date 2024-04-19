@@ -9,13 +9,32 @@ local library = {
 
 setmetatable(library.configurations, {
     __index = function(table, key)
+        --print(':@')
+        --print(key)
+        --print(library.__configurations[key], 'w')
+        -- print(library.__configurations[key].value, 'r')
+        if not library.__configurations[key] then 
+            print('@configurations, no key associated')
+            return
+        end
+        return library.__configurations[key].value
+    end;
+})  -- if library.configurations.
+--[[
+    setmetatable(library.configurations, library.__configurations)
+
+    library.__configurations.__index = function(table, key)
+        print(':@')
+        print(key)
+        print(__configurations[key], 'w')
+        print(__configurations[key].value, 'r')
         if not __configurations[key] then 
             print('@configurations, no key associated')
             return
         end
         return __configurations[key].value
-    end;
-})  -- if library.configurations.
+    end
+]]
 --[[
     :addtoggle('new toggle')
     if library.configurations.new_toggle then 
@@ -1083,6 +1102,140 @@ function library:CreateWindow(name, size, hidebutton)
 
             table.insert(sector.side:lower() == "left" and tab.SectorsLeft or sector.side:lower() == "right" and tab.SectorsRight or sector.side:lower() == "extra" and tab.SectorsExtra, sector)
 
+            function sector:CreateHintOnItem(itemto, hint)  -- sector:CreateHintOnItem(itemto, hint) 
+                itemto.hint = true;
+                itemto.knowledgemessage = hint;
+                function itemto:ActivateKnowledge()
+                    itemto.hint = true 
+                end
+                function itemto:DeactivateKnowledge()
+                    itemto.hint = false 
+                end
+                function itemto:AddKnowledge(text)
+                    -- 
+                    itemto.knowledgemessage = text
+                end
+                function itemto:AddKnowledgeButton()
+                    local knowledge = { }
+                    knowledge.Visible = true
+                
+                    knowledge.main = Instance.new("ScreenGui", window.storeobjects)
+                    knowledge.main.Name = "knowledge"
+                    -- if syn then
+                    --     syn.protect_gui(knowledge.main)
+                    -- end
+                
+                    local dividedy = (game.Players.LocalPlayer:GetMouse().Y / workspace.CurrentCamera.ViewportSize.Y)
+                    local dividedx = (game.Players.LocalPlayer:GetMouse().X / workspace.CurrentCamera.ViewportSize.X)
+                    --knowledge.main.Position = UDim2.fromOffset(dividedx,dividedy)
+                    local mouse = game.Players.LocalPlayer:GetMouse()
+                    local screenSize = knowledge.main.AbsoluteSize
+                    knowledge.mainbar = Instance.new("Frame", window.BackgroundImage)
+                    knowledge.mainbar.Name = "KnowledgeFrame"
+                    knowledge.mainbar.BorderColor3 = Color3.fromRGB(80, 80, 80)
+                    knowledge.mainbar.Visible = knowledge.Visible
+                    knowledge.mainbar.BorderSizePixel = 0
+                    knowledge.mainbar.ZIndex = 5
+                    knowledge.AnchorPoint = Vector2.new(0.5,0.5)
+
+                    knowledge.mainbar.Position = UDim2.new(0, dividedx , 0, dividedy )--UDim2.new(dividedx,0,dividedy,0)--button.Main.Position + UDim2.fromOffset(,1)-- UDim2.new(0, position and position.X or 10, 0, position and position.Y or 10)
+                    knowledge.mainbar.Size = UDim2.new(0, 8, 0, 25)
+                
+                    knowledge.Gradient = Instance.new("UIGradient", knowledge.mainbar)
+                    knowledge.Gradient.Rotation = 90
+                    knowledge.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, Color3.fromRGB(40, 40, 40)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(10, 10, 10)) })
+                
+                    knowledge.Outline = Instance.new("Frame", knowledge.mainbar)
+                    knowledge.Outline.Name = "outline"
+                    knowledge.Outline.ZIndex = 4
+                    knowledge.Outline.BorderSizePixel = 0
+                    knowledge.Outline.Visible = knowledge.Visible
+                    knowledge.Outline.BackgroundColor3 = library.theme.outlinecolor
+                    knowledge.Outline.Position = UDim2.fromOffset(-1, -1)
+                
+                    knowledge.BlackOutline = Instance.new("Frame", knowledge.mainbar)
+                    knowledge.BlackOutline.Name = "blackline"
+                    knowledge.BlackOutline.ZIndex = 3
+                    knowledge.BlackOutline.BorderSizePixel = 0
+                    knowledge.BlackOutline.BackgroundColor3 = library.theme.outlinecolor2
+                    knowledge.BlackOutline.Visible = knowledge.Visible
+                    knowledge.BlackOutline.Position = UDim2.fromOffset(-2, -2)
+                
+                    knowledge.label = Instance.new("TextLabel", knowledge.mainbar)
+                    knowledge.label.Name = "textlabel"
+                    knowledge.label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    knowledge.label.BackgroundTransparency = 1.000
+                    knowledge.label.Position = UDim2.new(0, 0, 0, 0)
+                    knowledge.label.Size = UDim2.new(0, 238, 0, 25)
+                    knowledge.label.Font = library.theme.font
+                    knowledge.label.ZIndex = 6
+                    knowledge.label.Visible = knowledge.Visible
+                    knowledge.label.Text = itemto.knowledgemessage
+                    knowledge.label.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    knowledge.label.TextSize = 15
+                    knowledge.label.TextStrokeTransparency = 0.000
+                    knowledge.label.TextXAlignment = Enum.TextXAlignment.Left
+                    knowledge.label.Size = UDim2.new(0, knowledge.label.TextBounds.X+10, 0, 25)
+                    
+                    knowledge.topbar = Instance.new("Frame", knowledge.mainbar)
+                    knowledge.topbar.Name = "TopBar"
+                    knowledge.topbar.ZIndex = 6
+                    knowledge.topbar.BackgroundColor3 = library.theme.accentcolor
+                    knowledge.topbar.BorderSizePixel = 0
+                    knowledge.topbar.Visible = knowledge.Visible
+                    knowledge.topbar.Size = UDim2.new(0, 0, 0, 1)
+                
+                    knowledge.mainbar.Size = UDim2.new(0, knowledge.label.TextBounds.X, 0, 25)
+                    knowledge.topbar.Size = UDim2.new(0, knowledge.label.TextBounds.X+6, 0, 1)
+                    knowledge.Outline.Size = knowledge.mainbar.Size + UDim2.fromOffset(2, 2)
+                    knowledge.BlackOutline.Size = knowledge.mainbar.Size + UDim2.fromOffset(4, 4)
+                
+                    knowledge.mainbar.Size = UDim2.new(0, knowledge.label.TextBounds.X+4, 0, 25)    
+                    knowledge.label.Size = UDim2.new(0, knowledge.label.TextBounds.X+4, 0, 25)
+                    knowledge.topbar.Size = UDim2.new(0, knowledge.label.TextBounds.X+6, 0, 1)
+                    knowledge.Outline.Size = knowledge.mainbar.Size + UDim2.fromOffset(2, 2)
+                    knowledge.BlackOutline.Size = knowledge.mainbar.Size + UDim2.fromOffset(4, 4)
+                    knowledge.label.ZIndex = 1000
+                    knowledge.Outline.ZIndex = 1000
+                    knowledge.mainbar.ZIndex = 1000
+                    knowledge.BlackOutline.ZIndex = 1000
+                    knowledge.topbar.ZIndex = 1000
+                    local connection = game.Players.LocalPlayer:GetMouse().Move:Connect(function()
+                        if knowledge.mainbar then 
+                            local dividedy = (game.Players.LocalPlayer:GetMouse().Y / workspace.CurrentCamera.ViewportSize.Y)
+                            local dividedx = (game.Players.LocalPlayer:GetMouse().X / workspace.CurrentCamera.ViewportSize.X)
+                            --local udim = UDim2.new(0, mouse.X-script.Parent.Parent.AbsolutePosition.X, 0, mouse.Y-script.Parent.Parent.AbsolutePosition.Y) -- UDim2.new(0,game.Players.LocalPlayer:GetMouse().X + 20,0,game.Players.LocalPlayer:GetMouse().Y + 50) --
+                            knowledge.mainbar.Position =  UDim2.new(0, mouse.X - 100, 0, mouse.Y - 200) -- UDim2.new(0, mouse.X-button.Main.AbsolutePosition.X+100, 0, mouse.Y-button.Main.AbsolutePosition.Y) -- +20
+                        else
+                            connection:Disconnect()
+                        end
+                    end)
+                    
+                    return knowledge
+                end
+                itemto.BlackOutline2.MouseEnter:Connect(function()
+                    if getgenv().disablefeatures == true then return end
+                    itemto.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
+                    -- HINT
+                    if itemto.hint == true then 
+                        --print('added hint')
+                        knowledge = itemto:AddKnowledgeButton()
+                        knowledge.label.Text = itemto.knowledgemessage
+                    end
+                end)
+
+                itemto.BlackOutline2.MouseLeave:Connect(function()
+                    -- if getgenv().disablefeatures == true then return end
+                    itemto.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
+                    if itemto.hint == true then 
+                        if window.BackgroundImage:FindFirstChild('KnowledgeFrame') then -- button.Main
+                            --print('removed hint')
+                            window.BackgroundImage:FindFirstChild('KnowledgeFrame'):Destroy()
+                        end
+                    end
+                end)
+            end;
+
             function sector:FixSize()
                 sector.Main.Size = UDim2.fromOffset(window.size.X.Offset / 2 - 17, sector.ListLayout.AbsoluteContentSize.Y + 22)
                 local sizeleft, sizeright = 0, 0
@@ -1210,7 +1363,7 @@ function library:CreateWindow(name, size, hidebutton)
                     --knowledge.main.Position = UDim2.fromOffset(dividedx,dividedy)
                     local mouse = game.Players.LocalPlayer:GetMouse()
                     local screenSize = knowledge.main.AbsoluteSize
-                    knowledge.mainbar = Instance.new("Frame", button.Main)
+                    knowledge.mainbar = Instance.new("Frame", window.BackgroundImage)
                     knowledge.mainbar.Name = "KnowledgeFrame"
                     knowledge.mainbar.BorderColor3 = Color3.fromRGB(80, 80, 80)
                     knowledge.mainbar.Visible = knowledge.Visible
@@ -1275,12 +1428,17 @@ function library:CreateWindow(name, size, hidebutton)
                     knowledge.topbar.Size = UDim2.new(0, knowledge.label.TextBounds.X+6, 0, 1)
                     knowledge.Outline.Size = knowledge.mainbar.Size + UDim2.fromOffset(2, 2)
                     knowledge.BlackOutline.Size = knowledge.mainbar.Size + UDim2.fromOffset(4, 4)
+                    knowledge.label.ZIndex = 1000
+                    knowledge.Outline.ZIndex = 1000
+                    knowledge.mainbar.ZIndex = 1000
+                    knowledge.BlackOutline.ZIndex = 1000
+                    knowledge.topbar.ZIndex = 1000
                     local connection = game.Players.LocalPlayer:GetMouse().Move:Connect(function()
                         if knowledge.mainbar then 
                             local dividedy = (game.Players.LocalPlayer:GetMouse().Y / workspace.CurrentCamera.ViewportSize.Y)
                             local dividedx = (game.Players.LocalPlayer:GetMouse().X / workspace.CurrentCamera.ViewportSize.X)
-                            --local udim = UDim2.new(0, mouse.X-script.Parent.Parent.AbsolutePosition.X, 0, mouse.Y-script.Parent.Parent.AbsolutePosition.Y)
-                            knowledge.mainbar.Position = UDim2.new(0, mouse.X-button.Main.AbsolutePosition.X+20, 0, mouse.Y-button.Main.AbsolutePosition.Y)
+                            --local udim = UDim2.new(0, mouse.X-script.Parent.Parent.AbsolutePosition.X, 0, mouse.Y-script.Parent.Parent.AbsolutePosition.Y) -- UDim2.new(0,game.Players.LocalPlayer:GetMouse().X + 20,0,game.Players.LocalPlayer:GetMouse().Y + 50) --
+                            knowledge.mainbar.Position =  UDim2.new(0, mouse.X - 100, 0, mouse.Y - 200) -- UDim2.new(0, mouse.X-button.Main.AbsolutePosition.X+100, 0, mouse.Y-button.Main.AbsolutePosition.Y) -- +20
                         else
                             connection:Disconnect()
                         end
@@ -1303,9 +1461,9 @@ function library:CreateWindow(name, size, hidebutton)
                     -- if getgenv().disablefeatures == true then return end
                     button.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
                     if button.hint == true then 
-                        if button.Main:FindFirstChild('KnowledgeFrame') then 
+                        if window.BackgroundImage:FindFirstChild('KnowledgeFrame') then -- button.Main
                             print('removed hint')
-                            button.Main:FindFirstChild('KnowledgeFrame'):Destroy()
+                            window.BackgroundImage:FindFirstChild('KnowledgeFrame'):Destroy()
                         end
                     end
                 end)
@@ -1351,11 +1509,13 @@ function library:CreateWindow(name, size, hidebutton)
                 toggle.flag = flag or text or ""
 
                 local convertedconfigtext = toggle.text;
-                for i=1, string.len(convertedconfigtext) do 
-                    if convertedconfigtext:sub(i,i) == ' ' then -- Too Tact
-                        convertedconfigtext = convertedconfigtext:sub(1,i-1)..'_'convertedconfigtext:sub(i+1,string.len(convertedconfigtext))
-                    end
-                end
+                -- for i=1, string.len(convertedconfigtext) do 
+                --     if convertedconfigtext:sub(i,i) == ' ' then -- Too Tact
+                --         convertedconfigtext = convertedconfigtext:sub(1,i-1)..'_'convertedconfigtext:sub(i+1,string.len(convertedconfigtext))
+                --     end
+                -- end
+                convertedconfigtext = string.gsub(convertedconfigtext,' ','_')
+                -- print(convertedconfigtext, 'e')
                 library.__configurations[convertedconfigtext] = toggle
                 
                 toggle.value = toggle.default
