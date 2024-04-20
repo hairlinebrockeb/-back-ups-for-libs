@@ -5091,8 +5091,29 @@ function library:CreateWindow(name, size, hidebutton)
                 local configwriting = Config:Get()
                 if configwriting == '' or configwriting == ' ' then return end;
                 local config = {}
+                local function getTable(i)
+                    local tblget = false;
+                    for i,v in next, library.items do 
+                        if v.flag and tostring(v.flag) == tostring(i) then 
+                            if v.dontsave then 
+                                tblget = v;
+                            else
+                                tblget = false; ---tblget = v;
+                            end
+                            break
+                        end
+                    end
+                    return tblget
+                end
+                local timeelspaesd = 0
+                task.spawn(function()
+                    repeat 
+                        task.wait(0.1)
+                        timeelspaesd += 0.1
+                    until timeelspaesd > 1.5
+                end)
                 for i,v in pairs(library.flags) do -- flags are used so you can have the same textbox with the same text name with a different value to save and it wont bug when loading and load the two textboxes with the same value
-                    if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') then -- and v.Name ~= autoload and the flag for autoload isnt equal to the autoload we use on our configurations tab
+                    if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') and (getTable(i) == false) then -- and v.Name ~= autoload and the flag for autoload isnt equal to the autoload we use on our configurations tab
                         if (typeof(v) == "Color3") then
                             config[i] = { v.R, v.G, v.B }
                         elseif (tostring(v):find("Enum.KeyCode")) then
@@ -5106,6 +5127,7 @@ function library:CreateWindow(name, size, hidebutton)
                         end
                     end
                 end
+                print(`dumped at {timeelspaesd}`)
                 for i,v in next, config do 
                     if tostring(v):find('InputType') then 
                         --print(i,v)
@@ -5137,6 +5159,7 @@ function library:CreateWindow(name, size, hidebutton)
                 end
                 --local configsav = httpservice:JSONEncode(config)
                 writefile(configSystem.ConfigsDirectory .. '/' .. configwriting .. ".txt", uniqueTable)
+                print(`saved at {timeelspaesd}`) -- dusamped
             end
 
             
