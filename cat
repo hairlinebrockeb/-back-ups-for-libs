@@ -44,6 +44,16 @@ setmetatable(library.configurations, {
     end 
 ]]
 --local library = getgenv().library
+local GAMENAME = nil;
+pcall(function()
+    GAMENAME = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+end)
+if not GAMENAME then 
+    repeat 
+        task.wait()
+        GAMENAME = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+    until GAMENAME
+end
 
 -- Services
 local players = game:GetService("Players")
@@ -338,7 +348,7 @@ function library:CheckForPermission(info)
 end
 
 function library:CreateWatermark(name, position)
-    local gamename = marketplaceservice:GetProductInfo(game.PlaceId).Name
+    local gamename = GAMENAME ; --marketplaceservice:GetProductInfo(game.PlaceId).Name
     local watermark = { }
     watermark.Visible = true
     watermark.text = " " .. name:gsub("{game}", gamename):gsub("{fps}", "0 FPS") .. " "
@@ -4859,7 +4869,7 @@ function library:CreateWindow(name, size, hidebutton)
 
             configSystem.sector = tab:CreateSector("Configs", side or "left")
             configSystem.rightsector = tab:CreateSector('Configs', 'right')
-            local gname = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+            local gname = GAMENAME; --game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
             local ConfigName = configSystem.sector:AddTextbox("Config Name", "", ConfigName, function() end, "")
             local autoloadindex = configSystem.ConfigsDirectory .. '/' .. 'settings.conf' 
 
