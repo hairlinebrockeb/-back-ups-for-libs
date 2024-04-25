@@ -953,7 +953,7 @@ function library:CreateWindow(name, size, hidebutton)
                       --  createExtra(); --v.Extra.Visible = false
                     end
                     --(v.Extra and v.Extra.Visible = false)
-                    --createExtra()
+                    createExtra('remove')
                 end
             end
 
