@@ -920,10 +920,13 @@ function library:CreateWindow(name, size, hidebutton)
 
             --local isActive = tab.TabButton == 'SelectedTab' -- or tab.Left == true
 
-            tab.Extra.Visible = isActive
-            task.delay(2,function()
-                --window.TopBar.Size += UDim2.fromOffset(xAddition, window.theme.topheight)
-            end)
+
+            if tab.Extra then 
+                tab.Extra.Visible = isActive
+            end
+            -- task.delay(2,function()
+            --     --window.TopBar.Size += UDim2.fromOffset(xAddition, window.theme.topheight)
+            -- end)
 
 
 
@@ -5859,4 +5862,4 @@ function library:CreateWindow(name, size, hidebutton)
     return window
 end
 
- return library
+return library
