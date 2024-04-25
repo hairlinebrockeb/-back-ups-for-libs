@@ -5,7 +5,7 @@ local library = {
 	items = { },
     configurations = {},
     __configurations = {};
-}
+} -- im black, i only like music with 808s or if its not rhymetic / memorable
 
 setmetatable(library.configurations, {
     __index = function(table, key)
@@ -56,17 +56,17 @@ if not GAMENAME then
 end
 
 -- Services
-local players = game:GetService("Players")
-local uis = game:GetService("UserInputService")
-local runservice = game:GetService("RunService")
-local tweenservice = game:GetService("TweenService")
-local marketplaceservice = game:GetService("MarketplaceService")
-local textservice = game:GetService("TextService")
-local coregui = game:GetService("CoreGui")
-local httpservice = game:GetService("HttpService")
+local players = cloneref(game:GetService("Players"))
+local uis = cloneref(game:GetService("UserInputService"))
+local runservice = cloneref(game:GetService("RunService"))
+local tweenservice = cloneref(game:GetService("TweenService"))
+local marketplaceservice = cloneref(game:GetService("MarketplaceService"))
+local textservice = cloneref(game:GetService("TextService"))
+local coregui = cloneref(game:GetService("CoreGui"))
+local httpservice = cloneref(game:GetService("HttpService"))
 
-local player = players.LocalPlayer
-local mouse = player:GetMouse()
+local player = cloneref(players.LocalPlayer)
+local mouse = cloneref(player:GetMouse())
 local camera = game.Workspace.CurrentCamera
 getgenv().disablefeatures =false
 library.theme = {
@@ -812,7 +812,7 @@ function library:CreateWindow(name, size, hidebutton)
 
         local function createExtra(n)
             print(`removing status {n} and {xAddition}`)
-            local isActive = tab.TabButton == 'SelectedTab' -- or tab.Left == true
+            local isActive = tab.TabButton.Name == 'SelectedTab' -- or tab.Left == true
             --if tab.
             if not tab.Extra and window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then 
                 n = 'remove'
@@ -896,7 +896,7 @@ function library:CreateWindow(name, size, hidebutton)
                 tab.ExtraListPadding.PaddingRight = UDim.new(0, 12)
             end
 
-            if isActive == true then 
+            if isActive == true and tab.Extra then 
                 offsetWas = tab.Extra.Size.X.Offset/3
                 window.Frame.Size += UDim2.fromOffset(tab.Extra.Size.X.Offset/3,0)
                 xAddition = tab.Extra.Size.X.Offset + 6
@@ -1157,7 +1157,6 @@ function library:CreateWindow(name, size, hidebutton)
                     local dividedy = (game.Players.LocalPlayer:GetMouse().Y / workspace.CurrentCamera.ViewportSize.Y)
                     local dividedx = (game.Players.LocalPlayer:GetMouse().X / workspace.CurrentCamera.ViewportSize.X)
                     --knowledge.main.Position = UDim2.fromOffset(dividedx,dividedy)
-                    local mouse = game.Players.LocalPlayer:GetMouse()
                     local screenSize = knowledge.main.AbsoluteSize
                     knowledge.mainbar = Instance.new("Frame", window.BackgroundImage)
                     knowledge.mainbar.Name = "KnowledgeFrame"
@@ -1390,7 +1389,6 @@ function library:CreateWindow(name, size, hidebutton)
                     local dividedy = (game.Players.LocalPlayer:GetMouse().Y / workspace.CurrentCamera.ViewportSize.Y)
                     local dividedx = (game.Players.LocalPlayer:GetMouse().X / workspace.CurrentCamera.ViewportSize.X)
                     --knowledge.main.Position = UDim2.fromOffset(dividedx,dividedy)
-                    local mouse = game.Players.LocalPlayer:GetMouse()
                     local screenSize = knowledge.main.AbsoluteSize
                     knowledge.mainbar = Instance.new("Frame", window.BackgroundImage)
                     knowledge.mainbar.Name = "KnowledgeFrame"
