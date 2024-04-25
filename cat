@@ -5342,11 +5342,11 @@ function library:CreateWindow(name, size, hidebutton)
                 --if not pcall(readfile, configSystem.ConfigsDirectory..'/'..configwriting..".txt") then 
 
                 --end
-                configwriting = configwriting..".txt"
+                --configwriting = configwriting..".txt"
                 -- if shouldSave == 'istheme' then 
                 --     configwriting = selectedTheme..'.mixoustheme'
                 -- end
-                local _, currentconfig = pcall(readfile, configSystem.ConfigsDirectory..'/'..configwriting)
+                local _, currentconfig = pcall(readfile, configSystem.ConfigsDirectory..'/'..configwriting.. ".txt")
                 local uniqueTable = nil;
                 pcall(function()
                     uniqueTable = httpservice:JSONDecode(currentconfig); --{};
@@ -5844,4 +5844,4 @@ function library:CreateWindow(name, size, hidebutton)
     return window
 end
 
- return library
+return library
