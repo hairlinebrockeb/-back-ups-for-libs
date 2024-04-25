@@ -812,6 +812,7 @@ function library:CreateWindow(name, size, hidebutton)
 
         local function createExtra(n)
             print(`removing status {n} and {xAddition}`)
+            local isActive = tab.TabButton == 'SelectedTab' -- or tab.Left == true
             --if tab.
             if not tab.Extra and window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then 
                 n = 'remove'
@@ -895,26 +896,29 @@ function library:CreateWindow(name, size, hidebutton)
                 tab.ExtraListPadding.PaddingRight = UDim.new(0, 12)
             end
 
-            offsetWas = tab.Extra.Size.X.Offset/3
-            window.Frame.Size += UDim2.fromOffset(tab.Extra.Size.X.Offset/3,0)
-            xAddition = tab.Extra.Size.X.Offset + 6
-            window.Frame.top.Size += UDim2.fromOffset(xAddition,0)
-            window.Frame.top.line.Size += UDim2.fromOffset(xAddition,0)
-            window.Frame.blackline.Size += UDim2.fromOffset(xAddition,0)
-            for _,v in next, window.Frame:GetChildren() do 
-                if v.Name == 'outline' then 
-                    if _==1 then 
-                        v.Size += UDim2.fromOffset(xAddition, 0)-- 1
-                    elseif _ ==2 then 
-                        v.Size += UDim2.fromOffset(xAddition, 0) -- 2
-                    elseif _== 3 then 
-                        v.Size += UDim2.fromOffset(xAddition, 0)--1
+            if isActive == true then 
+                offsetWas = tab.Extra.Size.X.Offset/3
+                window.Frame.Size += UDim2.fromOffset(tab.Extra.Size.X.Offset/3,0)
+                xAddition = tab.Extra.Size.X.Offset + 6
+                window.Frame.top.Size += UDim2.fromOffset(xAddition,0)
+                window.Frame.top.line.Size += UDim2.fromOffset(xAddition,0)
+                window.Frame.blackline.Size += UDim2.fromOffset(xAddition,0)
+                for _,v in next, window.Frame:GetChildren() do 
+                    if v.Name == 'outline' then 
+                        if _==1 then 
+                            v.Size += UDim2.fromOffset(xAddition, 0)-- 1
+                        elseif _ ==2 then 
+                            v.Size += UDim2.fromOffset(xAddition, 0) -- 2
+                        elseif _== 3 then 
+                            v.Size += UDim2.fromOffset(xAddition, 0)--1
+                        end 
                     end 
                 end 
-            end 
-            window.Frame.background.Size += UDim2.fromOffset(xAddition,0)
+                window.Frame.background.Size += UDim2.fromOffset(xAddition,0)
+            end
+            --
 
-            local isActive = tab.TabButton == 'SelectedTab' -- or tab.Left == true
+            --local isActive = tab.TabButton == 'SelectedTab' -- or tab.Left == true
 
             tab.Extra.Visible = isActive
             task.delay(2,function()
@@ -935,6 +939,7 @@ function library:CreateWindow(name, size, hidebutton)
             return tab.Extra
         end 
 
+        -- would load the end tab cuz select tab wasnt called after it so it wouldnt say to make the frame invis
         -- taks for anotgher day, maye multiple tabs that can support extra
 
 
@@ -5854,4 +5859,4 @@ function library:CreateWindow(name, size, hidebutton)
     return window
 end
 
-return library
+ return library
