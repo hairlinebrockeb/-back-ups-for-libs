@@ -4952,6 +4952,10 @@ function library:CreateWindow(name, size, hidebutton)
             local selectedTheme = ''
             local createTheme = '';
 
+            if getsettings() then 
+                selectedTheme = getsettings()['theme']
+            end
+
             configSystem.savetheme = function(toSave)
                 local themewriting = toSave or selectedTheme
                 if themewriting == '' or themewriting == ' ' then return end;
@@ -4997,7 +5001,7 @@ function library:CreateWindow(name, size, hidebutton)
             configSystem.loadtheme = function(toLoad)
                 local themetoload = toLoad or selectedTheme
                 local currentTheme = httpservice:JSONDecode(readfile(autoloadindex))['theme'];
-                local newTheme, filecontents = pcall(readfile, configSystem.ConfigsDirectory .. '/'.. selectedTheme..'.mixoustheme')
+                local newTheme, filecontents = pcall(readfile, configSystem.ConfigsDirectory .. '/'.. themetoload..'.mixoustheme')
                 if not newTheme then -- httpservice:JSONDecode
                     return (__getnotify and __getnotify('Unable to read file.', 3) or '')
                 end
@@ -5037,7 +5041,7 @@ function library:CreateWindow(name, size, hidebutton)
             configSystem.extrasector:AddTextbox('New Theme', nil, function(x)
                 createTheme = x;
             end)
-            local Theme = configSystem.extrasector:AddDropdown('Select Theme', {}, '', false, function(chosen)
+            local Theme = configSystem.extrasector:AddDropdown('Select Theme', {}, selectedTheme, false, function(chosen)
                 selectedTheme = chosen;
             end)
             local lastTheme = ''
@@ -5048,7 +5052,7 @@ function library:CreateWindow(name, size, hidebutton)
                     Theme:Add(nameTheme)
                 end
             end
-            selectedTheme = lastTheme;
+            --selectedTheme = lastTheme;
             Theme:Set(selectedTheme)
             configSystem.extrasector:AddButton('Create Theme', function()
                 if createTheme == '' then return end;
@@ -5715,6 +5719,7 @@ function library:CreateWindow(name, size, hidebutton)
                     end
                     if themetoload then 
                         -- themetoload_
+                        print('loading theme',autoloadfile['theme'])
                         configSystem.loadtheme(autoloadfile['theme']) --(themecontent)
                     end;
                     updateevent:Fire(library.theme)
