@@ -945,6 +945,7 @@ function library:CreateWindow(name, size, hidebutton)
                     v.TabButton.Name = "Tab"
                     v.Left.Visible = false
                     v.Right.Visible = false
+                    createExtra()
                 end
             end
 
