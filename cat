@@ -914,8 +914,9 @@ function library:CreateWindow(name, size, hidebutton)
             end 
             window.Frame.background.Size += UDim2.fromOffset(xAddition,0)
 
+            local isActive = tab.TabButton == 'SelectedTab' -- or tab.Left == true
 
-            tab.Extra.Visible = true
+            tab.Extra.Visible = isActive
             task.delay(2,function()
                 --window.TopBar.Size += UDim2.fromOffset(xAddition, window.theme.topheight)
             end)
@@ -924,7 +925,7 @@ function library:CreateWindow(name, size, hidebutton)
 
 
 
-            tab.Extra.Visible = true
+            --tab.Extra.Visible = true
 
 
 
@@ -934,6 +935,7 @@ function library:CreateWindow(name, size, hidebutton)
             return tab.Extra
         end 
 
+        -- taks for anotgher day, maye multiple tabs that can support extra
 
 
         local block = false
