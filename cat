@@ -636,7 +636,7 @@ function library:CreateWindow(name, size, hidebutton)
     window.TopBar.InputChanged:Connect(dragend)
     updateevent.Event:Connect(function(theme)
         window.TopBar.Size = UDim2.fromOffset(window.size.X.Offset, theme.topheight)
-        if window.Frame:FindFirstChild('extraside') then 
+        if window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then 
             local xAddition = window.Frame:FindFirstChild('extraside').Size.X.Offset + 6
             window.TopBar.Size += UDim2.fromOffset(xAddition,0)
         end
@@ -813,6 +813,9 @@ function library:CreateWindow(name, size, hidebutton)
         local function createExtra(n)
             print(`removing status {n} and {xAddition}`)
             --if tab.
+            if not tab.Extra and window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then 
+                n = 'remove'
+            end
             if n == 'remove' and xAddition and window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then 
                 window.Frame:FindFirstChild('extraside').Visible = false
                 print('added, '..tostring(xAddition))
@@ -947,7 +950,7 @@ function library:CreateWindow(name, size, hidebutton)
                     v.Left.Visible = false
                     v.Right.Visible = false
                     if v.Extra then 
-                        v.Extra.Visible = false
+                      --  createExtra(); --v.Extra.Visible = false
                     end
                     --(v.Extra and v.Extra.Visible = false)
                     --createExtra()
