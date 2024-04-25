@@ -812,6 +812,7 @@ function library:CreateWindow(name, size, hidebutton)
 
         local function createExtra(n)
             print(`removing status {n} and {xAddition}`)
+            --if tab.
             if n == 'remove' and xAddition and window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then 
                 window.Frame:FindFirstChild('extraside').Visible = false
                 print('added, '..tostring(xAddition))
@@ -945,7 +946,11 @@ function library:CreateWindow(name, size, hidebutton)
                     v.TabButton.Name = "Tab"
                     v.Left.Visible = false
                     v.Right.Visible = false
-                    createExtra()
+                    if v.Extra then 
+                        v.Extra.Visible = false
+                    end
+                    --(v.Extra and v.Extra.Visible = false)
+                    --createExtra()
                 end
             end
 
@@ -5617,10 +5622,6 @@ function library:CreateWindow(name, size, hidebutton)
                     print('is file set')
                     local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. autoloadfile['fileautoload']..'.txt')
                     local themetoload, themecontent = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. autoloadfile['theme']..'.mixoustheme')
-                    if themetoload then 
-                        -- themetoload_
-                        configSystem.loadtheme(autoloadfile['theme']) --(themecontent)
-                    end;
                     print(Success)
                     print(autoloadfile['fileautoload'])
                     if (Success) then
@@ -5709,6 +5710,10 @@ function library:CreateWindow(name, size, hidebutton)
                             end
                         end)
                     end
+                    if themetoload then 
+                        -- themetoload_
+                        configSystem.loadtheme(autoloadfile['theme']) --(themecontent)
+                    end;
                     updateevent:Fire(library.theme)
                 end
             end
@@ -5839,4 +5844,4 @@ function library:CreateWindow(name, size, hidebutton)
     return window
 end
 
-return library
+ return library
