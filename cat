@@ -1511,12 +1511,20 @@ function library:CreateWindow(name, size, hidebutton)
                 return label
             end
             
-            function sector:AddToggle(text, default, callback, flag)
+            function sector:AddToggle(text, default, callback, flag, properties)
                 local toggle = { }
                 toggle.text = text or ""
                 toggle.default = default or false
                 toggle.callback = callback or function(value) end
-                toggle.flag = flag or text or ""
+                toggle.flag = flag ~= nil and flag or text or ""; --flag or text or ""
+                --print(toggle.flag)
+                if properties then 
+                    if properties.properties then 
+                        for i,v in next, properties.properties do 
+                            toggle[i] = v;
+                        end
+                    end
+                end
 
                 local convertedconfigtext = toggle.text;
                 -- for i=1, string.len(convertedconfigtext) do 
@@ -3232,7 +3240,7 @@ function library:CreateWindow(name, size, hidebutton)
                 return textbox
             end
             
-            function sector:AddSlider(text, min, default, max, decimals, callback, flag)
+            function sector:AddSlider(text, min, default, max, decimals, callback, flag, info)
                 local slider = { }
                 slider.text = text or ""
                 slider.callback = callback or function(value) end
@@ -3240,7 +3248,12 @@ function library:CreateWindow(name, size, hidebutton)
                 slider.max = max or 100
                 slider.decimals = decimals or 1
                 slider.default = default or slider.min
-                slider.flag = flag or text or ""
+                slider.flag = flag ~= nil and flag or text or ""; --flag or text or ""
+                if info and info.properties then 
+                    for i,v in next, info.properties do 
+                        slider[i] = v
+                    end
+                end
 
                 slider.value = slider.default
                 local dragging = false
@@ -3646,7 +3659,7 @@ function library:CreateWindow(name, size, hidebutton)
                 return slider
             end
 
-            function sector:AddColorpicker(text, default, callback, flag)
+            function sector:AddColorpicker(text, default, callback, flag, info)
                 local colorpicker = { }
 
                 colorpicker.iscolorpicker = true;
@@ -3654,7 +3667,12 @@ function library:CreateWindow(name, size, hidebutton)
                 colorpicker.callback = callback or function() end
                 colorpicker.default = default or Color3.fromRGB(255, 255, 255)
                 colorpicker.value = colorpicker.default
-                colorpicker.flag = flag or text or ""
+                colorpicker.flag = flag ~= nil and flag or text or ""
+                if info and info.properties then 
+                    for i,v in next, info.properties do 
+                        colorpicker[i] = v
+                    end
+                end
 
                 colorpicker.Label = Instance.new("TextLabel", sector.Items)
                 colorpicker.Label.BackgroundTransparency = 1
@@ -4869,6 +4887,7 @@ function library:CreateWindow(name, size, hidebutton)
 
             configSystem.sector = tab:CreateSector("Configs", side or "left")
             configSystem.rightsector = tab:CreateSector('Configs', 'right')
+            configSystem.extrasector = tab:CreateSector('Configs', 'extra')
             local gname = GAMENAME; --game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
             local ConfigName = configSystem.sector:AddTextbox("Config Name", "", ConfigName, function() end, "")
             local autoloadindex = configSystem.ConfigsDirectory .. '/' .. 'settings.conf' 
@@ -4878,7 +4897,25 @@ function library:CreateWindow(name, size, hidebutton)
                 default = httpservice:JSONDecode(readfile(autoloadindex))['fileautoload']
                 print(default)
             end)
+            if pcall(readfile, autoloadindex) then 
+                print('has settings')
+                local configtable = httpservice:JSONDecode(readfile(autoloadindex))
+                if not configtable['theme'] then 
+                    print('writing theme')
+                    print('write theme')
+                    configtable['theme'] = '';
+                    writefile(autoloadindex,httpservice:JSONEncode(configtable))
+                    print('written theme')
+                end
+            end
 
+            local function getsettings()
+                local a,b = pcall(readfile, autoloadindex)
+                if a then 
+                    b = httpservice:JSONDecode(b)
+                end
+                return b
+            end;
             
             
             -- print('default '..default)
@@ -4893,72 +4930,217 @@ function library:CreateWindow(name, size, hidebutton)
                 end
             end
 
+
             local function clientUpdTheme()
                 if getgenv().watermarktable then 
                    getgenv().watermarktable:UpdateTheme(library['theme'])
                 end
                 window:UpdateTheme(library['theme'])
             end
+
+            --
+
+            local selectedTheme = ''
+            local createTheme = '';
+
+            configSystem.savetheme = function(toSave)
+                local themewriting = toSave or selectedTheme
+                if themewriting == '' or themewriting == ' ' then return end;
+                local themelist = {}
+                local function geteq(a)
+                    local b = nil;
+                    for i,v in next, library.flags do 
+                        --print(i)
+                        --if i == 'Watermark' then print('----') end;
+                        if tostring(i) ==  a then
+                            --print('found')
+                            b = v;
+                            break
+                        end
+                        --print(i,v)
+                    end
+                    return b
+                end
+                for i,v in next, library.items do 
+                    if v.istheme then 
+                        local flagdata = geteq(v.flag)
+                        --print('is theme',v.flag, flagdata)
+                        themelist[v.flag] = flagdata; --library.flags[v.flag] -- gets toggle flag name into library flag value
+                    end;
+                end
+                local newthemesave = {}
+                for i,v in next, themelist do 
+                    if (typeof(v) == "Color3") then
+                        newthemesave[i] = { v.R, v.G, v.B }
+                    elseif (tostring(v):find("Enum.KeyCode")) then
+                        newthemesave[i] = "Enum.KeyCode." .. v.Name
+                    elseif (tostring(v):find("Enum.UserInputType")) then
+                        newthemesave[i] = "Enum.UserInputType." .. v.Name
+                    elseif (typeof(v) == "table") then
+                        newthemesave[i] = { v }
+                    else
+                        newthemesave[i] = v
+                    end
+                end
+                newthemesave = httpservice:JSONEncode(newthemesave)
+                writefile(configSystem.ConfigsDirectory .. '/' .. themewriting .. ".mixoustheme", newthemesave)
+            end; -- could pass a string to make it custom args
+            configSystem.loadtheme = function(toLoad)
+                local themetoload = toLoad or selectedTheme
+                local currentTheme = httpservice:JSONDecode(readfile(autoloadindex))['theme'];
+                local newTheme, filecontents = pcall(readfile, configSystem.ConfigsDirectory .. '/'.. selectedTheme..'.mixoustheme')
+                if not newTheme then -- httpservice:JSONDecode
+                    return (__getnotify and __getnotify('Unable to read file.', 3) or '')
+                end
+                print(newTheme,selectedTheme)
+                newTheme = httpservice:JSONDecode(filecontents); --(configSystem.ConfigsDirectory .. '/'.. selectedTheme..'.mixoustheme');
+                local tempthemedump = {}
+                for i,v in pairs(newTheme) do
+                    if tostring(v):find('Enum.UserInput') then 
+                        local getConv = string.gsub(tostring(v),'Enum.UserInputType.','')
+                        tempthemedump[i] = Enum.UserInputType[getConv]
+                    elseif (typeof(v) == "table") then
+                        if (typeof(v[1]) == "number") then
+                            tempthemedump[i] = Color3.new(v[1], v[2], v[3])
+                        elseif (typeof(v[1]) == "table") then
+                            tempthemedump[i] = v[1]
+                        end
+                    elseif (tostring(v):find("Enum.KeyCode.")) then
+                        tempthemedump[i] = Enum.KeyCode[tostring(v):gsub("Enum.KeyCode.", "")]
+                    else
+                        tempthemedump[i] = v
+                    end
+                end
+                library.flags = tempthemedump;
+                for i,v in pairs(library.flags) do
+                    for i2,v2 in pairs(library.items) do
+                        if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
+                            if (v2.flag == i) then
+                                pcall(function() 
+                                    v2:Set(v)
+                                end)
+                            end
+                        end
+                    end
+                end
+            end;    
+
+            configSystem.extrasector:AddTextbox('New Theme', nil, function(x)
+                createTheme = x;
+            end)
+            local Theme = configSystem.extrasector:AddDropdown('Select Theme', {}, '', false, function(chosen)
+                selectedTheme = chosen;
+            end)
+            local lastTheme = ''
+            for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
+                if v:find(".mixoustheme") and tostring(v) ~= 'settings.conf' then
+                    local nameTheme = tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".mixoustheme", "")
+                    lastTheme = nameTheme
+                    Theme:Add(nameTheme)
+                end
+            end
+            selectedTheme = lastTheme;
+            Theme:Set(selectedTheme)
+            configSystem.extrasector:AddButton('Create Theme', function()
+                if createTheme == '' then return end;
+                -- either would create a blank theme
+                -- or save to a new theme
+                -- yeah fuckt hat coukld be possbile nopw()())
+                local isExisting = pcall(readfile, configSystem.ConfigsDirectory .. '/'.. createTheme..'.mixoustheme')
+                if isExisting then 
+                    local result = library:CheckForPermission(`Are you sure you want to override the config\n"{createTheme}"?`) -- This will set it to default.
+                    if result == false then 
+                        return;
+                    end
+                end
+                writefile(configSystem.ConfigsDirectory .. '/'.. createTheme..'.mixoustheme', '{}')
+                if __getnotify then 
+                    __getnotify(`{isExisting == false and 'Created' or 'Overritten'} new theme`)
+                end
+            end)
+            configSystem.extrasector:AddButton('Load Theme', function()
+                if selectedTheme == '' then return end;
+                configSystem.loadtheme() -- selectedTheme
+            end);
+            configSystem.extrasector:AddButton('Save Theme', function()
+                print(selectedTheme)
+                if selectedTheme == '' then return end;
+                print('save pls')
+                configSystem.savetheme()
+                local file = httpservice:JSONDecode(readfile(autoloadindex))
+                file['theme'] = selectedTheme
+                writefile(autoloadindex,httpservice:JSONEncode(file))
+            end)
+
+            -- my patience is
+            -- is this enteratijwikojgnweikg
+
+
+            -- graa graa boom
+
+            -- make theme load on exec
+            -- make button load theme
+
             local theme = library.theme;
             configSystem.rightsector:AddColorpicker('Accent Colour 1', theme.accentcolor , function(ztx)
                 library['theme']['accentcolor'] = ztx
                 clientUpdTheme() -- if flag, updtheme then upd theme
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Accent Colour 2',theme.accentcolor2, function(ztx)
                 library['theme']['accentcolor2'] = ztx
                 clientUpdTheme() -- if flag, updtheme then upd theme
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Background Colour',theme.backgroundcolor, function(ztx)
                 library['theme']['backgroundcolor'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Outline Colour 1',theme.outlinecolor, function(ztx)
                 library['theme']['outlinecolor'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Outline Colour 2',theme.outlinecolor2, function(ztx)
                 library['theme']['outlinecolor2'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Sector Colour',theme.sectorcolor, function(ztx)
                 library['theme']['sectorcolor'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Title Colour', theme.toptextcolor , function(ztx)
                 library['theme']['toptextcolor'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddSlider('Topbar Height', 0, theme.topheight, 60, 1 , function(ztx)
                 library['theme']['topheight'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Top Colour 1', theme.topcolor , function(ztx)
                 library['theme']['topcolor'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Top Colour 2', theme.topcolor2 , function(ztx)
                 library['theme']['topcolor2'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Button Colour 1', theme.buttoncolor , function(ztx)
                 library['theme']['buttoncolor'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Button Colour 2', theme.buttoncolor2 , function(ztx)
                 library['theme']['buttoncolor2'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Items Colour 1', theme.itemscolor , function(ztx)
                 library['theme']['itemscolor'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddColorpicker('Items Colour 2', theme.itemscolor2 , function(ztx)
                 library['theme']['itemscolor2'] = ztx
                 clientUpdTheme()
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddToggle('Watermark', false, function(e)
                 getgenv().watermarktable:SetState(e == false and 'Disable' or 'Active')
-            end)
+            end, nil, {['properties'] = {istheme = true}})
             configSystem.rightsector:AddButton('Reset Keybinds',function()
                 if window.Tabs then 
                     for i, item in next, library.items do 
@@ -4982,7 +5164,7 @@ function library:CreateWindow(name, size, hidebutton)
                     ]]
                 end
             end) -- configurations
-            configSystem.rightsector:AddButton('Reset Theme',function() -- Colors, the em
+            configSystem.extrasector:AddButton('Reset Theme',function() -- Colors, the em
                 library.theme = library.defaulttheme -- theme --
                 for i,v in next, library.theme do 
                     if library.defaulttheme[i] ~= v then 
@@ -4998,7 +5180,9 @@ function library:CreateWindow(name, size, hidebutton)
                 end
                 clientUpdTheme()
             end)
-            local autoloadfile = nil 
+
+            --
+            local autoloadfile = nil  -- could make it open then save it on game close
             -- index
             local autoloadsetting = false 
             local IsFileSet = false;
@@ -5013,6 +5197,7 @@ function library:CreateWindow(name, size, hidebutton)
                 local tablepack = {
                     autoload = false;
                     fileautoload = '';
+                    theme = '';
                 }
                 writefile(autoloadindex,httpservice:JSONEncode(tablepack))
             else
@@ -5027,6 +5212,7 @@ function library:CreateWindow(name, size, hidebutton)
                 local tablepack = {
                     autoload = false;
                     fileautoload = 'default';
+                    theme = '';
                 }
                 writefile(autoloadindex,httpservice:JSONEncode(tablepack))
             end
@@ -5039,6 +5225,7 @@ function library:CreateWindow(name, size, hidebutton)
                     local pack = {
                         autoload = xtate;
                         fileautoload = Config:Get();
+                        theme = getsettings() and getsettings()['theme'] or '';
                     }
                     writefile(autoloadindex,httpservice:JSONEncode(pack))
                     autoloadfile = pack; --httpservice:JSONDecode(readfile(autoloadindex)) -- if false save the file its autoloading and check if the index name is autoload then set to this autoload value 
@@ -5091,14 +5278,16 @@ function library:CreateWindow(name, size, hidebutton)
                 local configwriting = Config:Get()
                 if configwriting == '' or configwriting == ' ' then return end;
                 local config = {}
-                local function getTable(i)
-                    local tblget = false;
+                local function getTable(ii)
+                    local tblget = true;
                     for i,v in next, library.items do 
-                        if v.flag and tostring(v.flag) == tostring(i) then 
-                            if v.dontsave then 
-                                tblget = v;
+                        --print(v.flag,ii,v.istheme)
+                        if v.flag and tostring(v.flag) == tostring(ii) then 
+                            if v.dontsave or v.istheme then 
+                                tblget = v.dontsave and 'nosave' or v.istheme and 'istheme' --true; --'istheme';
+                                --print('worked, dont save')
                             else
-                                tblget = false; ---tblget = v;
+                                tblget = true; ---tblget = v;
                             end
                             break
                         end
@@ -5113,7 +5302,9 @@ function library:CreateWindow(name, size, hidebutton)
                     --until timeelspaesd > 1.5
                 --end)
                 for i,v in pairs(library.flags) do -- flags are used so you can have the same textbox with the same text name with a different value to save and it wont bug when loading and load the two textboxes with the same value
-                    if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') and (getTable(i) == false) then -- and v.Name ~= autoload and the flag for autoload isnt equal to the autoload we use on our configurations tab
+                    --print('flag',i,v)
+                    local shouldSave = getTable(i) -- getTable(i) == false
+                    if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') and shouldSave == true and v ~= 'configsave' then -- and v.Name ~= autoload and the flag for autoload isnt equal to the autoload we use on our configurations tab
                         if (typeof(v) == "Color3") then
                             config[i] = { v.R, v.G, v.B }
                         elseif (tostring(v):find("Enum.KeyCode")) then
@@ -5142,7 +5333,11 @@ function library:CreateWindow(name, size, hidebutton)
                 --if not pcall(readfile, configSystem.ConfigsDirectory..'/'..configwriting..".txt") then 
 
                 --end
-                local _, currentconfig = pcall(readfile, configSystem.ConfigsDirectory..'/'..configwriting..".txt")
+                configwriting = configwriting..".txt"
+                -- if shouldSave == 'istheme' then 
+                --     configwriting = selectedTheme..'.mixoustheme'
+                -- end
+                local _, currentconfig = pcall(readfile, configSystem.ConfigsDirectory..'/'..configwriting)
                 local uniqueTable = nil;
                 pcall(function()
                     uniqueTable = httpservice:JSONDecode(currentconfig); --{};
@@ -5162,6 +5357,10 @@ function library:CreateWindow(name, size, hidebutton)
                 --print(`saved at {timeelspaesd}`) -- dusamped
             end
 
+            -- toggle . flag and library .  flag are two different things :smile:
+
+            -- extract config for game;
+            -- import config for game
             
             configSystem.AutoSave = configSystem.sector:AddToggle('Auto Save',true,function(xstate)
                 autosaving = xstate
@@ -5316,7 +5515,12 @@ function library:CreateWindow(name, size, hidebutton)
                         -- for i,v in next, NewConfig do 
                         --     print(i,v)
                         -- end
-                        library.flags = NewConfig
+                        --library.flags = NewConfig
+                        for i,v in next, NewConfig do 
+                            if library.flags[i] ~= nil then 
+                                library.flags[i] = v
+                            end
+                        end
     
                         for i,v in pairs(library.flags) do
                             for i2,v2 in pairs(library.items) do
@@ -5408,6 +5612,11 @@ function library:CreateWindow(name, size, hidebutton)
                 if IsFileSet == true then 
                     print('is file set')
                     local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. autoloadfile['fileautoload']..'.txt')
+                    local themetoload, themecontent = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. autoloadfile['theme']..'.mixoustheme')
+                    if themetoload then 
+                        -- themetoload_
+                        configSystem.loadtheme(themetoload)
+                    end;
                     print(Success)
                     print(autoloadfile['fileautoload'])
                     if (Success) then
@@ -5464,7 +5673,17 @@ function library:CreateWindow(name, size, hidebutton)
                             -- for i,v in next, NewConfig do 
                               --  print(i,v)
                             -- end
-                            library.flags = NewConfig
+                            --library.flags = NewConfig
+                            -- for i,v in next, library.flags do 
+                            --     if NewConfig[i] ~= nil then 
+
+                            --     end
+                            -- end
+                            for i,v in next, NewConfig do 
+                                if library.flags[i] ~= nil then 
+                                    library.flags[i] = v
+                                end
+                            end
         
                             for i,v in pairs(library.flags) do
                                 for i2,v2 in pairs(library.items) do
