@@ -5046,6 +5046,9 @@ function library:CreateWindow(name, size, hidebutton)
                 -- either would create a blank theme
                 -- or save to a new theme
                 -- yeah fuckt hat coukld be possbile nopw()())
+                if not table.find(Theme.defaultitems, createTheme) then 
+                    Theme:Add(createTheme)
+                end
                 local isExisting = pcall(readfile, configSystem.ConfigsDirectory .. '/'.. createTheme..'.mixoustheme')
                 if isExisting then 
                     local result = library:CheckForPermission(`Are you sure you want to override the config\n"{createTheme}"?`) -- This will set it to default.
@@ -5615,7 +5618,7 @@ function library:CreateWindow(name, size, hidebutton)
                     local themetoload, themecontent = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. autoloadfile['theme']..'.mixoustheme')
                     if themetoload then 
                         -- themetoload_
-                        configSystem.loadtheme(themetoload)
+                        configSystem.loadtheme(autoloadfile['theme']) --(themecontent)
                     end;
                     print(Success)
                     print(autoloadfile['fileautoload'])
