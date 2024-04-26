@@ -5540,10 +5540,16 @@ function library:CreateWindow(name, size, hidebutton)
                         --     print(i,v)
                         -- end
                         --library.flags = NewConfig
+                        -- for i,v in next, NewConfig do 
+                        --     if library.flags[i] ~= nil then 
+                        --         library.flags[i] = v
+                        --     end
+                        -- end
                         for i,v in next, NewConfig do 
-                            if library.flags[i] ~= nil then 
-                                library.flags[i] = v
-                            end
+                            library.flags[i] = v
+                            -- if library.flags[i] ~= nil then 
+                            --     library.flags[i] = v
+                            -- end
                         end
     
                         for i,v in pairs(library.flags) do
@@ -5700,9 +5706,10 @@ function library:CreateWindow(name, size, hidebutton)
                             --     end
                             -- end
                             for i,v in next, NewConfig do 
-                                if library.flags[i] ~= nil then 
-                                    library.flags[i] = v
-                                end
+                                library.flags[i] = v
+                                -- if library.flags[i] ~= nil then 
+                                --     library.flags[i] = v
+                                -- end
                             end
         
                             for i,v in pairs(library.flags) do
