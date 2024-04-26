@@ -5545,8 +5545,16 @@ function library:CreateWindow(name, size, hidebutton)
                         --         library.flags[i] = v
                         --     end
                         -- end
+                        -- for i,v in next, NewConfig do 
+                        --     library.flags[i] = v
+                        --     -- if library.flags[i] ~= nil then 
+                        --     --     library.flags[i] = v
+                        --     -- end
+                        -- end
                         for i,v in next, NewConfig do 
-                            library.flags[i] = v
+                            pcall(function()
+                                library.flags[i] = v
+                            end)
                             -- if library.flags[i] ~= nil then 
                             --     library.flags[i] = v
                             -- end
@@ -5706,7 +5714,9 @@ function library:CreateWindow(name, size, hidebutton)
                             --     end
                             -- end
                             for i,v in next, NewConfig do 
-                                library.flags[i] = v
+                                pcall(function()
+                                    library.flags[i] = v
+                                end)
                                 -- if library.flags[i] ~= nil then 
                                 --     library.flags[i] = v
                                 -- end
