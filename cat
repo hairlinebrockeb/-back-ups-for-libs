@@ -44,6 +44,9 @@ setmetatable(library.configurations, {
     end 
 ]]
 --local library = getgenv().library
+
+
+
 local GAMENAME = nil;
 pcall(function()
     GAMENAME = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
@@ -67,7 +70,16 @@ local httpservice = cloneref(game:GetService("HttpService"))
 
 local player = cloneref(players.LocalPlayer)
 local mouse = cloneref(player:GetMouse())
-local camera = game.Workspace.CurrentCamera
+local camera = cloneref(game.Workspace.CurrentCamera)
+-- if getgenv().disablefeatures then 
+--     getgenv().disablelibrarything(); -- = true;
+-- end
+-- getgenv().unloadwindows = {running = true, trigger = false};
+-- getgenv().unloadwindows.changed = function()
+--     getgenv().unloadwindows.running = not getgenv().unloadwindows.running --b
+-- end
+local windowHash = httpservice:GenerateGUID(false)
+getgenv().currentHash = windowHash; --unloadfunction = windowHash;
 getgenv().disablefeatures =false
 library.theme = {
     fontsize = 15,
@@ -146,6 +158,32 @@ if library.theme.cursor and Drawing then
         library.cursor:Remove()
     end
 end
+
+-- function library:OnUnload(toDisconnect)
+--     -- :OnUnload = function
+--     -- could run function
+-- end
+-- -- library.unloaded = function()
+-- --     return 
+-- -- end;
+-- library.unloaded = {stablefunctions = {}};
+-- hookfunction(getgenv().newchanged,function(...)
+--     if b == true then 
+--         for _, funct in next, library.unloaded.stablefunctions do 
+--             task.spawn(funct); -- to
+--         end
+--     end
+-- end)
+-- library.unloaded.connect = function(to)
+--     table.insert(library.unloaded.stablefunctions)
+-- end;
+-- library.unloaded.connect(function()
+--     print('disabled','loop','unloaded')
+-- end)
+-- getgenv().unloadwindows = false;
+
+-- library.OnUnload:Connect(function() toBreak = true; end)
+--getgenv().disablelibrarything = library.OnUnload
 
 function library:CheckForPermission(info)
     getgenv().disablefeatures = true
@@ -333,14 +371,14 @@ function library:CheckForPermission(info)
         cover:Destroy()
         changeTransparencies{s = 'revert'}
         b = true
-        print('dd yes')
+        --print('dd yes')
     end)
     no.Main.MouseButton1Down:Connect(function()
         getgenv().disablefeatures = false
         cover:Destroy()
         changeTransparencies{s = 'revert'}
         b = false;
-        print('did no')
+        --print('did no')
     end)
     repeat task.wait() until b ~= nil
     --print('returned')
@@ -975,7 +1013,7 @@ function library:CreateWindow(name, size, hidebutton)
                 createExtra()
                 --tab.Extra.Visible = true
             else
-                print('SUPPOSED TO REMOVE')
+                --print('SUPPOSED TO REMOVE')
                 createExtra('remove')
             end 
             window.Line:TweenSizeAndPosition(UDim2.fromOffset(size.X + 15, 1), UDim2.new(0, (tab.TabButton.AbsolutePosition.X - window.Frame.AbsolutePosition.X), 0, 0) + (window.BlackLine.Position - UDim2.fromOffset(0, 1)), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.15)
@@ -1489,7 +1527,7 @@ function library:CreateWindow(name, size, hidebutton)
                     button.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
                     if button.hint == true then 
                         if window.BackgroundImage:FindFirstChild('KnowledgeFrame') then -- button.Main
-                            print('removed hint')
+                            --print('removed hint')
                             window.BackgroundImage:FindFirstChild('KnowledgeFrame'):Destroy()
                         end
                     end
@@ -1759,8 +1797,8 @@ function library:CreateWindow(name, size, hidebutton)
                             else
                                 v.Main.Visible = false
                             end
-                            print(v.Main.Size)
-                            print('prev size '..tostring(sector.Main.Size))
+                            --print(v.Main.Size)
+                            --print('prev size '..tostring(sector.Main.Size))
                             -- 
                             if isnotbutton == false then 
                                 sector.Main.Size = UDim2.fromOffset(sector.Main.Size.X.Offset,sector.Main.Size.Y.Offset - (v.Main.Size.Y.Offset*2))
@@ -1769,8 +1807,8 @@ function library:CreateWindow(name, size, hidebutton)
                             end
                             
                             --sector.Items.Size = UDim2.fromOffset(sector.Items.Size.X.Offset,sector.Items.Size.Y.Offset - (v.Main.Size.Y.Offset*3))
-                            print('new size '..tostring(sector.Main.Size))
-                            print(v.Main.Size.Y.Offset)
+                            --print('new size '..tostring(sector.Main.Size))
+                            --print(v.Main.Size.Y.Offset)
                         end
                         toggle.Label.TextColor3 = window.theme.itemscolor
                     end
@@ -3044,7 +3082,7 @@ function library:CreateWindow(name, size, hidebutton)
                             keybind.value = key
                             if keybind.flag and keybind.flag ~= "" then
                                 library.flags[keybind.flag] = keybind.value
-                                print('setting '..keybind.flag..' to '..tostring(keybind.value))
+                                --print('setting '..keybind.flag..' to '..tostring(keybind.value))
                             end
                         end
 
@@ -3071,12 +3109,12 @@ function library:CreateWindow(name, size, hidebutton)
                                 keybindattachment.keybind = input.KeyCode
                                 if keybind.Main.Text == "[...]" then
                                     keybind.Main.TextColor3 = Color3.fromRGB(136, 136, 136)
-                                    print(tostring(input.UserInputType)..' TS')
+                                    --print(tostring(input.UserInputType)..' TS')
                                     if input.UserInputType == Enum.UserInputType.Keyboard then
                                         keybind:Set(input.KeyCode)
                                         keybindattachment.keybind = input.KeyCode
                                     elseif string.find(tostring(input.UserInputType),'MouseButton') then -- == Enum.UserInputType.MouseButton1 then 
-                                        print('M BUTTON'..string.split(tostring(input.UserInputType),'.')[3])
+                                        --print('M BUTTON'..string.split(tostring(input.UserInputType),'.')[3])
                                         keybind:Set(input.UserInputType)
                                     else
                                         keybind:Set('None')
@@ -3265,7 +3303,9 @@ function library:CreateWindow(name, size, hidebutton)
                 slider.max = max or 100
                 slider.decimals = decimals or 1
                 slider.default = default or slider.min
+                --print(flag, 'slider flag set 1')
                 slider.flag = flag ~= nil and flag or text or ""; --flag or text or ""
+                --print(slider.flag, 'slider flag set 2')
                 if info and info.properties then 
                     for i,v in next, info.properties do 
                         slider[i] = v
@@ -3414,6 +3454,8 @@ function library:CreateWindow(name, size, hidebutton)
 
                 if slider.flag and slider.flag ~= "" then
                     library.flags[slider.flag] = slider.default or slider.min or 0
+                else
+                    --print('no flag set',slider.flag)
                 end
 
                 function slider:Get()
@@ -3456,6 +3498,9 @@ function library:CreateWindow(name, size, hidebutton)
                     local percent = 1 - ((slider.max - slider.value) / (slider.max - slider.min))
                     if slider.flag and slider.flag ~= "" then
                         library.flags[slider.flag] = slider.value
+                        --print('new flag set ', slider.flag)
+                    else
+                        --print('no flagger set', slider.flag)
                     end
                     -- print(slider.value)
                     -- print('setting')
@@ -5297,7 +5342,7 @@ function library:CreateWindow(name, size, hidebutton)
             menubtton:keychangedmethod(awlafwa)
 
             local universeId = httpservice:JSONDecode(game:HttpGet(`https://apis.roblox.com/universes/v1/places/{game.PlaceId}/universe`))['universeId']
-            
+            hasAutoloaded = false;
             configSystem.savefunc = function()
                 local configwriting = Config:Get()
                 if configwriting == '' or configwriting == ' ' then return end;
@@ -5313,6 +5358,7 @@ function library:CreateWindow(name, size, hidebutton)
                             else
                                 tblget = true; ---tblget = v;
                             end
+                            --print('save flag', v.flag) --print('save   ing',v.flag)
                             break
                         end
                     end
@@ -5326,9 +5372,11 @@ function library:CreateWindow(name, size, hidebutton)
                     --until timeelspaesd > 1.5
                 --end)
                 for i,v in pairs(library.flags) do -- flags are used so you can have the same textbox with the same text name with a different value to save and it wont bug when loading and load the two textboxes with the same value
-                    --print('flag',i,v)
+                    print('flag',i,v)
                     local shouldSave = getTable(i) -- getTable(i) == false
+                    if shouldSave == false then print('no save',i,'loop') end
                     if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') and shouldSave == true and v ~= 'configsave' then -- and v.Name ~= autoload and the flag for autoload isnt equal to the autoload we use on our configurations tab
+                        print('loop save shouldsave',i,shouldSave)
                         if (typeof(v) == "Color3") then
                             config[i] = { v.R, v.G, v.B }
                         elseif (tostring(v):find("Enum.KeyCode")) then
@@ -5370,7 +5418,10 @@ function library:CreateWindow(name, size, hidebutton)
                     print('was nil so reset')
                     uniqueTable = {}
                 end
-                uniqueTable[tostring(universeId)] = config
+                for i,v in next, config do 
+                    uniqueTable[tostring(universeId)][i] = v -- still doesnt loop all flags for some reason but fuck that and leave it
+                end
+                --uniqueTable[tostring(universeId)] = config
                 uniqueTable = httpservice:JSONEncode(uniqueTable)
               --  print(uniqueTable)
                 for i,v in next, config do 
@@ -5388,10 +5439,15 @@ function library:CreateWindow(name, size, hidebutton)
             
             configSystem.AutoSave = configSystem.sector:AddToggle('Auto Save',true,function(xstate)
                 autosaving = xstate
+                getgenv().newloadedui = not xstate; -- true = false, false = true;
                 if autosaving == true then 
                     task.spawn(function()
                         while task.wait(6) do 
-                            configSystem.savefunc()
+                            if getgenv().newloadedui then print('newbreak') break end;
+                            if getgenv().currentHash ~= windowHash then print('new exec debug') break end;
+                            if hasAutoloaded == true then 
+                                configSystem.savefunc()
+                            end
                         end
                     end) -- endedloop
                 end
@@ -5400,8 +5456,8 @@ function library:CreateWindow(name, size, hidebutton)
             configSystem.sector:AddSeperator('')
             configSystem.Create = configSystem.sector:AddButton("Create", function()
                 for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
-                    Config:Remove(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
-                    print('removing '..tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", ""))
+                    Config:Remove(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".mixoustheme", ""))
+                    print('removing '..tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".mixoustheme", ""))
                 end
 
                 if Config:Get() and Config:Get() ~= "" then
@@ -5565,7 +5621,7 @@ function library:CreateWindow(name, size, hidebutton)
                                 if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
                                     if (v2.flag == i) then
                                         pcall(function() 
-                                            print(i,v)
+                                            --print(i,v)
                                             -- if v2:Get() ~= v then 
                                             --     v2:Set(v)
                                             -- end
@@ -5645,6 +5701,12 @@ function library:CreateWindow(name, size, hidebutton)
                 end
             end)
 
+            configSystem.sector:AddButton("show flags", function()
+                for i,v in next, library.flags do 
+                    print(i,v, 'loopshowflag')
+                end
+            end)
+
             updateevent:Fire(library.theme)
             local function autoLoad()
                 if IsFileSet == true then 
@@ -5654,8 +5716,8 @@ function library:CreateWindow(name, size, hidebutton)
                     print(Success)
                     print(autoloadfile['fileautoload'])
                     if (Success) then
-                        pcall(function() 
-                            local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
+                        --pcall(function() -- Config:Get()
+                            local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. autoloadfile['fileautoload'] .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
                             local NewConfig = {}
                             local actualread = {}
                             for i,v in next, ReadConfig do 
@@ -5664,7 +5726,9 @@ function library:CreateWindow(name, size, hidebutton)
                                     actualread = v
                                 end
                             end
+                            print('universe save loop')
                             for i,v in pairs(actualread) do
+                                --print('save')
                                 if tostring(v):find('Enum.UserInput') then 
                                     --print(i,v,'cuz of input')
                                     --print('keybind loading input type,',tostring(v):gsub("Enum.UserInputType.", ""))
@@ -5689,6 +5753,9 @@ function library:CreateWindow(name, size, hidebutton)
                                     NewConfig[i] = v
                                 end
                             end
+                            for i,v in next, NewConfig do 
+                                print(i,v,'loop value')
+                            end
                             -- for i,v in pairs(actualread) do
                             --     if (typeof(v) == "table") then
                             --         if (typeof(v[1]) == "number") then
@@ -5707,25 +5774,34 @@ function library:CreateWindow(name, size, hidebutton)
                             -- for i,v in next, NewConfig do 
                               --  print(i,v)
                             -- end
-                            --library.flags = NewConfig
+                            library.flags = NewConfig
                             -- for i,v in next, library.flags do 
                             --     if NewConfig[i] ~= nil then 
 
                             --     end
                             -- end
-                            for i,v in next, NewConfig do 
-                                pcall(function()
-                                    library.flags[i] = v
-                                end)
-                                -- if library.flags[i] ~= nil then 
-                                --     library.flags[i] = v
-                                -- end
-                            end
+                            -- for i,v in next, NewConfig do 
+                            --     pcall(function()
+                            --         print(`set {i} to {v}`,'loopset')
+                            --         library.flags[i] = v
+                            --     end)
+                            --     -- if library.flags[i] ~= nil then 
+                            --     --     library.flags[i] = v
+                            --     -- end
+                            -- end
+
+                            for i,v in next, library.flags do 
+                                --print(`flag [{i}] with value [{tostring(v)}]`)
+                            end;
         
                             for i,v in pairs(library.flags) do
                                 for i2,v2 in pairs(library.items) do
+                                    if v2.flag then 
+                                        --print(i,v,i2,v2,v2.flag,'flag nil')
+                                    end
                                     if (i ~= nil and i ~= "" and i ~= "Configs_Name" and i ~= "Configs" and v2.flag ~= nil) then
                                         if (v2.flag == i) then
+                                            --print('set flag',loop,'loop')
                                             pcall(function() 
                                                 if tostring(v):find('Enum') then 
                                                     print(i,' is a keybind being set to ',tostring(v))
@@ -5734,13 +5810,19 @@ function library:CreateWindow(name, size, hidebutton)
                                                 -- if v2:Get() ~= v then 
                                                 --     v2:Set(v)
                                                 -- end
+                                                --print('autoladed to',v2.flag,'loop')
                                                 v2:Set(v)
                                             end)
+                                        else
+                                            --print('loop flag isnt same. v2 flag:',v2.flag,'main flag',i)
                                         end
                                     end
                                 end
                             end
-                        end)
+                            for i,v in next, library.flags do 
+                                --print(`after run, flag [{i}] with value [{tostring(v)}]`)
+                            end;
+                        --end)
                     end
                     if themetoload then 
                         -- themetoload_
@@ -5748,6 +5830,7 @@ function library:CreateWindow(name, size, hidebutton)
                         configSystem.loadtheme(autoloadfile['theme']) --(themecontent)
                     end;
                     updateevent:Fire(library.theme)
+                    hasAutoloaded = true;
                 end
             end
             autoLoad()
