@@ -5418,6 +5418,9 @@ function library:CreateWindow(name, size, hidebutton)
                     print('was nil so reset')
                     uniqueTable = {}
                 end
+                if not uniqueTable[tostring(universeId)] then 
+                    uniqueTable[tostring(universeId)] = {};
+                end
                 for i,v in next, config do 
                     uniqueTable[tostring(universeId)][i] = v -- still doesnt loop all flags for some reason but fuck that and leave it
                 end
@@ -5959,5 +5962,4 @@ function library:CreateWindow(name, size, hidebutton)
     library.currentwindow = window
     return window
 end
-
-return library
+ return library
