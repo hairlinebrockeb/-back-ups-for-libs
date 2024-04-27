@@ -4659,6 +4659,7 @@ function library:CreateWindow(name, size, hidebutton)
                 end
 
                 function dropdown:updateText(text)
+                    if not text then return end;
                     if #text >= 27 then
                         text = text:sub(1, 25) .. ".."
                     end
@@ -5962,4 +5963,5 @@ function library:CreateWindow(name, size, hidebutton)
     library.currentwindow = window
     return window
 end
+
  return library
