@@ -1186,22 +1186,23 @@ function library:CreateWindow(name, size, hidebutton)
                     local knowledge = { }
                     knowledge.Visible = true
                 
-                    knowledge.main = Instance.new("ScreenGui", window.storeobjects)
+                    knowledge.main = Instance.new("ScreenGui", window.storeobjects); --window.storeobjects
                     knowledge.main.Name = "knowledge"
                     -- if syn then
                     --     syn.protect_gui(knowledge.main)
                     -- end
+                    -- knowledge.holdframe = Instance.new("Frame", window.Frame)
                 
                     local dividedy = (game.Players.LocalPlayer:GetMouse().Y / workspace.CurrentCamera.ViewportSize.Y)
                     local dividedx = (game.Players.LocalPlayer:GetMouse().X / workspace.CurrentCamera.ViewportSize.X)
                     --knowledge.main.Position = UDim2.fromOffset(dividedx,dividedy)
                     local screenSize = knowledge.main.AbsoluteSize
-                    knowledge.mainbar = Instance.new("Frame", window.BackgroundImage)
+                    knowledge.mainbar = Instance.new("Frame", window.Main) -- knowledge.main -- knowledge.main
                     knowledge.mainbar.Name = "KnowledgeFrame"
                     knowledge.mainbar.BorderColor3 = Color3.fromRGB(80, 80, 80)
                     knowledge.mainbar.Visible = knowledge.Visible
                     knowledge.mainbar.BorderSizePixel = 0
-                    knowledge.mainbar.ZIndex = 5
+                    knowledge.mainbar.ZIndex = 100
                     knowledge.AnchorPoint = Vector2.new(0.5,0.5)
 
                     knowledge.mainbar.Position = UDim2.new(0, dividedx , 0, dividedy )--UDim2.new(dividedx,0,dividedy,0)--button.Main.Position + UDim2.fromOffset(,1)-- UDim2.new(0, position and position.X or 10, 0, position and position.Y or 10)
@@ -1271,7 +1272,7 @@ function library:CreateWindow(name, size, hidebutton)
                             local dividedy = (game.Players.LocalPlayer:GetMouse().Y / workspace.CurrentCamera.ViewportSize.Y)
                             local dividedx = (game.Players.LocalPlayer:GetMouse().X / workspace.CurrentCamera.ViewportSize.X)
                             --local udim = UDim2.new(0, mouse.X-script.Parent.Parent.AbsolutePosition.X, 0, mouse.Y-script.Parent.Parent.AbsolutePosition.Y) -- UDim2.new(0,game.Players.LocalPlayer:GetMouse().X + 20,0,game.Players.LocalPlayer:GetMouse().Y + 50) --
-                            knowledge.mainbar.Position =  UDim2.new(0, mouse.X - 100, 0, mouse.Y - 200) -- UDim2.new(0, mouse.X-button.Main.AbsolutePosition.X+100, 0, mouse.Y-button.Main.AbsolutePosition.Y) -- +20
+                            knowledge.mainbar.Position = UDim2.new(0,mouse.X-10,0,mouse.Y - 25) --UDim2.new(0, mouse.X - 100, 0, mouse.Y - 200) -- UDim2.new(0, mouse.X-button.Main.AbsolutePosition.X+100, 0, mouse.Y-button.Main.AbsolutePosition.Y) -- +20
                         else
                             connection:Disconnect()
                         end
@@ -1279,12 +1280,20 @@ function library:CreateWindow(name, size, hidebutton)
                     
                     return knowledge
                 end
+                local function removeknowledges()
+                    for i,v in next, window.Main:GetChildren() do 
+                        if v.Name == 'KnowledgeFrame' then 
+                            v:Destroy()
+                        end
+                    end;
+                end;
                 itemto.BlackOutline2.MouseEnter:Connect(function()
                     if getgenv().disablefeatures == true then return end
                     itemto.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
                     -- HINT
                     if itemto.hint == true then 
                         --print('added hint')
+                        removeknowledges()
                         knowledge = itemto:AddKnowledgeButton()
                         knowledge.label.Text = itemto.knowledgemessage
                     end
@@ -1294,9 +1303,10 @@ function library:CreateWindow(name, size, hidebutton)
                     -- if getgenv().disablefeatures == true then return end
                     itemto.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
                     if itemto.hint == true then 
-                        if window.BackgroundImage:FindFirstChild('KnowledgeFrame') then -- button.Main
+                        if window.Main:FindFirstChild('KnowledgeFrame') then -- button.Main
                             --print('removed hint')
-                            window.BackgroundImage:FindFirstChild('KnowledgeFrame'):Destroy()
+                            removeknowledges()
+                            --window.Main:FindFirstChild('KnowledgeFrame'):Destroy()
                         end
                     end
                 end)
@@ -5963,5 +5973,4 @@ function library:CreateWindow(name, size, hidebutton)
     library.currentwindow = window
     return window
 end
-
- return library
+return library
