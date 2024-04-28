@@ -4966,6 +4966,18 @@ function library:CreateWindow(name, size, hidebutton)
             local autoloadindex = configSystem.ConfigsDirectory .. '/' .. 'settings.conf' 
 
             local default = 'default' --tostring(listfiles(configSystem.ConfigsDirectory)[1] or ""):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".txt", "")
+            local templateSettings = {
+                autoload = true;
+                fileautoload = 'default'; -- autoloadfile
+                theme = '';
+            };
+            local isWritten = nil;
+            pcall(function()
+                isWritten = httpservice:JSONDecode(readfile(autoloadindex))
+            end)
+            if isWritten == nil then 
+                writefile(autoloadindex, httpservice:JSONDecode(templateSettings))
+            end;
             local worked,notwork = pcall(function()
                 default = httpservice:JSONDecode(readfile(autoloadindex))['fileautoload']
                 print(default)
@@ -4980,6 +4992,9 @@ function library:CreateWindow(name, size, hidebutton)
                     writefile(autoloadindex,httpservice:JSONEncode(configtable))
                     print('written theme')
                 end
+                if not configtable['fileautoload'] then 
+                    writefile(autoloadindex,httpservice:JSONEncode(templateSettings))
+                end;
             end
 
             local function getsettings()
