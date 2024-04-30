@@ -51,11 +51,13 @@ local GAMENAME = nil;
 pcall(function()
     GAMENAME = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
 end)
+--print('try gamename')
 if not GAMENAME then 
     repeat 
         task.wait()
         GAMENAME = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
     until GAMENAME
+    --print(string.rep('gamename',1))
 end
 
 -- Services
@@ -194,10 +196,10 @@ function library:CheckForPermission(info)
             tab = v
         end
     end
-    if not window then return print('no window') end
+    if not window then return  end -- print('no window')
     local text = type(info) == 'string' and info or info and info.ask
-    print(text)
-    if not text then return print('no next given, '..tostring(text)) end;
+    --print(text)
+    if not text then return  end; -- print('no next given, '..tostring(text))
     local yesI = type(info) == 'table' and info and info.accept or 'Yes'
     local noI = type(info) == 'table' and info and info.reject or 'No'
     --print('asked')
@@ -243,7 +245,7 @@ function library:CheckForPermission(info)
 
     local function changeTransparencies(info)
         if info.s == 'change' then 
-            print('change')
+            --print('change')
             local function dosamefor(ul)
                 for _,v in next, ul do 
                     for itemI,item in next, v['Main']:GetChildren() do 
@@ -565,7 +567,7 @@ function library:CreateWindow(name, size, hidebutton)
     window.Main.DisplayOrder = 15
     if syn then
         syn.protect_gui(window.Main)
-        print('protectedui')
+        --print('protectedui')
     end
     window.storeobjects = Instance.new('Folder',window.Main); window.storeobjects.Name = 'storeobjects'
     if getgenv().uilib then
@@ -849,7 +851,7 @@ function library:CreateWindow(name, size, hidebutton)
         tab.RightListPadding.PaddingRight = UDim.new(0, 12)
 
         local function createExtra(n)
-            print(`removing status {n} and {xAddition}`)
+            --print(`removing status {n} and {xAddition}`)
             local isActive = tab.TabButton.Name == 'SelectedTab' -- or tab.Left == true
             --if tab.
             if not tab.Extra and window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then 
@@ -857,9 +859,9 @@ function library:CreateWindow(name, size, hidebutton)
             end
             if n == 'remove' and xAddition and window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then 
                 window.Frame:FindFirstChild('extraside').Visible = false
-                print('added, '..tostring(xAddition))
+                --print('added, '..tostring(xAddition))
                 xAddition = -xAddition
-                print('removing, '..tostring(xAddition))
+                --print('removing, '..tostring(xAddition))
                 window.Frame.Size -= UDim2.fromOffset(offsetWas,0)
                 --xAddition = tab.Extra.Size.X.Offset - 6
                 window.Frame.top.Size += UDim2.fromOffset(xAddition,0)
@@ -884,7 +886,7 @@ function library:CreateWindow(name, size, hidebutton)
             end
             if window.Frame:FindFirstChild('extraside') and window.Frame:FindFirstChild('extraside').Visible == true then return end
             if not window.Frame:FindFirstChild('extraside') then 
-                print('new exter')
+                --print('new exter')
                 tab.Extra = Instance.new("ScrollingFrame", window.Frame)  -- make var for extra then set tab.Extra to the var
                 tab.Extra.Name = "extraside"
                 tab.Extra.ScrollBarThickness = 0
@@ -4980,17 +4982,17 @@ function library:CreateWindow(name, size, hidebutton)
             end;
             local worked,notwork = pcall(function()
                 default = httpservice:JSONDecode(readfile(autoloadindex))['fileautoload']
-                print(default)
+                --print(default)
             end)
             if pcall(readfile, autoloadindex) then 
-                print('has settings')
+                --print('has settings')
                 local configtable = httpservice:JSONDecode(readfile(autoloadindex))
                 if not configtable['theme'] then 
-                    print('writing theme')
-                    print('write theme')
+                    --print('writing theme')
+                    --print('write theme')
                     configtable['theme'] = '';
                     writefile(autoloadindex,httpservice:JSONEncode(configtable))
-                    print('written theme')
+                    --print('written theme')
                 end
                 if not configtable['fileautoload'] then 
                     writefile(autoloadindex,httpservice:JSONEncode(templateSettings))
@@ -5084,7 +5086,7 @@ function library:CreateWindow(name, size, hidebutton)
                 if not newTheme then -- httpservice:JSONDecode
                     return (__getnotify and __getnotify('Unable to read file.', 3) or '')
                 end
-                print(newTheme,selectedTheme)
+                --print(newTheme,selectedTheme)
                 newTheme = httpservice:JSONDecode(filecontents); --(configSystem.ConfigsDirectory .. '/'.. selectedTheme..'.mixoustheme');
                 local tempthemedump = {}
                 for i,v in pairs(newTheme) do
@@ -5158,9 +5160,9 @@ function library:CreateWindow(name, size, hidebutton)
                 configSystem.loadtheme() -- selectedTheme
             end);
             configSystem.extrasector:AddButton('Save Theme', function()
-                print(selectedTheme)
+                --print(selectedTheme)
                 if selectedTheme == '' then return end;
-                print('save pls')
+                --print('save pls')
                 configSystem.savetheme()
                 local file = httpservice:JSONDecode(readfile(autoloadindex))
                 file['theme'] = selectedTheme
@@ -5263,9 +5265,9 @@ function library:CreateWindow(name, size, hidebutton)
                 library.theme = library.defaulttheme -- theme --
                 for i,v in next, library.theme do 
                     if library.defaulttheme[i] ~= v then 
-                        print('should swap, '..i)
+                        --print('should swap, '..i)
                     else
-                        print(library.defaulttheme[i],v)
+                        --print(library.defaulttheme[i],v)
                     end
                 end
                 for i,v in next, library.items do 
@@ -5298,7 +5300,7 @@ function library:CreateWindow(name, size, hidebutton)
             else
                 IsFileSet = true;
             end
-            warn(autoloadindex)
+            --warn(autoloadindex)
             local worked,notwork = pcall(function()
                 autoloadfile = httpservice:JSONDecode(readfile(autoloadindex))
             end)
@@ -5316,7 +5318,7 @@ function library:CreateWindow(name, size, hidebutton)
             configSystem.AutoLoad = configSystem.sector:AddToggle('Auto Load',autoloadfile['autoload'],function(xtate)
                 local Success = Config:Get()-- pcall(readfile, Config:Get())
                 if Success and Config:Get() ~= 'settings.conf' then 
-                    print('setting autoload to '..Config:Get())
+                    --print('setting autoload to '..Config:Get())
                     local pack = {
                         autoload = xtate;
                         fileautoload = Config:Get();
@@ -5400,7 +5402,7 @@ function library:CreateWindow(name, size, hidebutton)
                 for i,v in pairs(library.flags) do -- flags are used so you can have the same textbox with the same text name with a different value to save and it wont bug when loading and load the two textboxes with the same value
                     --print('flag',i,v)
                     local shouldSave = getTable(i) -- getTable(i) == false
-                    if shouldSave == false then print('no save',i,'loop') end
+                    if shouldSave == false then  end -- print('no save',i,'loop')
                     if (v ~= nil and v ~= "" and v ~= 'AUTOLOADNOSAVEMENT') and shouldSave == true and v ~= 'configsave' then -- and v.Name ~= autoload and the flag for autoload isnt equal to the autoload we use on our configurations tab
                         --print('loop save shouldsave',i,shouldSave)
                         if (typeof(v) == "Color3") then
@@ -5441,7 +5443,7 @@ function library:CreateWindow(name, size, hidebutton)
                     uniqueTable = httpservice:JSONDecode(currentconfig); --{};
                 end)
                 if uniqueTable == nil or _ == false then 
-                    print('was nil so reset')
+                    --print('was nil so reset')
                     uniqueTable = {}
                 end
                 if not uniqueTable[tostring(universeId)] then 
@@ -5472,8 +5474,8 @@ function library:CreateWindow(name, size, hidebutton)
                 if autosaving == true then 
                     task.spawn(function()
                         while task.wait(6) do 
-                            if getgenv().newloadedui then print('newbreak') break end;
-                            if getgenv().currentHash ~= windowHash then print('new exec debug') break end;
+                            if getgenv().newloadedui then break end; -- print('newbreak')  print('new exec debug')
+                            if getgenv().currentHash ~= windowHash then  break end;
                             if hasAutoloaded == true then 
                                 configSystem.savefunc()
                             end
@@ -5486,7 +5488,7 @@ function library:CreateWindow(name, size, hidebutton)
             configSystem.Create = configSystem.sector:AddButton("Create", function()
                 for i,v in pairs(listfiles(configSystem.ConfigsDirectory)) do
                     Config:Remove(tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".mixoustheme", ""))
-                    print('removing '..tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".mixoustheme", ""))
+                    --print('removing '..tostring(v):gsub(configSystem.ConfigsDirectory .. "\\", ""):gsub(".mixoustheme", ""))
                 end
 
                 if Config:Get() and Config:Get() ~= "" then
@@ -5568,9 +5570,9 @@ function library:CreateWindow(name, size, hidebutton)
                         local actualread = {}
                         warn('loading func')
                         for i,v in next, ReadConfig do 
-                            print(i,universeId)
+                            --print(i,universeId)
                             if tostring(i) == tostring(universeId) then
-                                print('loading save in universe')
+                                --print('loading save in universe')
                                 actualread = v
                             end
                         end
@@ -5730,20 +5732,20 @@ function library:CreateWindow(name, size, hidebutton)
                 end
             end)
 
-            configSystem.sector:AddButton("show flags", function()
-                for i,v in next, library.flags do 
-                    print(i,v, 'loopshowflag')
-                end
-            end)
+            -- configSystem.sector:AddButton("show flags", function() -- donty use on type soul
+            --     for i,v in next, library.flags do 
+            --         --print(i,v, 'loopshowflag')
+            --     end
+            -- end)
 
             updateevent:Fire(library.theme)
             local function autoLoad()
                 if IsFileSet == true then 
-                    print('is file set')
+                    --print('is file set')
                     local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. autoloadfile['fileautoload']..'.txt')
                     local themetoload, themecontent = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. autoloadfile['theme']..'.mixoustheme')
-                    print(Success)
-                    print(autoloadfile['fileautoload'])
+                    --print(Success)
+                    --print(autoloadfile['fileautoload'])
                     if (Success) then
                         --pcall(function() -- Config:Get()
                             local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. autoloadfile['fileautoload'] .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
@@ -5751,11 +5753,11 @@ function library:CreateWindow(name, size, hidebutton)
                             local actualread = {}
                             for i,v in next, ReadConfig do 
                                 if tostring(i) == tostring(universeId) then
-                                    print('loading save in universe')
+                                    --print('loading save in universe')
                                     actualread = v
                                 end
                             end
-                            print('universe save loop')
+                            --print('universe save loop')
                             for i,v in pairs(actualread) do
                                 --print('save')
                                 if tostring(v):find('Enum.UserInput') then 
@@ -5783,7 +5785,7 @@ function library:CreateWindow(name, size, hidebutton)
                                 end
                             end
                             for i,v in next, NewConfig do 
-                                print(i,v,'loop value')
+                                --print(i,v,'loop value')
                             end
                             -- for i,v in pairs(actualread) do
                             --     if (typeof(v) == "table") then
@@ -5833,7 +5835,7 @@ function library:CreateWindow(name, size, hidebutton)
                                             --print('set flag',loop,'loop')
                                             pcall(function() 
                                                 if tostring(v):find('Enum') then 
-                                                    print(i,' is a keybind being set to ',tostring(v))
+                                                    --print(i,' is a keybind being set to ',tostring(v))
                                                 end
                                                 --print(v)
                                                 -- if v2:Get() ~= v then 
@@ -5855,7 +5857,7 @@ function library:CreateWindow(name, size, hidebutton)
                     end
                     if themetoload then 
                         -- themetoload_
-                        print('loading theme',autoloadfile['theme'])
+                        --print('loading theme',autoloadfile['theme'])
                         configSystem.loadtheme(autoloadfile['theme']) --(themecontent)
                     end;
                     updateevent:Fire(library.theme)
@@ -5865,7 +5867,7 @@ function library:CreateWindow(name, size, hidebutton)
             autoLoad()
             configevent.Event:Connect(function(b)
                 if b == 'setautoloadf' then 
-                    print('do autoload')
+                    --print('do autoload')
                     autoLoad()
                 end
                 beenset = true
