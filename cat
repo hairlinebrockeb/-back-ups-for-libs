@@ -4978,7 +4978,7 @@ function library:CreateWindow(name, size, hidebutton)
                 isWritten = httpservice:JSONDecode(readfile(autoloadindex))
             end)
             if isWritten == nil then 
-                writefile(autoloadindex, httpservice:JSONDecode(templateSettings))
+                writefile(autoloadindex, httpservice:JSONEncode(templateSettings))
             end;
             local worked,notwork = pcall(function()
                 default = httpservice:JSONDecode(readfile(autoloadindex))['fileautoload']
