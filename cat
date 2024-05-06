@@ -5324,7 +5324,7 @@ function library:CreateWindow(name, size, hidebutton)
                         fileautoload = Config:Get();
                         theme = getsettings() and getsettings()['theme'] or '';
                     }
-                    appendfile(autoloadindex,httpservice:JSONEncode(pack))
+                    writefile(autoloadindex,httpservice:JSONEncode(pack))
                     autoloadfile = pack; --httpservice:JSONDecode(readfile(autoloadindex)) -- if false save the file its autoloading and check if the index name is autoload then set to this autoload value 
                     if beenset == false then 
                         configevent:Fire('setautoloadf')
@@ -5459,7 +5459,7 @@ function library:CreateWindow(name, size, hidebutton)
                  --   print(i,v)
                 end
                 --local configsav = httpservice:JSONEncode(config)
-                appendfile(configSystem.ConfigsDirectory .. '/' .. configwriting .. ".txt", uniqueTable)
+                writefile(configSystem.ConfigsDirectory .. '/' .. configwriting .. ".txt", uniqueTable)
                 --print(`saved at {timeelspaesd}`) -- dusamped
             end
 
@@ -5990,4 +5990,5 @@ function library:CreateWindow(name, size, hidebutton)
     library.currentwindow = window
     return window
 end
+
 return library
