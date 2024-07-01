@@ -53,10 +53,16 @@ pcall(function()
 end)
 --print('try gamename')
 if not GAMENAME then 
+    local repeatTried = tick()
     repeat 
         task.wait()
-        GAMENAME = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
-    until GAMENAME
+        pcall(function()
+            GAMENAME = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
+        end)
+    until GAMENAME or repeatTried >= 4
+    if not GAMENAME and repeatTried >= 4 then 
+        GAMENAME = 'UNABLE TO LOAD GAMENAME'
+    end;
     --print(string.rep('gamename',1))
 end
 
