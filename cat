@@ -59,8 +59,8 @@ if not GAMENAME then
         pcall(function()
             GAMENAME = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name
         end)
-    until GAMENAME or repeatTried >= 4
-    if not GAMENAME and repeatTried >= 4 then 
+    until GAMENAME or tick() - repeatTried >= 4
+    if not GAMENAME and tick() - repeatTried >= 4 then 
         GAMENAME = 'UNABLE TO LOAD GAMENAME'
     end;
     --print(string.rep('gamename',1))
