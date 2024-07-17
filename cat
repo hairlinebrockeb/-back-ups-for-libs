@@ -1711,6 +1711,12 @@ function library:CreateWindow(name, size, hidebutton)
                 toggle.ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
                 toggle.ListLayout.Padding = UDim.new(0.04, 6)
 
+                if properties then 
+                    if properties.hint then 
+                        sector:CreateHintOnItem(toggle, properties.hint)
+                    end;
+                end;
+
                 if toggle.flag and toggle.flag ~= "" then
                     library.flags[toggle.flag] = toggle.default or false
                 end
