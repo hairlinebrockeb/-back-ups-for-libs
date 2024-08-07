@@ -4938,6 +4938,7 @@ function library:CreateWindow(name, size, hidebutton)
                     slider.decimals = data.decimals or data.dec or 1 -- decs
                     slider.default = data.def or data.default or 0
                     slider.flag = data.flag ~= nil and data.flag or data.text or ""; --flag or text or ""
+                    slider.callback = data.callback or function() end
                     --warn(slider.value, slider.decimals, slider.max, slider.min)
 
                     local dragging = false
