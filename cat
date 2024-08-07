@@ -986,7 +986,7 @@ function library:CreateWindow(name, size, hidebutton)
 
 
             return tab.Extra
-        end 
+        end -- mul;tiple extras
 
         -- would load the end tab cuz select tab wasnt called after it so it wouldnt say to make the frame invis
         -- taks for anotgher day, maye multiple tabs that can support extra
@@ -2882,7 +2882,6 @@ function library:CreateWindow(name, size, hidebutton)
                 end
 
 
-
                 toggle.Main.MouseButton1Down:Connect(function()
                     if getgenv().disablefeatures == true then return end
                     --print('setting')
@@ -3532,8 +3531,24 @@ function library:CreateWindow(name, size, hidebutton)
                     --     slider.SlideBar:TweenSize(UDim2.fromOffset(-(percent * slider.Main.AbsoluteSize.X), slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
                     -- else
                     --     slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
+                    -- -- end
+                    -- print(percent)
+                    -- if slider.SlideBarNegative then 
+                    --     if percent >= 0.5 then 
+                    --         slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
+                    --     else
+                    --         local mousePos = camera:WorldToViewportPoint(mouse.Hit.p)
+                    --         local percent = math.clamp(mousePos.X - (slider.SlideBarNegative.AbsolutePosition.X + 0), 0, slider.negativemain.AbsoluteSize.X) / -slider.negativemain.AbsoluteSize.X
+                    --         print(math.clamp(mousePos.X - slider.SlideBarNegative.AbsolutePosition.X, 0, slider.negativemain.AbsoluteSize.X))
+                    --         -- trtyna keep it in the negatives
+                    --         --print(percent,mousePos.X,slider.SlideBar.AbsolutePosition.X,slider.Main.AbsoluteSize.X)
+                    --         local value = math.floor((slider.min + (slider.max - slider.min) * percent) * slider.decimals) / slider.decimals
+                    --         value = math.clamp(value, slider.min, slider.max)
+                    --         slider.SlideBarNegative:TweenSize(UDim2.fromOffset(percent * slider.SlideBarNegative.AbsoluteSize.X, slider.SlideBarNegative.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
+                    --     end;
+                    -- else
+                    --     slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
                     -- end
-                    
                     slider.SlideBar:TweenSize(UDim2.fromOffset(percent * slider.Main.AbsoluteSize.X, slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
                     slider.InputLabel.Text = slider.value
                     pcall(slider.callback, slider.value)
@@ -3610,35 +3625,6 @@ function library:CreateWindow(name, size, hidebutton)
 
 
 
-                -- function slider:AddNegative()
-
-                --     slider.MainNegative = Instance.new("TextButton", slider.MainBack)
-                --     slider.MainNegative.Name = "slidernegative"
-                --     slider.MainNegative.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                --     slider.MainNegative.Position = UDim2.fromOffset(0, 15)
-                --     slider.MainNegative.BorderSizePixel = 0
-                --     slider.MainNegative.Size = UDim2.fromOffset(sector.Main.Size.X.Offset - 12, 12)
-                --     slider.MainNegative.AutoButtonColor = false
-                --     slider.MainNegative.Text = ""
-                --     slider.MainNegative.ZIndex = 5
-    
-                --     slider.SlideBarNegative = Instance.new("Frame", slider.MainNegative)
-                --     slider.SlideBarNegative.BackgroundColor3 = Color3.fromRGB(255, 255, 255) --Color3.fromRGB(204, 0, 102)
-                --     slider.SlideBarNegative.ZIndex = 5
-                --     slider.SlideBarNegative.BorderSizePixel = 0
-                --     slider.SlideBarNegative.Size = UDim2.fromOffset(0, slider.MainNegative.Size.Y.Offset)
-                --     slider.SlideBarNegative.Position += UDim2.fromOffset(129, 0)
-                --     slider.Gradient2 = Instance.new("UIGradient", slider.SlideBarNegative)
-                --     slider.Gradient2.Rotation = 90
-                --     slider.Gradient2.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.accentcolor), ColorSequenceKeypoint.new(1.00, window.theme.accentcolor2) })
-                --     updateevent.Event:Connect(function(theme)
-                --         slider.Gradient2.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, theme.accentcolor), ColorSequenceKeypoint.new(1.00, theme.accentcolor2) })
-                --     end)
-
-
-
-
-                -- end
 
                 slider.SlideBar.InputBegan:Connect(function(input)
                     if getgenv().disablefeatures == true then return end
@@ -3647,19 +3633,19 @@ function library:CreateWindow(name, size, hidebutton)
                         slider:Refresh()
                     end
                 end)
-                -- if slider.SlideBarNegative ~= nil then 
-                --     slider.SlideBarNegative.InputBegan:Connect(function(input)
-                --         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                --             dragging = true
-                --             slider:NegativeRefresh()
-                --         end
-                --     end)
-                --     slider.SlideBarNegative.InputEnded:Connect(function(input)
-                --         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                --             dragging = false
-                --         end
-                --     end)
-                -- end
+                if slider.SlideBarNegative ~= nil then 
+                    slider.SlideBarNegative.InputBegan:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                            dragging = true
+                            slider:NegativeRefresh()
+                        end
+                    end)
+                    slider.SlideBarNegative.InputEnded:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                            dragging = false
+                        end
+                    end)
+                end
 
                 slider.SlideBar.InputEnded:Connect(function(input)
                     if getgenv().disablefeatures == true then return end
@@ -3698,31 +3684,31 @@ function library:CreateWindow(name, size, hidebutton)
 
 
 
-                -- if slider.SlideBarNegative ~= nil then 
-                --     slider.SlideBarNegative.InputBegan:Connect(function(input)
-                --         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                --             dragging = true
-                --            -- slider:NegativeRefresh()
-                --         end
-                --     end)
-                --     slider.SlideBarNegative.InputEnded:Connect(function(input)
-                --         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                --             dragging = false
-                --         end
-                --     end)
-                --     slider.negativemain.InputBegan:Connect(function(input)
-                --         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                --             dragging = true
-                --             --slider:NegativeRefresh()
-                --         end
-                --     end)
+                if slider.SlideBarNegative ~= nil then 
+                    slider.SlideBarNegative.InputBegan:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                            dragging = true
+                           -- slider:NegativeRefresh()
+                        end
+                    end)
+                    slider.SlideBarNegative.InputEnded:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                            dragging = false
+                        end
+                    end)
+                    slider.negativemain.InputBegan:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                            dragging = true
+                            --slider:NegativeRefresh()
+                        end
+                    end)
     
-                --     slider.negativemain.InputEnded:Connect(function(input)
-                --         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                --             dragging = false
-                --         end
-                --     end)
-                -- end
+                    slider.negativemain.InputEnded:Connect(function(input)
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                            dragging = false
+                        end
+                    end)
+                end
 
 
 
@@ -4923,6 +4909,240 @@ function library:CreateWindow(name, size, hidebutton)
                 sector:FixSize()
                 return seperator
             end
+
+            function sector:VerticleBars(properties)
+                local verticle = {};
+                verticle.text = properties.text or ""
+                verticle.main = Instance.new('Frame', sector.Items)
+                verticle.main.Transparency = 1
+                verticle.main.Size = UDim2.fromOffset(sector.Main.Size.X.Offset - 12, 150)
+                verticle.main.Name = 'Bars'
+                verticle.main.ZIndex = 5
+                local grid = Instance.new('UIGridLayout', verticle.main)
+                grid.CellSize = UDim2.new(0, 25, 0, 140) -- 135  145
+
+                local baseMain = 140;
+                local base = 97;
+                local sixth = 24;
+                grid.CellPadding = UDim2.new(0, sixth, 0, 5) -- 135
+
+
+                function verticle:AddBar(data)
+                    if not data then data = {} end;
+                    local name = data.text;
+                    local slider = {};
+                    slider.value = data.default
+                    slider.text = data.text
+                    slider.min = data.min;
+                    slider.max = data.max;
+                    slider.decimals = data.decimals or data.dec or 1 -- decs
+                    slider.default = data.def or data.default or 0
+                    slider.flag = data.flag ~= nil and data.flag or data.text or ""; --flag or text or ""
+                    --warn(slider.value, slider.decimals, slider.max, slider.min)
+
+                    local dragging = false
+    
+                    slider.MainBack = Instance.new("Frame", verticle.main)
+                    slider.MainBack.Name = "MainBack"
+                    slider.MainBack.ZIndex = 7
+                    slider.MainBack.Size = grid.CellSize; --UDim2.fromOffset(sector.Main.Size.X.Offset - 25, 150)
+                    slider.MainBack.BorderSizePixel = 0
+                    slider.MainBack.BackgroundTransparency = 1
+    
+                    slider.Label = Instance.new("TextLabel", grid)
+                    slider.Label.BackgroundTransparency = 1
+                    slider.Label.Size = UDim2.fromOffset(sector.Main.Size.X.Offset, -12)
+                    slider.Label.Font = window.theme.font
+                    slider.Label.Text = slider.text .. ":"
+                    slider.Label.TextColor3 = window.theme.itemscolor
+                    slider.Label.Position = UDim2.fromOffset(0, 0)
+                    slider.Label.TextSize = 15
+                    slider.Label.ZIndex = 4
+                    slider.Label.TextStrokeTransparency = 1
+                    slider.Label.TextXAlignment = Enum.TextXAlignment.Left
+                    updateevent.Event:Connect(function(theme)
+                        slider.Label.Font = theme.font
+                        slider.Label.TextColor3 = theme.itemscolor
+                    end)
+    
+                    local size = textservice:GetTextSize(slider.Label.Text, slider.Label.TextSize, slider.Label.Font, Vector2.new(200,300))
+                    slider.InputLabel = Instance.new("TextBox", slider.MainBack)
+                    slider.InputLabel.BackgroundTransparency = 1
+                    slider.InputLabel.ClearTextOnFocus = false
+                    slider.InputLabel.Size = UDim2.fromOffset(25, 10); --0--grid.CellSize
+                    slider.InputLabel.Font = window.theme.font
+                    slider.InputLabel.Text = "0"
+                    slider.InputLabel.TextColor3 = window.theme.itemscolor
+                    slider.InputLabel.Position = UDim2.fromOffset(10, -7); --UDim2.fromOffset(size.X + 3, -3)
+                    slider.InputLabel.TextSize = 15
+                    slider.InputLabel.ZIndex = 4
+                    slider.InputLabel.TextStrokeTransparency = 1
+                    slider.InputLabel.TextXAlignment = Enum.TextXAlignment.Left
+                    updateevent.Event:Connect(function(theme)
+                        slider.InputLabel.Font = theme.font
+                        slider.InputLabel.TextColor3 = theme.itemscolor
+    
+                        --local size = textservice:GetTextSize(slider.Label.Text, slider.Label.TextSize, slider.Label.Font, Vector2.new(200,300))
+                        --slider.InputLabel.Size = grid.CellSize
+                    end)
+    
+                    slider.Main = Instance.new("TextButton", slider.MainBack)
+                    slider.Main.Name = "slider"
+                    slider.Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    slider.Main.Position = UDim2.fromOffset(0, 10); -- 15
+                    slider.Main.BorderSizePixel = 0
+                    slider.Main.Size = grid.CellSize
+                    slider.Main.AutoButtonColor = false
+                    slider.Main.Text = ""
+                    slider.Main.ZIndex = 5
+    
+                    slider.BlackOutline2 = Instance.new("Frame", slider.Main)
+                    slider.BlackOutline2.Name = "blackline"
+                    slider.BlackOutline2.ZIndex = 4
+                    slider.BlackOutline2.Size = slider.Main.Size + UDim2.fromOffset(6, 6)
+                    slider.BlackOutline2.BorderSizePixel = 0
+                    slider.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
+                    slider.BlackOutline2.Position = UDim2.fromOffset(-3, -3)
+                    updateevent.Event:Connect(function(theme)
+                        slider.BlackOutline2.BackgroundColor3 = theme.outlinecolor2
+                    end)
+                    
+                    slider.Outline = Instance.new("Frame", slider.Main)
+                    slider.Outline.Name = "blackline"
+                    slider.Outline.ZIndex = 4
+                    slider.Outline.Size = slider.Main.Size + UDim2.fromOffset(4, 4)
+                    slider.Outline.BorderSizePixel = 0
+                    slider.Outline.BackgroundColor3 = window.theme.outlinecolor
+                    slider.Outline.Position = UDim2.fromOffset(-2, -2)
+                    updateevent.Event:Connect(function(theme)
+                        slider.Outline.BackgroundColor3 = theme.outlinecolor
+                    end)
+    
+                    slider.BlackOutline = Instance.new("Frame", slider.Main)
+                    slider.BlackOutline.Name = "blackline"
+                    slider.BlackOutline.ZIndex = 4
+                    slider.BlackOutline.Size = slider.Main.Size + UDim2.fromOffset(2, 2)
+                    slider.BlackOutline.BorderSizePixel = 0
+                    slider.BlackOutline.BackgroundColor3 = window.theme.outlinecolor2
+                    slider.BlackOutline.Position = UDim2.fromOffset(-1, -1)
+                    updateevent.Event:Connect(function(theme)
+                        slider.BlackOutline.BackgroundColor3 = theme.outlinecolor2
+                    end)
+    
+                    slider.Gradient = Instance.new("UIGradient", slider.Main)
+                    slider.Gradient.Rotation = 90
+                    slider.Gradient.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, Color3.fromRGB(49, 49, 49)), ColorSequenceKeypoint.new(1.00, Color3.fromRGB(41, 41, 41)) })
+                    updateevent.Event:Connect(function(theme)
+                        slider.Gradient2.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, theme.accentcolor), ColorSequenceKeypoint.new(1.00, theme.accentcolor2) })
+                    end)
+    
+                    slider.BlackOutline2.MouseEnter:Connect(function()
+                        if getgenv().disablefeatures == true then return end
+                        slider.BlackOutline2.BackgroundColor3 = window.theme.accentcolor
+                    end)
+                    slider.BlackOutline2.MouseLeave:Connect(function()
+                        if getgenv().disablefeatures == true then return end
+                        slider.BlackOutline2.BackgroundColor3 = window.theme.outlinecolor2
+                    end)
+
+                    slider.SlideBar = Instance.new("Frame", slider.Main)
+                    slider.SlideBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255) --Color3.fromRGB(204, 0, 102)
+                    slider.SlideBar.ZIndex = 5
+                    slider.SlideBar.BorderSizePixel = 0
+                    slider.SlideBar.Size = UDim2.fromOffset(0, slider.Main.Size.Y.Offset)
+
+                    slider.Gradient2 = Instance.new("UIGradient", slider.SlideBar)
+                    slider.Gradient2.Rotation = 90
+                    slider.Gradient2.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, window.theme.accentcolor), ColorSequenceKeypoint.new(1.00, window.theme.accentcolor2) })
+                    updateevent.Event:Connect(function(theme)
+                        slider.Gradient2.Color = ColorSequence.new({ ColorSequenceKeypoint.new(0.00, theme.accentcolor), ColorSequenceKeypoint.new(1.00, theme.accentcolor2) })
+                    end)
+
+                    if slider.flag and slider.flag ~= "" then
+                        library.flags[slider.flag] = slider.default or slider.min or 0
+                    else
+                    end
+    
+                    function slider:Get()
+                        return slider.value
+                    end
+                    function slider:Set(value)
+                        slider.value = math.clamp(math.round(value * slider.decimals) / slider.decimals, slider.min, slider.max)
+                        local percent = 1 - ((slider.max - slider.value) / (slider.max - slider.min))
+                        if slider.flag and slider.flag ~= "" then
+                            library.flags[slider.flag] = slider.value
+                        else
+                        end
+                        slider.SlideBar:TweenSize(UDim2.fromOffset(slider.Main.AbsoluteSize.X, percent * slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
+                        slider.InputLabel.Text = slider.value
+                        pcall(slider.callback, slider.value)
+                    end
+                    slider:Set(slider.default)
+    
+    
+                    slider.InputLabel.FocusLost:Connect(function(Return)
+                        if not Return then 
+                            return 
+                        end
+                        if (slider.InputLabel.Text:match("^%d+$")) then
+                            slider:Set(tonumber(slider.InputLabel.Text))
+                        else
+                            slider.InputLabel.Text = tostring(slider.value)
+                        end
+                    end)
+    
+    
+                    function slider:Refresh()
+                        local mousePos = camera:WorldToViewportPoint(mouse.Hit.p)
+                        local percent = math.clamp((mousePos.Y - 25) - slider.SlideBar.AbsolutePosition.Y, 0, slider.Main.AbsoluteSize.Y) / slider.Main.AbsoluteSize.Y
+                        local value = math.floor((slider.min + (slider.max - slider.min) * percent) * slider.decimals) / slider.decimals
+                        value = math.clamp(value, slider.min, slider.max)
+                        slider:Set(value)
+                    end
+
+                    slider.SlideBar.InputBegan:Connect(function(input)
+                        if getgenv().disablefeatures == true then return end
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                            dragging = true
+                            slider:Refresh()
+                        end
+                    end)
+                    slider.SlideBar.InputEnded:Connect(function(input)
+                        if getgenv().disablefeatures == true then return end
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                            dragging = false
+                        end
+                    end)
+                    slider.Main.InputBegan:Connect(function(input)
+                        if getgenv().disablefeatures == true then return end
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                            dragging = true
+                            slider:Refresh()
+                        end
+                    end)
+                    slider.Main.InputEnded:Connect(function(input)
+                        if getgenv().disablefeatures == true then return end
+                        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                            dragging = false
+                        end
+                    end)
+                    uis.InputChanged:Connect(function(input)
+                        if getgenv().disablefeatures == true then return end
+                        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                            slider:Refresh()
+                        end
+                    end)
+                    uis.InputChanged:Connect(function(input)
+                        if getgenv().disablefeatures == true then return end
+                        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                            slider:Refresh()
+                        end
+                    end)
+                    table.insert(library.items, slider)
+                end;
+                sector:FixSize()
+                return verticle
+            end;
 
             return sector
         end
