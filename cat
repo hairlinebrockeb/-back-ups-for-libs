@@ -4965,16 +4965,20 @@ function library:CreateWindow(name, size, hidebutton)
                         slider.Label.TextColor3 = theme.itemscolor
                     end)
     
+                    local function format(num)
+                        return data.text..":"..tostring(num)
+                    end;
                     local size = textservice:GetTextSize(slider.Label.Text, slider.Label.TextSize, slider.Label.Font, Vector2.new(200,300))
                     slider.InputLabel = Instance.new("TextBox", slider.MainBack)
                     slider.InputLabel.BackgroundTransparency = 1
                     slider.InputLabel.ClearTextOnFocus = false
-                    slider.InputLabel.Size = UDim2.fromOffset(25, 10); --0--grid.CellSize
+                    slider.InputLabel.Size = UDim2.fromOffset(35, 15); --0--grid.CellSize  10 y  25
                     slider.InputLabel.Font = window.theme.font
-                    slider.InputLabel.Text = "0"
+                    slider.InputLabel.Text = data.text..":0"
                     slider.InputLabel.TextColor3 = window.theme.itemscolor
-                    slider.InputLabel.Position = UDim2.fromOffset(10, -7); --UDim2.fromOffset(size.X + 3, -3)
-                    slider.InputLabel.TextSize = 15
+                    slider.InputLabel.Position = UDim2.fromOffset(2, -7); --UDim2.fromOffset(size.X + 3, -3)  x 10
+                    slider.InputLabel.TextSize = 13; --15
+                    slider.InputLabel.TextScaled = true;
                     slider.InputLabel.ZIndex = 4
                     slider.InputLabel.TextStrokeTransparency = 1
                     slider.InputLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -5074,7 +5078,7 @@ function library:CreateWindow(name, size, hidebutton)
                         else
                         end
                         slider.SlideBar:TweenSize(UDim2.fromOffset(slider.Main.AbsoluteSize.X, percent * slider.Main.AbsoluteSize.Y), Enum.EasingDirection.In, Enum.EasingStyle.Sine, 0.05)
-                        slider.InputLabel.Text = slider.value
+                        slider.InputLabel.Text = format(slider.value)
                         pcall(slider.callback, slider.value)
                     end
                     slider:Set(slider.default)
