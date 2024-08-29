@@ -1,4 +1,7 @@
-setthreadidentity(7)
+if setthreadidentity then 
+    -- setthreadidentity(7)
+end
+
 -- insert troll face, memcorruptv2
 local library = { 
 	flags = { }, 
@@ -550,7 +553,7 @@ function library:CreateWatermark(name, position)
 end
 
 function library:CreateWindow(name, size, hidebutton)
-    setthreadidentity(8);
+    --setthreadidentity(8);
     local window = { }
 
     window.name = name or ""
@@ -1042,7 +1045,7 @@ function library:CreateWindow(name, size, hidebutton)
         tab.SectorsExtra = { }
 
         function tab:CreateSector(name,side)
-            setthreadidentity(7)
+            --setthreadidentity(7)
             local sector = { }
             sector.name = name or ""
             sector.side = side:lower() or "left"
@@ -6229,3 +6232,4 @@ function library:CreateWindow(name, size, hidebutton)
 end
 
 return library
+ 
