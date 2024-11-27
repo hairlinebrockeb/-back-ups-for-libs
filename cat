@@ -5580,7 +5580,7 @@ function library:CreateWindow(name, size, hidebutton)
             configSystem.SafeFail = configSystem.sector:AddToggle('PCall Failsafe', autoloadfile['pcallfailsafe'], function(xtate)
                 local pack = {
                     autoload = configSystem.AutoLoad:Get();
-                    pcallfailsafe = xtate
+                    pcallfailsafe = xtate;
                     fileautoload = Config:Get();
                     theme = getsettings() and getsettings()['theme'] or '';
                 }
