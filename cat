@@ -5212,6 +5212,7 @@ function library:CreateWindow(name, size, hidebutton)
                 autoload = true;
                 fileautoload = 'default'; -- autoloadfile
                 theme = '';
+                pcallfailsafe = false;
             };
             local isWritten = nil;
             pcall(function()
@@ -5358,6 +5359,7 @@ function library:CreateWindow(name, size, hidebutton)
                     end
                 end
             end;    
+            configSystem.failSafe = false;
 
             configSystem.extrasector:AddTextbox('New Theme', nil, function(x)
                 createTheme = x;
@@ -5535,6 +5537,7 @@ function library:CreateWindow(name, size, hidebutton)
                     autoload = false;
                     fileautoload = '';
                     theme = '';
+                    pcallfailsafe = false;
                 }
                 writefile(autoloadindex,httpservice:JSONEncode(tablepack))
             else
@@ -5550,12 +5553,13 @@ function library:CreateWindow(name, size, hidebutton)
                     autoload = false;
                     fileautoload = 'default';
                     theme = '';
+                    pcallfailsafe = false;
                 }
                 writefile(autoloadindex,httpservice:JSONEncode(tablepack))
             end
             
             local beenset = false
-            configSystem.AutoLoad = configSystem.sector:AddToggle('Auto Load',autoloadfile['autoload'],function(xtate)
+            configSystem.AutoLoad = configSystem.sector:AddToggle('Auto Load',autoloadfile['autoload'], function(xtate)
                 local Success = Config:Get()-- pcall(readfile, Config:Get())
                 if Success and Config:Get() ~= 'settings.conf' then 
                     --print('setting autoload to '..Config:Get())
@@ -5563,6 +5567,7 @@ function library:CreateWindow(name, size, hidebutton)
                         autoload = xtate;
                         fileautoload = Config:Get();
                         theme = getsettings() and getsettings()['theme'] or '';
+                        pcallfailsafe = getsettings() and getsettings()['pcallfailsafe'] or false;
                     }
                     writefile(autoloadindex,httpservice:JSONEncode(pack))
                     autoloadfile = pack; --httpservice:JSONDecode(readfile(autoloadindex)) -- if false save the file its autoloading and check if the index name is autoload then set to this autoload value 
@@ -5572,6 +5577,17 @@ function library:CreateWindow(name, size, hidebutton)
                 end
             end,'AUTOLOADNOSAVEMENT')
             configSystem.AutoLoad:Set(autoloadfile['autoload'])
+            configSystem.SafeFail = configSystem.sector:AddToggle('PCall Failsafe', autoloadfile['pcallfailsafe'], function(xtate)
+                local pack = {
+                    autoload = configSystem.AutoLoad:Get();
+                    pcallfailsafe = xtate
+                    fileautoload = Config:Get();
+                    theme = getsettings() and getsettings()['theme'] or '';
+                }
+                writefile(autoloadindex,httpservice:JSONEncode(pack))
+                autoloadfile = pack; 
+                configSystem.failSafe = xtate
+            end,'AUTOLOADNOSAVEMENT')
             -- configSystem.SetAutoLoadFile = configSystem.sector:AddButton("Set Auto load", function()
             --     -- print(Config:Get())
             --     local Success = Config:Get()-- pcall(readfile, Config:Get())
@@ -5684,6 +5700,9 @@ function library:CreateWindow(name, size, hidebutton)
                 end)
                 if uniqueTable == nil or _ == false then 
                     --print('was nil so reset')
+                    if configSystem.failSafe == true then 
+                        return
+                    end;
                     uniqueTable = {}
                 end
                 if not uniqueTable[tostring(universeId)] then 
@@ -6232,4 +6251,3 @@ function library:CreateWindow(name, size, hidebutton)
 end
 
 return library
- 
