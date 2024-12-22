@@ -3106,6 +3106,7 @@ function library:CreateWindow(name, size, hidebutton)
                             end
                             keybind.Main.Text = "[" .. (shorter_keycodes[key.Name] or key.Name) .. "]"
                             keybind.value = key
+                            keybindattachment.keybindchanged()
                             if keybind.flag and keybind.flag ~= "" then
                                 library.flags[keybind.flag] = keybind.value
                                 --print('setting '..keybind.flag..' to '..tostring(keybind.value))
@@ -3158,9 +3159,9 @@ function library:CreateWindow(name, size, hidebutton)
                             if not gameProcessed then
                                 if input.KeyCode == keybind:Get()  then 
                                    -- print('left key')
-                                   if keybindattachment.keybindchanged then 
-                                        keybindattachment.keybindchanged()
-                                    end
+                                --    if keybindattachment.keybindchanged then 
+                                --         keybindattachment.keybindchanged()
+                                --     end
                                     keybind:SetPressed(false)
                                 elseif input.UserInputType == keybind:Get() then 
                                     keybind:SetPressed(false)
@@ -5614,16 +5615,19 @@ function library:CreateWindow(name, size, hidebutton)
             -- end)
             local menubtton = configSystem.sector:AddKeybindAttachment('Open Menu') -- string.split(tostring(window.hidebutton))[3]
             menubtton:AddKeybind(Enum.KeyCode.LeftAlt)
-            function awlafwa()
-                --warn('key press..'..string.split(tostring(menubtton:GetKeybind()),'.')[3])
-                if menubtton:GetKeybind() ~= nil and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton1 and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton2 then 
-                    window.hidebutton = menubtton:GetKeybind()
-                    --print(menubtton:GetKeybind())
-                else
-                    --print(menubtton:GetKeybind())
-                end
-            end
-            menubtton:keychangedmethod(awlafwa)
+            menubtton:keychangedmethod(function()
+            
+            end)
+            -- function awlafwa()
+            --     --warn('key press..'..string.split(tostring(menubtton:GetKeybind()),'.')[3])
+            --     if menubtton:GetKeybind() ~= nil and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton1 and  menubtton:GetKeybind() ~= Enum.UserInputType.MouseButton2 then 
+            --         window.hidebutton = menubtton:GetKeybind()
+            --         --print(menubtton:GetKeybind())
+            --     else
+            --         --print(menubtton:GetKeybind())
+            --     end
+            -- end
+            -- menubtton:keychangedmethod(awlafwa)
 
             local universeId = httpservice:JSONDecode(game:HttpGet(`https://apis.roblox.com/universes/v1/places/{game.PlaceId}/universe`))['universeId']
             hasAutoloaded = false;
