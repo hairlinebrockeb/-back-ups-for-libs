@@ -5148,6 +5148,8 @@ function library:CreateWindow(name, size, hidebutton)
                         end
                     end)
                     table.insert(library.items, slider)
+
+                    return slider
                 end;
                 sector:FixSize()
                 return verticle
