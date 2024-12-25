@@ -5828,7 +5828,10 @@ function library:CreateWindow(name, size, hidebutton)
             configSystem.Load = configSystem.sector:AddButton("Load", function()
                 local Success = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt")
                 local SuccessDropdown = pcall(readfile, configSystem.ConfigsDirectory .. '/' .. selectedConfig .. ".txt")
-                if (Success) then
+                local canRead = pcall(function()
+                    local _ = httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt"))
+                end)
+                if (Success and canRead) then
                     pcall(function() 
                         local ReadConfig =  httpservice:JSONDecode(readfile(configSystem.ConfigsDirectory .. '/' .. Config:Get() .. ".txt"))--httpservice:JSONDecode(readfile(configSystem.configFolder .. "/" .. Config:Get() .. ".txt"))
                         local NewConfig = {}
