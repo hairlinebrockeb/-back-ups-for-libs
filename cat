@@ -5617,9 +5617,9 @@ function library:CreateWindow(name, size, hidebutton)
 
             -- end)
             local menubtton = configSystem.sector:AddKeybindAttachment('Open Menu') -- string.split(tostring(window.hidebutton))[3]
-            menubtton:AddKeybind(Enum.KeyCode.LeftAlt)
+            menubtton:AddKeybind(hidebutton); -- Enum.KeyCode.LeftAlt
             menubtton:keychangedmethod(function()
-            
+                window.hidebutton = menubtton:Get();
             end)
             -- function awlafwa()
             --     --warn('key press..'..string.split(tostring(menubtton:GetKeybind()),'.')[3])
