@@ -399,7 +399,7 @@ end
 function library:CreateWatermark(name, position)
     local gamename = GAMENAME ; --marketplaceservice:GetProductInfo(game.PlaceId).Name
     local watermark = { }
-    watermark.Visible = true
+    watermark.Visible = false; -- true
     watermark.text = " " .. name:gsub("{game}", gamename):gsub("{fps}", "0 FPS") .. " "
 
     watermark.main = Instance.new("ScreenGui", coregui)
@@ -1729,11 +1729,11 @@ function library:CreateWindow(name, size, hidebutton)
                     value = toggle.value
                     if value then
                         for _,v in next, visiblestuff do 
-                            for i,obj in next, window.storeobjects:GetChildren() do 
-                                -- if obj == v then 
-                                --     v.Main.Parent = sector.Items
-                                -- end
-                            end
+                            -- for i,obj in next, window.storeobjects:GetChildren() do 
+                            --     -- if obj == v then 
+                            --     --     v.Main.Parent = sector.Items
+                            --     -- end
+                            -- end
                             --v.Main.Parent =sector.Items
                             --v.Main.Visible = true
                             local isdropdown = false
@@ -1775,13 +1775,14 @@ function library:CreateWindow(name, size, hidebutton)
                                 v.Main.Visible = true
                             end
                             if isnotbutton == false then 
-                                sector.Main.Size = UDim2.fromOffset(sector.Main.Size.X.Offset,sector.Main.Size.Y.Offset + (v.Main.Size.Y.Offset*2))
+                                --sector.Main.Size = UDim2.fromOffset(sector.Main.Size.X.Offset,sector.Main.Size.Y.Offset + (v.Main.Size.Y.Offset*2))
                             elseif isnotbutton == true then 
-                                sector.Main.Size = UDim2.fromOffset(sector.Main.Size.X.Offset,sector.Main.Size.Y.Offset + (v.Main.Parent.Size.Y.Offset*2))
+                                --sector.Main.Size = UDim2.fromOffset(sector.Main.Size.X.Offset,sector.Main.Size.Y.Offset + (v.Main.Parent.Size.Y.Offset*2))
                             end
                             --sector.Items.Size = UDim2.fromOffset(sector.Items.Size.X.Offset,sector.Items.Size.Y.Offset + (v.Main.Size.Y.Offset*3))
                         end
                         toggle.Label.TextColor3 = window.theme.itemscolor2
+                        sector:FixSize();
                     else
                         for _,v in next, visiblestuff do 
                             --v.Main.Parent = window.storeobjects
@@ -3047,6 +3048,7 @@ function library:CreateWindow(name, size, hidebutton)
 
                     function keybindattachment:AddKeybind(default, flag)
                         local keybind = { }
+                        setmetatable(keybind, {__index = keybindattachment}); -- library})
 
                         keybind.default = default or "None"
                         keybind.value = keybind.default
@@ -5616,8 +5618,8 @@ function library:CreateWindow(name, size, hidebutton)
             --     end
 
             -- end)
-            local menubtton = configSystem.sector:AddKeybindAttachment('Open Menu') -- string.split(tostring(window.hidebutton))[3]
-            menubtton:AddKeybind(hidebutton); -- Enum.KeyCode.LeftAlt
+            local menubtton = configSystem.sector:AddKeybindAttachment('Open Menu'):AddKeybind(hidebutton, 'menuOpener') -- string.split(tostring(window.hidebutton))[3]
+            --menubtton:AddKeybind(hidebutton); -- Enum.KeyCode.LeftAlt
             menubtton:keychangedmethod(function()
                 window.hidebutton = menubtton:Get();
             end)
